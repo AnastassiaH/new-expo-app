@@ -1,29 +1,39 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { useLocationStore } from '@/stores/locationStore';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { router, Slot } from 'expo-router';
+
+const isAuthenticated = false;
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
+  const { requestLocation } = useLocationStore();
+
+  useEffect(() => {
+    if (loaded) {
+      requestLocation();
+    }
+  }, [loaded, requestLocation]);
+
+  useEffect(() => {
+    if (loaded && isAuthenticated !== null) {
+      if (isAuthenticated) {
+        router.replace('/(app)/ride');
+      } else {
+        router.replace('/(auth)');
+      }
+    }
+  }, [loaded, isAuthenticated]);
 
   if (!loaded) {
-    // Async font loading only occurs in development.
     return null;
   }
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+  return <Slot />
 }
