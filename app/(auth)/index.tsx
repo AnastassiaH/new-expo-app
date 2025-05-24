@@ -2,6 +2,7 @@ import Logo from '@/components/Logo'
 import Button from '@/components/ui/Button'
 import Header from '@/components/ui/Header'
 import Wrapper from '@/components/ui/Wrapper'
+import { router } from 'expo-router'
 import React from 'react'
 
 export default function StartScreen() {
@@ -12,14 +13,14 @@ export default function StartScreen() {
 			<Button
 				style={{}}
 				mode="contained"
-			// onPress={() => navigation.navigate(Screens.LoginScreen)}
+				onPress={() => router.push('/(auth)/login')}
 			>
 				Login
 			</Button>
 			<Button
 				style={{}}
 				mode="outlined"
-			// onPress={() => navigation.navigate(Screens.RegisterScreen)}
+				onPress={() => router.push('/(auth)/register')}
 			>
 				Sign Up
 			</Button>

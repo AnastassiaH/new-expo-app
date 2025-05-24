@@ -1,39 +1,45 @@
 import { useLocationStore } from '@/stores/locationStore';
 import { useFonts } from 'expo-font';
-import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { router, Slot } from 'expo-router';
-
-const isAuthenticated = false;
+import { useAuthStore } from '@/stores/authStore';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const { session, hydrateSession } = useAuthStore();
+  const { location, requestLocation } = useLocationStore();
+
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
-  const { requestLocation } = useLocationStore();
 
   useEffect(() => {
-    if (loaded) {
-      requestLocation();
-    }
-  }, [loaded, requestLocation]);
+    (async () => {
+      await hydrateSession();
+    })();
+  }, []);
 
   useEffect(() => {
-    if (loaded && isAuthenticated !== null) {
-      if (isAuthenticated) {
-        router.replace('/(app)/ride');
-      } else {
-        router.replace('/(auth)');
-      }
-    }
-  }, [loaded, isAuthenticated]);
+    (async () => {
+      await requestLocation();
+    })();
+  }, [loaded]);
 
   if (!loaded) {
     return null;
   }
 
-  return <Slot />
+  return (
+    <>
+      <StatusBar style="auto" />
+      <Stack>
+        <Stack.Screen name="(app)" options={{ headerShown: false, animation: 'none' }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false, animation: 'none' }} />
+      </Stack>
+    </>
+  )
 }
