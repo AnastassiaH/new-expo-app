@@ -1,0 +1,14 @@
+import { ApiEndpoints } from "@/types";
+
+export const BASE_URL = process.env.BASE_URL;
+export const API_ENDPOINTS: ApiEndpoints = {
+	ride: '/rides',
+	createUser: '/auth/signup',
+	getUser: '/users',
+	loginUser: '/auth/login',
+	verifyPhoneNumber: '/auth/verify/phone',
+	confirmPhoneNumber: '/auth/verify',
+	forgotPassword: '/auth/forgot/password',
+	resetPassword: '/auth/recovery/password',
+}
+

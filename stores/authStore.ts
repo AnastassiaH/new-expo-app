@@ -1,4 +1,3 @@
-// stores/authStore.ts
 import { router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { create } from 'zustand';
@@ -8,7 +7,7 @@ type AuthState = {
 	isReady: boolean;
 	isLoggedIn: boolean;
 	error: Error | null;
-	signIn: () => Promise<void>;
+	signIn: (token: string) => Promise<void>;
 	signOut: () => Promise<void>;
 	hydrateSession: () => Promise<void>;
 };
@@ -19,9 +18,9 @@ export const useAuthStore = create<AuthState>((set) => ({
 	isReady: false,
 	error: null,
 
-	signIn: async () => {
+	signIn: async (token: string) => {
 		try {
-			const session = 'xxx'; // Replace with your actual session token
+			const session = token;
 			await SecureStore.setItemAsync('session', session);
 			set({ session, isLoggedIn: true });
 			router.replace('/(app)/ride');

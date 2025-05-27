@@ -61,12 +61,12 @@ export type RideData = {
 }
 
 export type UserData = {
-	id: string
+	id?: string
 	email: string
 	firstName: string
 	lastName: string
 	phoneNumber: string
-	registrationCompleted: boolean
+	registrationCompleted?: boolean
 	createdDate?: string
 	verificationCompleted?: boolean
 }

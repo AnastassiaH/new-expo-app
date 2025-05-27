@@ -1,7 +1,6 @@
-import Logo from '@/components/Logo'
-import Button from '@/components/ui/Button'
-import Header from '@/components/ui/Header'
-import Wrapper from '@/components/ui/Wrapper'
+
+import Button from '@/components/atoms/Button'
+import { Header, Logo, Wrapper } from '@/components/ui'
 import { router } from 'expo-router'
 import React from 'react'
 

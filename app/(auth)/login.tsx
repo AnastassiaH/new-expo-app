@@ -1,11 +1,6 @@
-import GoBackButton from '@/components/GoBackButton'
-import Logo from '@/components/Logo'
-import Button from '@/components/ui/Button'
-import Header from '@/components/ui/Header'
-import Loader from '@/components/ui/Loader'
-import Wrapper from '@/components/ui/Wrapper'
+import { logInUser } from '@/services/api.service'
 import { useAuthStore } from '@/stores/authStore'
-import { useUserStore } from '@/stores/userStore'
+import usePhoneStore from '@/stores/phoneStore'
 import { LoginData } from '@/types'
 import { router } from 'expo-router'
 import React, { useState } from 'react'
@@ -13,13 +8,17 @@ import { Controller, useForm } from 'react-hook-form'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Text, TextInput, useTheme } from 'react-native-paper'
 
+import { Button } from '@/components/atoms'
+import { Header, Loader, Logo, Wrapper } from '@/components/ui'
+
+
 export default function LoginScreen() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
   const theme = useTheme()
   const { control, handleSubmit, setValue, clearErrors, getValues } = useForm<LoginData>()
-  const { setUser } = useUserStore()
   const { signIn } = useAuthStore()
+  const { setPhone } = usePhoneStore()
 
 
   const onPhoneNumberFocus = () => {
@@ -28,24 +27,23 @@ export default function LoginScreen() {
     }
   }
 
-  // const sendLoginPhone = async (data: LoginData) => {
-  //   //setPhone(data.phoneNumber)
+  const logInAppUser = async (data: LoginData) => {
+    setPhone(data.phoneNumber)
 
-  //   try {
-  //     setIsLoading(true)
-  //     const response = await logInUser(data)
-  //     if (response) {
-  //       setUser(response.user)
-  //       console.log(response)
-  //       saveToken(response.token)
-  //     }
-  //   } catch (error) {
-  //     setError(error as Error)
-  //     router.replace('/(auth)')
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
+    try {
+      setIsLoading(true)
+      const response = await logInUser(data)
+      if (response) {
+        console.log(response)
+        signIn(response.token)
+      }
+    } catch (error) {
+      setError(error as Error)
+      router.replace('/(auth)')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   if (isLoading) {
     return <Loader />
@@ -53,7 +51,6 @@ export default function LoginScreen() {
 
   return (
     <Wrapper fullScreen>
-      <GoBackButton />
       <Logo />
       <Header>Login</Header>
       <View style={styles.form}>
@@ -114,7 +111,7 @@ export default function LoginScreen() {
         />
         <Button
           mode="contained"
-          onPress={handleSubmit(signIn)}
+          onPress={handleSubmit(logInAppUser)}
           style={[styles.button, { backgroundColor: theme.colors.primary }]}
         >
           Login
