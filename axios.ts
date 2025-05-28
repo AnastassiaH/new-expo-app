@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = process.env.BASE_URL
-
+const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL
 
 export const axiosService = axios.create({
   baseURL: BASE_URL

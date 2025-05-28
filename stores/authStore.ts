@@ -20,6 +20,9 @@ export const useAuthStore = create<AuthState>((set) => ({
 
 	signIn: async (token: string) => {
 		try {
+			if (!token) {
+				throw new Error('No token provided');
+			}
 			const session = token;
 			await SecureStore.setItemAsync('session', session);
 			set({ session, isLoggedIn: true });
