@@ -40,7 +40,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 		try {
 			await SecureStore.deleteItemAsync('session');
 			set({ session: null, isLoggedIn: false });
-			router.replace('/(auth)/login');
+			router.replace('/');
 		} catch (error) {
 			console.error('Sign-out error:', error);
 			set({ error: error as Error });
