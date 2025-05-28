@@ -10,6 +10,8 @@ type AuthState = {
 	signIn: (token: string) => Promise<void>;
 	signOut: () => Promise<void>;
 	hydrateSession: () => Promise<void>;
+	lastActivityTime: null | number,
+	setLastActivityTime: (timestamp: number) => void,
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -17,6 +19,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 	isLoggedIn: false,
 	isReady: false,
 	error: null,
+	lastActivityTime: null as number | null,
 
 	signIn: async (token: string) => {
 		try {
@@ -57,4 +60,6 @@ export const useAuthStore = create<AuthState>((set) => ({
 			set({ error: error as Error, session: null, isLoggedIn: false, isReady: true });
 		}
 	},
+
+	setLastActivityTime: (timestamp: number) => set({ lastActivityTime: timestamp }),
 }));

@@ -1,3 +1,4 @@
+import { AutoLogoutTimer } from "@/components/AutoLogoutTimer";
 import { useAuthStore } from "@/stores/authStore";
 import { useLocationStore } from "@/stores/locationStore";
 import { Redirect, Stack } from "expo-router";
@@ -22,8 +23,11 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack>
-      <Stack.Screen name="ride" options={{ headerShown: false }} />
-    </Stack>
+    <>
+      <AutoLogoutTimer />
+      <Stack>
+        <Stack.Screen name="ride" options={{ headerShown: false }} />
+      </Stack>
+    </>
   )
 }

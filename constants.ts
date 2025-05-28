@@ -12,3 +12,4 @@ export const API_ENDPOINTS: ApiEndpoints = {
 	resetPassword: '/auth/recovery/password',
 }
 
+export const AUTO_SIGN_OUT_TIMEOUT = 3600_000;
