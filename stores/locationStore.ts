@@ -15,19 +15,14 @@ interface LocationData {
 
 type LocationStore = {
   location: LocationData | null;
-  isLoading: boolean;
-  error: string | null;
   requestLocation: () => Promise<void>;
   setLocation: (location: LocationData) => void;
 };
 
 export const useLocationStore = create<LocationStore>((set) => ({
   location: null,
-  isLoading: false,
-  error: null,
   setLocation: (newLocation) => set({ location: newLocation }),
   requestLocation: async () => {
-    set({ isLoading: true, error: null });
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
@@ -35,9 +30,9 @@ export const useLocationStore = create<LocationStore>((set) => ({
       }
 
       const location = await Location.getCurrentPositionAsync({});
-      set({ location, isLoading: false });
+      set({ location });
     } catch (error: any) {
-      set({ error: error.message, isLoading: false });
+      console.log('Location error', error)
     }
   },
 }));

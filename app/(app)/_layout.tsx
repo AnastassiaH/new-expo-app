@@ -27,6 +27,7 @@ export default function RootLayout() {
       <AutoLogoutTimer />
       <Stack>
         <Stack.Screen name="ride" options={{ headerShown: false }} />
+        <Stack.Screen name="partners" options={{ headerShown: false }} />
       </Stack>
     </>
   )

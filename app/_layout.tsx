@@ -1,5 +1,6 @@
 import { useLocationStore } from '@/stores/locationStore';
 import { useFonts } from 'expo-font';
+import 'react-native-get-random-values';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';

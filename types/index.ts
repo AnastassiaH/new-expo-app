@@ -11,20 +11,20 @@ export type RootStackParamList = {
 	AppDrawer: undefined
 }
 
-export enum Screens {
-	RideScreen = 'RideScreen',
-	VerificationScreen = 'VerificationScreen',
-	PartnersScreen = 'PartnersScreen',
-	StartScreen = 'StartScreen',
-	LoginScreen = 'LoginScreen',
-	RegisterScreen = 'RegisterScreen',
-	ResetPasswordScreen = 'ResetPasswordScreen',
-	ForgotPasswordScreen = 'ForgotPasswordScreen',
-	AppDrawer = 'AppDrawer',
-	Settings = 'Settings',
-	Account = 'Account',
-	History = 'History'
-}
+// export enum Screens {
+// 	RideScreen = 'RideScreen',
+// 	VerificationScreen = 'VerificationScreen',
+// 	PartnersScreen = 'PartnersScreen',
+// 	StartScreen = 'StartScreen',
+// 	LoginScreen = 'LoginScreen',
+// 	RegisterScreen = 'RegisterScreen',
+// 	ResetPasswordScreen = 'ResetPasswordScreen',
+// 	ForgotPasswordScreen = 'ForgotPasswordScreen',
+// 	AppDrawer = 'AppDrawer',
+// 	Settings = 'Settings',
+// 	Account = 'Account',
+// 	History = 'History'
+// }
 
 export interface AutocompleteInputData {
 	formatted_address: string
