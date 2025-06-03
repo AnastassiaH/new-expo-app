@@ -1,5 +1,4 @@
 import MapComponent from "@/components/MapComponent";
-import SignOutButton from "@/components/SignOutButton";
 import { cancelRide, createRide } from "@/services/api.service";
 import { adjustMapRegion, fetchRoute } from '@/services/map.service';
 import { useLocationStore } from "@/stores/locationStore";
@@ -9,11 +8,10 @@ import shared from "@/styles/shared";
 import { LocationPoint, RideData } from "@/types";
 import { generateRideData, isLocationObject } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
-import * as Location from 'expo-location';
 import { router } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Modal, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GooglePlaceData, GooglePlaceDetail, GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Button, TextInput as PaperTextInput, useTheme } from "react-native-paper";
 
@@ -33,15 +31,15 @@ export default function Ride() {
 		longitudeDelta: 0.0421,
 	})
 	const [routeCoordinates, setRouteCoordinates] = useState<[] | null>([])
-	const [fromValue, setFromValue] = useState<string | null>(null)
-	const [toValue, setToValue] = useState<string | null>(null)
 	const [isCancelModalVisible, setIsCancelModalVisible] = useState(false)
 	const [pendingRideData, setPendingRideData] = useState<RideData | null>(null)
 	const { homeAddress } = useUserStore()
 	const loadPersistedHomeAddress = useUserStore(state => state.loadPersistedHomeAddress)
-	const { location: userLocation } = useLocationStore()
+	const { location: userLocation, requestLocation } = useLocationStore()
 
 	const GOOGLE_PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY
+	const latitude = userLocation?.coords.latitude
+	const longitude = userLocation?.coords.longitude
 
 	const {
 		control,
@@ -52,22 +50,24 @@ export default function Ride() {
 	} = useForm()
 
 	useEffect(() => {
-		checkLocation()
-	}, [])
-
-	useEffect(() => {
-		if (!toValue) {
-			setRouteCoordinates(null)
-			setToLocation(null)
+		if (!userLocation) {
+			requestLocation()
 		}
-	}, [toValue])
+	}, [userLocation, requestLocation])
 
-	useEffect(() => {
-		if (!fromValue) {
-			setRouteCoordinates(null)
-			setFromLocation(null)
-		}
-	}, [fromValue])
+	// useEffect(() => {
+	// 	if (!toValue) {
+	// 		setRouteCoordinates(null)
+	// 		setToLocation(null)
+	// 	}
+	// }, [toValue])
+
+	// useEffect(() => {
+	// 	if (!fromValue) {
+	// 		setRouteCoordinates(null)
+	// 		setFromLocation(null)
+	// 	}
+	// }, [fromValue])
 
 	useEffect(() => {
 		if (stringLocation) {
@@ -82,25 +82,6 @@ export default function Ride() {
 
 	useEffect(() => {
 		loadPersistedHomeAddress()
-	}, [])
-
-	const checkLocation = useCallback(async () => {
-		setIsLoading(true)
-		try {
-			let location = await Location.getCurrentPositionAsync({})
-			if (location) {
-				setStringLocation(
-					() => `${location.coords.latitude},${location.coords.longitude}`
-				)
-				console.log(location)
-				setIsLoading(false)
-			}
-		} catch (error) {
-			console.log('Location error', error)
-			setError(error as Error)
-		} finally {
-			setIsLoading(false)
-		}
 	}, [])
 
 	const onCreateRide = async (data: any) => {
@@ -167,11 +148,11 @@ export default function Ride() {
 			return
 		}
 		const location = {
-			latitude: details.geometry?.location.lat,
-			longitude: details.geometry?.location.lng
+			latitude: details?.geometry?.location.lat,
+			longitude: details?.geometry?.location.lng
 		}
 		setValue('from', {
-			formatted_address: details.formatted_address,
+			formatted_address: details?.formatted_address,
 			lat: location.latitude,
 			lng: location.longitude
 		})
@@ -253,222 +234,226 @@ export default function Ride() {
 		}
 	}
 
-	if (!userLocation) {
-		return null // ask user for a permission to access location modal with portal
-	}
+	// if (!userLocation) {
+	// 	return null // ask user for a permission to access location modal with portal later
+	// }
 
 	return (
-		<SafeAreaView>
-			<View style={{ flex: 1 }}>
+		<View style={{ flex: 1 }}>
+			<View style={[shared.container, { justifyContent: 'flex-start', paddingTop: 60 }]}>
+				<MapComponent
+					currentLocation={stringLocation ? {
+						latitude: +stringLocation.split(',')[0],
+						longitude: +stringLocation.split(',')[1]
+					} : null}
+					fromLocation={fromLocation}
+					toLocation={toLocation}
+					routeCoordinates={routeCoordinates}
+					mapRegion={mapRegion}
+				/>
 
-				<SignOutButton />
-				{/* <Text style={{ fontSize: 20, color: 'gray' }}>Ride</Text>
-				<Button style={{ marginTop: 20 }} mode="contained" onPress={() => Alert.alert('Message', 'Hello World!')}>Show message</Button>
-			   */}
-				<View style={[shared.container, { justifyContent: 'flex-start' }]}>
-					<MapComponent
-						currentLocation={stringLocation ? {
-							latitude: +stringLocation.split(',')[0],
-							longitude: +stringLocation.split(',')[1]
-						} : null}
-						fromLocation={fromLocation}
-						toLocation={toLocation}
-						routeCoordinates={routeCoordinates}
-						mapRegion={mapRegion}
-					/>
-
-					<View style={styles.formWrapper}>
-						{homeAddress && (
-							<View style={styles.homeButtonsContainer}>
-								<TouchableOpacity
-									style={[styles.homeButton, styles.homeButtonFrom]}
-									onPress={() => handlePickHome(true)}
-								>
-									<Ionicons name="home" size={20} color="#333" style={styles.homeIcon} />
-									<Text numberOfLines={1} style={styles.homeText}>
-										From Home
-									</Text>
-								</TouchableOpacity>
-								<TouchableOpacity
-									style={[styles.homeButton, styles.homeButtonTo]}
-									onPress={() => handlePickHome(false)}
-								>
-									<Ionicons name="home" size={20} color="#333" style={styles.homeIcon} />
-									<Text numberOfLines={1} style={styles.homeText}>
-										To Home
-									</Text>
-								</TouchableOpacity>
-							</View>
-						)}
-						<View style={styles.formRow}>
-							<Controller
-								control={control}
-								name="from"
-								rules={{
-									validate: isLocationObject,
-									required: 'You must enter a place from'
-								}}
-								render={({ field }) => (
-									<View style={[styles.inputContainer]}>
-										<Ionicons name="location" size={20} color="black" style={styles.inputIcon} />
-										<GooglePlacesAutocomplete
-											placeholder="My location"
-											predefinedPlaces={[]}
-											predefinedPlacesAlwaysVisible={false}
-											fetchDetails={true}
-											query={{
-												key: GOOGLE_PLACES_API_KEY,
-												language: 'en',
-												components: 'country:ua',
-												location: stringLocation,
-												radius: 10000
-											}}
-											onPress={onFromLocationSelect}
-											enablePoweredByContainer={false}
-											styles={{
-												textInput: {
-													...styles.input,
-													borderWidth: 1,
-													borderColor: errors.from ? theme.colors.error : theme.colors.outline,
-												},
-												separator: styles.separator,
-												listView: styles.listView,
-												row: styles.row
-											}}
-											textInputProps={{
-												onFocus: () => clearErrors('from'),
-												value: field.value?.formatted_address || '',
-												onChangeText: (text) => {
-													if (!text) {
-														field.onChange(null)
-													}
-												}
-											}}
-										/>
-									</View>
-								)}
-							/>
+				<View style={styles.formWrapper}>
+					{homeAddress && (
+						<View style={styles.homeButtonsContainer}>
+							<TouchableOpacity
+								style={[styles.homeButton, styles.homeButtonFrom]}
+								onPress={() => handlePickHome(true)}
+							>
+								<Ionicons name="home" size={20} color="#333" style={styles.homeIcon} />
+								<Text numberOfLines={1} style={styles.homeText}>
+									From Home
+								</Text>
+							</TouchableOpacity>
+							<TouchableOpacity
+								style={[styles.homeButton, styles.homeButtonTo]}
+								onPress={() => handlePickHome(false)}
+							>
+								<Ionicons name="home" size={20} color="#333" style={styles.homeIcon} />
+								<Text numberOfLines={1} style={styles.homeText}>
+									To Home
+								</Text>
+							</TouchableOpacity>
 						</View>
-						<View style={styles.formRow}>
-							<Controller
-								control={control}
-								name="to"
-								rules={{
-									validate: isLocationObject,
-									required: 'You must enter a place to'
-								}}
-								render={({ field }) => (
-									<View style={[styles.inputContainer]}>
-										<Ionicons name="flag" size={20} color="black" style={styles.inputIcon} />
-										<GooglePlacesAutocomplete
-											placeholder="Where to"
-											fetchDetails={true}
-											predefinedPlaces={[]}
-											predefinedPlacesAlwaysVisible={false}
-											query={{
-												key: GOOGLE_PLACES_API_KEY,
-												language: 'en',
-												components: 'country:ua',
-												location: stringLocation,
-												radius: 10000
-											}}
-											onPress={onToLocationSelect}
-											enablePoweredByContainer={false}
-											styles={{
-												textInput: {
-													...styles.input,
-													margin: 0,
-													borderWidth: 1,
-													borderColor: errors.to ? theme.colors.error : theme.colors.outline,
-												},
-												separator: styles.separator,
-												listView: styles.listView,
-												row: styles.row
-											}}
-											textInputProps={{
-												onFocus: () => clearErrors('to'),
-												value: field.value?.formatted_address || '',
-												onChangeText: (text) => {
-													if (!text) {
-														field.onChange(null)
-													}
-												}
-											}}
-										/>
-									</View>
-								)}
-							/>
-						</View>
+					)}
+					<View style={styles.formRow}>
 						<Controller
 							control={control}
-							name="fromDist"
+							name="from"
 							rules={{
-								pattern: /^[1-9][0-9]{0,3}$/g,
-								required: 'You must enter a distance'
+								validate: isLocationObject,
+								required: 'You must enter a place from'
 							}}
-							render={({ field: { value } }) => (
-								<View style={[styles.inputContainer, { backgroundColor: '#f5f5f5' }]}>
-									<Ionicons name="walk" size={20} color="black" style={styles.inputIcon} />
-									<PaperTextInput
-										keyboardType="numeric"
-										style={[
-											styles.input,
-											{ borderColor: errors.fromDist ? theme.colors.error : '#000', borderWidth: 0 }
-										]}
-										selectionColor="black"
-										underlineColor="transparent"
-										mode="outlined"
-										placeholder="Can walk (meters)"
-										value={value}
-										onChangeText={(num) => setValue('fromDist', num)}
-										returnKeyType="done"
-										onFocus={() => clearErrors('fromDist')}
+							render={({ field: { onChange, value }, fieldState: { error } }) => (
+								<View style={[styles.inputContainer, { width: '100%' }]}>
+									<Ionicons name="location" size={20} color="black" style={styles.inputIcon} />
+									<GooglePlacesAutocomplete
+										placeholder="My location"
+										predefinedPlaces={[]}
+										predefinedPlacesAlwaysVisible={false}
+										suppressDefaultStyles={true}
+										fetchDetails={true}
+										query={{
+											key: GOOGLE_PLACES_API_KEY,
+											language: 'en',
+											components: 'country:ua',
+											location: `${latitude},${longitude}`,
+											radius: 10000
+										}}
+										onPress={onFromLocationSelect}
+										onFail={(error) => console.log('Autocomplete error:', error)}
+										enablePoweredByContainer={false}
+										styles={{
+											textInput: {
+												...styles.input,
+												width: '100%',
+												height: 52,
+												backgroundColor: theme.colors.background,
+												borderWidth: 1,
+												borderColor: errors.from ? theme.colors.error : theme.colors.outline,
+
+											},
+											description: { color: theme.colors.secondary },
+											separator: styles.separator,
+											listView: styles.listView,
+											row: styles.row,
+											container: {
+												width: '100%',
+												height: 52,
+											},
+											textInputContainer: {
+												width: '100%',
+												height: 52,
+											}
+										}}
+										textInputProps={{
+											onFocus: () => clearErrors('from'),
+											value: value || '',
+											onChangeText: onChange,
+											placeholderTextColor: '#888',
+										}}
 									/>
 								</View>
 							)}
 						/>
-						<Button
-							mode="contained"
-							onPress={handleSubmit(onCreateRide)}
-							style={{ marginTop: 20 }}
-						>
-							Create a ride
-						</Button>
 					</View>
-
+					<View style={styles.formRow}>
+						<Controller
+							control={control}
+							name="to"
+							rules={{
+								validate: isLocationObject,
+								required: 'You must enter a place to'
+							}}
+							render={({ field: { onChange, value }, fieldState: { error } }) => (
+								<View style={[styles.inputContainer]}>
+									<Ionicons name="flag" size={20} color="black" style={styles.inputIcon} />
+									<GooglePlacesAutocomplete
+										placeholder="Where to"
+										fetchDetails={true}
+										predefinedPlaces={[]}
+										predefinedPlacesAlwaysVisible={false}
+										query={{
+											key: GOOGLE_PLACES_API_KEY,
+											language: 'en',
+											components: 'country:ua',
+											location: stringLocation,
+											radius: 10000
+										}}
+										onPress={onToLocationSelect}
+										onNotFound={() => console.log('No places found!')}
+										onFail={(error) => console.log('Autocomplete error:', error)}
+										enablePoweredByContainer={false}
+										styles={{
+											textInput: {
+												...styles.input,
+												margin: 0,
+												borderWidth: 1,
+												borderColor: errors.to ? theme.colors.error : theme.colors.outline,
+											},
+											separator: styles.separator,
+											listView: styles.listView,
+											row: styles.row
+										}}
+										textInputProps={{
+											onFocus: () => clearErrors('to'),
+											value: value || '',
+											onChangeText: onChange,
+											placeholderTextColor: '#888',
+										}}
+									/>
+								</View>
+							)}
+						/>
+					</View>
+					<Controller
+						control={control}
+						name="fromDist"
+						rules={{
+							pattern: /^[1-9][0-9]{0,3}$/g,
+							required: 'You must enter a distance'
+						}}
+						render={({ field: { value } }) => (
+							<View style={[styles.inputContainer, { backgroundColor: '#f5f5f5' }]}>
+								<Ionicons name="walk" size={20} color="black" style={styles.inputIcon} />
+								<PaperTextInput
+									keyboardType="numeric"
+									style={[
+										styles.input,
+										{ borderColor: errors.fromDist ? theme.colors.error : '#000', borderWidth: 0 }
+									]}
+									selectionColor="black"
+									underlineColor="transparent"
+									mode="outlined"
+									placeholder="Can walk (meters)"
+									value={value}
+									onChangeText={(num) => setValue('fromDist', num)}
+									returnKeyType="done"
+									onFocus={() => clearErrors('fromDist')}
+								/>
+							</View>
+						)}
+					/>
+					<Button
+						mode="contained"
+						onPress={handleSubmit(onCreateRide)}
+						style={{ marginTop: 20 }}
+					>
+						Create a ride
+					</Button>
 				</View>
 
-				<Modal
-					animationType="slide"
-					transparent={true}
-					visible={isCancelModalVisible}
-					onRequestClose={() => setIsCancelModalVisible(false)}
-				>
-					<View style={styles.modalOverlay}>
-						<View style={styles.modalContent}>
-							<Text style={styles.modalTitle}>Cancel Current Ride?</Text>
-							<Text style={styles.modalText}>
-								You have an active ride. Do you want to cancel it and create a new one?
-							</Text>
-							<View style={styles.modalButtons}>
-								<TouchableOpacity
-									style={[styles.modalButton, styles.cancelButton]}
-									onPress={() => setIsCancelModalVisible(false)}
-								>
-									<Text style={styles.buttonText}>Keep Current</Text>
-								</TouchableOpacity>
-								<TouchableOpacity
-									style={[styles.modalButton, styles.confirmButton]}
-									onPress={handleCancelConfirmation}
-								>
-									<Text style={styles.buttonText}>Cancel & Create</Text>
-								</TouchableOpacity>
-							</View>
+			</View>
+
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={isCancelModalVisible}
+				onRequestClose={() => setIsCancelModalVisible(false)}
+			>
+				<View style={styles.modalOverlay}>
+					<View style={styles.modalContent}>
+						<Text style={styles.modalTitle}>Cancel Current Ride?</Text>
+						<Text style={styles.modalText}>
+							You have an active ride. Do you want to cancel it and create a new one?
+						</Text>
+						<View style={styles.modalButtons}>
+							<TouchableOpacity
+								style={[styles.modalButton, styles.cancelButton]}
+								onPress={() => setIsCancelModalVisible(false)}
+							>
+								<Text style={styles.buttonText}>Keep Current</Text>
+							</TouchableOpacity>
+							<TouchableOpacity
+								style={[styles.modalButton, styles.confirmButton]}
+								onPress={handleCancelConfirmation}
+							>
+								<Text style={styles.buttonText}>Cancel & Create</Text>
+							</TouchableOpacity>
 						</View>
 					</View>
-				</Modal>
-			</View>
-		</SafeAreaView>
+				</View>
+			</Modal>
+		</View>
 	)
 }
 
@@ -546,6 +531,7 @@ const styles = StyleSheet.create({
 	input: {
 		height: 52,
 		flex: 1,
+		width: '100%',
 		paddingLeft: 40,
 		borderRadius: 8,
 	},
@@ -558,15 +544,20 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		top: '100%',
 		left: 0,
+		height: '400%',
 		right: 0,
 		borderWidth: 1,
 		borderRadius: 8,
 		marginTop: 4,
 		zIndex: 10,
+		backgroundColor: '#dddddd',
+		opacity: 0.9,
 	},
 	row: {
 		padding: 12,
 		borderBottomWidth: 1,
+		backgroundColor: 'rgba(255,0,0,0.2)',
+		borderColor: '#blue',
 	},
 	homeButtonsContainer: {
 		flexDirection: 'row',
