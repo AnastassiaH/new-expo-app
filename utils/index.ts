@@ -1,21 +1,21 @@
-import { RideData } from "@/types"
+import { LocationPoint, RideData } from "@/types"
 
-export const generateRideData = (data: any): RideData => {
+export const generateRideData = (fromPlace: LocationPoint, toPlace: LocationPoint, distance: number): RideData => {
   return {
     placeFrom: {
-      distance: +data.fromDist,
-      name: data.from.formatted_address,
+      distance,
+      name: fromPlace.formatted_address,
       point: {
-        x: data.from.lat,
-        y: data.from.lng
+        x: fromPlace.latitude,
+        y: fromPlace.longitude
       }
     },
     placeTo: {
-      distance: +data.toDistance || 500,
-      name: data.to.formatted_address,
+      distance,
+      name: toPlace.formatted_address,
       point: {
-        x: data.to.lat,
-        y: data.to.lng
+        x: toPlace.latitude,
+        y: toPlace.longitude
       }
     },
     userId: 0
@@ -24,10 +24,7 @@ export const generateRideData = (data: any): RideData => {
 
 export const isLocationObject = (value: any): boolean => {
   return (
-    typeof value === 'object' &&
-    value !== null &&
-    value.hasOwnProperty('formatted_address') &&
-    value.hasOwnProperty('lat') &&
-    value.hasOwnProperty('lng')
+    value.hasOwnProperty('latitude') &&
+    value.hasOwnProperty('longitude')
   )
 }
