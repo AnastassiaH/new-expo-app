@@ -45,7 +45,7 @@ export interface PlacePoint {
 export type LocationPoint = {
 	latitude: number
 	longitude: number
-	formatted_address?: string
+	formatted_address: string
 }
 
 export type RideData = {

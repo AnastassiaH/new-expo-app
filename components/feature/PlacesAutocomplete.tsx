@@ -99,6 +99,7 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder, minCh
       </View>
       {regionPredictions.length > 0 && (
         <FlatList
+          style={styles.predictionsContainer}
           data={predictedAddresses?.length ? [...(predictedAddresses || []), ...regionPredictions] : regionPredictions}
           keyExtractor={(item) => `${item.place_id}`}
           renderItem={({ item }) => (
@@ -115,7 +116,6 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder, minCh
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingHorizontal: 15,
   },
   inputContainer: {
     position: 'relative',
@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     color: '#000',
     width: '100%',
+    backgroundColor: '#fff',
   },
   clearButton: {
     position: 'absolute',
@@ -142,10 +143,23 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#666',
   },
+  predictionsContainer: {
+    marginVertical: 5,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
   predictionItem: {
     padding: 10,
     borderBottomColor: '#ddd',
     borderBottomWidth: 1,
+    backgroundColor: '#fff',
   },
   predictionText: {
     fontSize: 14,
