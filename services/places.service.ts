@@ -1,5 +1,5 @@
 import { LocationData } from "@/stores/locationStore";
-import { PlacePrediction } from "@/types";
+import { LocationPoint, PlacePrediction } from "@/types";
 import axios from "axios";
 
 const apiKey = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY
@@ -72,22 +72,25 @@ export const getGeocodeDataFromCoordinates = async (
   }
 }
 
-export const getPlaceCoordinates = async (placeId: string): Promise<{ latitude: number, longitude: number }> => {
+export const getPlaceData = async (placeId: string): Promise<LocationPoint> => {
   const response = await axios.get(
     'https://maps.googleapis.com/maps/api/place/details/json',
     {
       params: {
         place_id: placeId,
         key: apiKey,
-        fields: 'geometry',
+        fields: 'geometry,formatted_address',
       },
     }
   );
+
+  console.log(response)
 
   const location = response.data.result.geometry.location;
   return {
     latitude: location.lat,
     longitude: location.lng,
+    formatted_address: response.data.result.formatted_address,
   };
 };
 

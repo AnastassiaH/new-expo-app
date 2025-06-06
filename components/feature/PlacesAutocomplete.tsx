@@ -1,12 +1,12 @@
 import { useRegionData } from '@/hooks/useRegionData';
-import { fetchAutocompletePredictions, getAddressFromCoords, getPlaceCoordinates } from '@/services/places.service';
+import { fetchAutocompletePredictions, getAddressFromCoords, getPlaceData } from '@/services/places.service';
 import { useLocationStore } from '@/stores/locationStore';
-import { PlacePoint, PlacePrediction } from '@/types';
+import { LocationPoint, PlacePrediction } from '@/types';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface Props {
-  onPlaceSelect: (place: PlacePoint) => void;
+  onPlaceSelect: (place: LocationPoint) => void;
   placeholder?: string
   minCharsToFetch?: number
 }
@@ -62,7 +62,7 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder, minCh
   const handleSelect = async (place: PlacePrediction) => {
     setLoading(true)
 
-    const placeCoords = await getPlaceCoordinates(place.place_id)
+    const placeCoords = await getPlaceData(place.place_id)
 
     setRegionPredictions([])
     setPlaceSelected(place)
