@@ -67,13 +67,23 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder }) => 
 
   return (
     <View style={styles.container}>
-      <TextInput
-        placeholder={placeholder || 'Search for a place'}
-        placeholderTextColor="#000"
-        value={query}
-        onChangeText={setQuery}
-        style={styles.input}
-      />
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder={placeholder || 'Search for a place'}
+          placeholderTextColor="#000"
+          value={query}
+          onChangeText={setQuery}
+          style={styles.input}
+        />
+        {query && (
+          <TouchableOpacity
+            onPress={handleClear}
+            style={styles.clearButton}
+          >
+            <Text style={styles.clearButtonText}>×</Text>
+          </TouchableOpacity>
+        )}
+      </View>
       {regionPredictions.length > 0 && (
         <FlatList
           data={regionPredictions}
@@ -94,6 +104,10 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 15,
   },
+  inputContainer: {
+    position: 'relative',
+    width: '100%',
+  },
   input: {
     height: 50,
     borderColor: '#ccc',
@@ -101,6 +115,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 8,
     color: '#000',
+    width: '100%',
+  },
+  clearButton: {
+    position: 'absolute',
+    right: 10,
+    top: '50%',
+    transform: [{ translateY: '-50%' }],
+    padding: 5,
+    backgroundColor: 'transparent',
+  },
+  clearButtonText: {
+    fontSize: 20,
+    color: '#666',
   },
   predictionItem: {
     padding: 10,
