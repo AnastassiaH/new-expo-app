@@ -32,9 +32,14 @@ export interface AutocompleteInputData {
 	lng: number
 }
 
-export type Point = {
+export interface Point {
 	x: number
 	y: number
+}
+
+export interface PlacePoint {
+	latitude: number
+	longitude: number
 }
 
 export type LocationPoint = {
@@ -93,4 +98,10 @@ export type ApiEndpoints = {
 	confirmPhoneNumber: string
 	forgotPassword: string
 	resetPassword: string
+}
+
+export interface RegionData {
+	city: string;
+	region: string;
+	country: string;
 }
