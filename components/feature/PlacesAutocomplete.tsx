@@ -1,25 +1,19 @@
 import { useRegionData } from '@/hooks/useRegionData';
-import { fetchAutocompletePredictions, getPlaceCoordinates } from '@/services/places.service';
+import { fetchAutocompletePredictions, getAddressFromCoords, getPlaceCoordinates } from '@/services/places.service';
 import { useLocationStore } from '@/stores/locationStore';
-import { PlacePoint } from '@/types';
+import { PlacePoint, PlacePrediction } from '@/types';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-
-interface PlacePrediction {
-  description: string;
-  place_id: string;
-  structured_formatting?: {
-    main_text: string;
-    secondary_text: string;
-  }
-}
 
 interface Props {
   onPlaceSelect: (place: PlacePoint) => void;
   placeholder?: string
+  minCharsToFetch?: number
 }
 
-const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder }) => {
+const homeAddress = false;
+
+const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder, minCharsToFetch = 2 }) => {
   const [query, setQuery] = useState('');
   const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
   const [regionPredictions, setRegionPredictions] = useState<PlacePrediction[]>([])
@@ -27,16 +21,35 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder }) => 
   const { regionData } = useRegionData()
   const [loading, setLoading] = useState(false);
   const [placeSelected, setPlaceSelected] = useState<PlacePrediction | null>(null)
+  const [predictedAddresses, setPredictedAddresses] = useState<PlacePrediction[] | null>(null)
 
   useEffect(() => {
+    if (homeAddress) return
+    if (!locationData?.coords.latitude || !locationData?.coords.longitude) return
+
+    setLoading(true)
+    const getLocationAddress = async () => {
+      const locationAddress = await getAddressFromCoords(locationData.coords.latitude, locationData.coords.longitude);
+      console.log('locationAddress', locationAddress.slice(0, 2))
+      setPredictedAddresses(locationAddress.slice(0, 2))
+      setLoading(false)
+    }
+    getLocationAddress()
+  }, [locationData, homeAddress])
+
+  useEffect(() => {
+    if (loading) return
+    if (query?.length < minCharsToFetch) return
     if (placeSelected) return
     if (!locationData?.coords.latitude || !locationData?.coords.longitude) return
+
     const getPredictions = async () => {
       setLoading(true)
       const predictions = await fetchAutocompletePredictions(query, locationData);
       setPredictions(predictions)
       setLoading(false)
     }
+
     getPredictions()
   }, [locationData, query])
 
@@ -86,11 +99,11 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder }) => 
       </View>
       {regionPredictions.length > 0 && (
         <FlatList
-          data={regionPredictions}
+          data={predictedAddresses?.length ? [...(predictedAddresses || []), ...regionPredictions] : regionPredictions}
           keyExtractor={(item) => `${item.place_id}`}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handleSelect(item)} style={styles.predictionItem}>
-              <Text>{item.description}</Text>
+              <Text style={styles.predictionText}>{item.formatted_address || item.description}</Text>
             </TouchableOpacity>
           )}
         />
@@ -112,7 +125,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderColor: '#ccc',
     borderWidth: 1,
-    paddingHorizontal: 10,
+    paddingHorizontal: 40,
     borderRadius: 8,
     color: '#000',
     width: '100%',
@@ -133,6 +146,15 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomColor: '#ddd',
     borderBottomWidth: 1,
+  },
+  predictionText: {
+    fontSize: 14,
+    flex: 1,
+    flexWrap: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    height: 25,
+    lineHeight: 25,
   },
 });
 

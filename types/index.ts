@@ -105,3 +105,13 @@ export interface RegionData {
 	region: string;
 	country: string;
 }
+
+export interface PlacePrediction {
+	description: string;
+	place_id: string;
+	formatted_address: string;
+	structured_formatting?: {
+		main_text: string;
+		secondary_text: string;
+	}
+}

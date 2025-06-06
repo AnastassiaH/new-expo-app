@@ -1,9 +1,10 @@
 import { LocationData } from "@/stores/locationStore";
+import { PlacePrediction } from "@/types";
 import axios from "axios";
 
 const apiKey = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY
 
-export const fetchAutocompletePredictions = async (query: string, location?: LocationData, radius?: number) => {
+export const fetchAutocompletePredictions = async (query: string, location?: LocationData, radius?: number): Promise<PlacePrediction[]> => {
   const res = await axios.get(
     'https://maps.googleapis.com/maps/api/place/autocomplete/json',
     {
@@ -90,14 +91,14 @@ export const getPlaceCoordinates = async (placeId: string): Promise<{ latitude: 
   };
 };
 
-export const getNearbyPlaces = async (latitude: number, longitude: number) => {
+export const getAddressFromCoords = async (latitude: number, longitude: number): Promise<PlacePrediction[]> => {
   const response = await axios.get(
-    'https://maps.googleapis.com/maps/api/place/nearbysearch/json',
+    'https://maps.googleapis.com/maps/api/geocode/json',
     {
       params: {
-        location: `${latitude},${longitude}`,
-        radius: 1000,
+        latlng: `${latitude},${longitude}`,
         key: apiKey,
+        language: 'ua'
       },
     }
   );
