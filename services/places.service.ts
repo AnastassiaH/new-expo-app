@@ -101,7 +101,7 @@ export const getAddressFromCoords = async (latitude: number, longitude: number):
       params: {
         latlng: `${latitude},${longitude}`,
         key: apiKey,
-        language: 'ua'
+        language: 'uk'
       },
     }
   );

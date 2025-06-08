@@ -22,7 +22,9 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder, minCh
   const [loading, setLoading] = useState(false);
   const [placeSelected, setPlaceSelected] = useState<PlacePrediction | null>(null)
   const [predictedAddresses, setPredictedAddresses] = useState<PlacePrediction[] | null>(null)
+  const [placesToRender, setPlacesToRender] = useState<PlacePrediction[] | null>(null)
 
+  // getting user location address
   useEffect(() => {
     if (homeAddress) return
     if (!locationData?.coords.latitude || !locationData?.coords.longitude) return
@@ -35,29 +37,40 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder, minCh
       setLoading(false)
     }
     getLocationAddress()
-  }, [locationData, homeAddress])
+  }, [homeAddress]) // locationData
 
+  // getting predictions by users query
   useEffect(() => {
     if (loading) return
     if (query?.length < minCharsToFetch) return
     if (placeSelected) return
     if (!locationData?.coords.latitude || !locationData?.coords.longitude) return
 
+    setLoading(true)
+
     const getPredictions = async () => {
-      setLoading(true)
       const predictions = await fetchAutocompletePredictions(query, locationData);
       setPredictions(predictions)
-      setLoading(false)
     }
 
     getPredictions()
-  }, [locationData, query])
+    setLoading(false)
+  }, [query])
 
+  // filtering predictions by region
   useEffect(() => {
-    if (!predictions.length) return
+    if (!predictions.length || loading) return
 
-    setRegionPredictions(predictions.filter(prediction => prediction.description.includes(regionData?.region || '')))
-  }, [predictions])
+    setRegionPredictions(predictions.filter(prediction => prediction.description?.includes(regionData?.region || '')))
+  }, [predictions, query, loading])
+
+  // setting data to render
+  useEffect(() => {
+    if (loading) return
+
+    const dataToRender = predictedAddresses?.[0].formatted_address?.includes(query) ? [...(predictedAddresses || []), ...regionPredictions] : regionPredictions
+    setPlacesToRender(dataToRender)
+  }, [regionPredictions, query, predictedAddresses, loading])
 
   const handleSelect = async (place: PlacePrediction) => {
     setLoading(true)
@@ -76,6 +89,7 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder, minCh
     setPredictions([])
     setRegionPredictions([])
     setPlaceSelected(null)
+    setPlacesToRender(null)
   }
 
   return (
@@ -97,10 +111,10 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder, minCh
           </TouchableOpacity>
         )}
       </View>
-      {regionPredictions.length > 0 && (
+      {!loading && query.length > minCharsToFetch && (
         <FlatList
           style={styles.predictionsContainer}
-          data={predictedAddresses?.length ? [...(predictedAddresses || []), ...regionPredictions] : regionPredictions}
+          data={placesToRender?.length ? placesToRender : []}
           keyExtractor={(item) => `${item.place_id}`}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handleSelect(item)} style={styles.predictionItem}>
