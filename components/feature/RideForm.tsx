@@ -36,7 +36,7 @@ export default function RideForm() {
         <View style={styles.formRow}>
           <View style={[styles.inputContainer, { width: '100%' }]}>
             <Ionicons name="location" size={20} color="black" style={styles.inputIcon} />
-            <PlacesAutocomplete placeholder="From" onPlaceSelect={setFromLocation} />
+            <PlacesAutocomplete placeholder="From" onPlaceSelect={setFromLocation} currentEnabled={true} />
           </View>
         </View>
         <View style={styles.formRow}>

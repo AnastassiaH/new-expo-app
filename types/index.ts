@@ -37,15 +37,13 @@ export interface Point {
 	y: number
 }
 
-export interface PlacePoint {
+export interface PlaceCoords {
 	latitude: number
 	longitude: number
 }
 
-export type LocationPoint = {
-	latitude: number
-	longitude: number
-	formatted_address: string
+export type LocationPoint = PlaceCoords & {
+	description: string
 }
 
 export type RideData = {
@@ -100,10 +98,11 @@ export type ApiEndpoints = {
 	resetPassword: string
 }
 
-export interface RegionData {
+export interface UserLocationData {
 	city: string;
 	region: string;
 	country: string;
+	addresses?: PlacePrediction[]
 }
 
 export interface PlacePrediction {
@@ -113,5 +112,11 @@ export interface PlacePrediction {
 	structured_formatting?: {
 		main_text: string;
 		secondary_text: string;
+	},
+	geometry?: {
+		location: {
+			lat: number;
+			lng: number;
+		}
 	}
 }
