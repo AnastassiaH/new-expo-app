@@ -13,3 +13,4 @@ export const API_ENDPOINTS: ApiEndpoints = {
 }
 
 export const AUTO_SIGN_OUT_TIMEOUT = 3600_000;
+export const DEFAULT_ERROR_MESSAGE = 'Oh, woe to me, My Lord!';

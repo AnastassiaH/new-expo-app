@@ -1,5 +1,6 @@
 import MapComponent from "@/components/MapComponent";
 import SignOutButton from "@/components/SignOutButton";
+import { DEFAULT_ERROR_MESSAGE } from "@/constants";
 import { cancelRide, createRide } from "@/services/api.service";
 import { adjustMapRegion, fetchRoute } from '@/services/map.service';
 import { useLocationStore } from "@/stores/locationStore";
@@ -10,15 +11,23 @@ import { LocationPoint, RideData } from "@/types";
 import { generateRideData, isLocationObject } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from 'expo-location';
-import { router } from "expo-router";
+import { ErrorBoundaryProps, router } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Modal, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GooglePlaceData, GooglePlaceDetail, GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Button, TextInput as PaperTextInput, useTheme } from "react-native-paper";
 
+export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
+	return (
+		<View style={{ flex: 1, backgroundColor: "beige" }}>
+			<Text>{error.message || DEFAULT_ERROR_MESSAGE}</Text>
+			<Text onPress={retry}>Try Again?</Text>
+		</View>
+	);
+}
 
-export default function Ride() {
+export default function Page() {
 	const theme = useTheme()
 	const [error, setError] = useState<Error | null>(null)
 	const [isLoading, setIsLoading] = useState(false)
