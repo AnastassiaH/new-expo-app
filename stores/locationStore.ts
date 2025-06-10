@@ -19,7 +19,7 @@ type LocationStore = {
   setLocation: (location: LocationData) => void;
 };
 
-export const useLocationStore = create<LocationStore>((set) => ({
+export const useLocationStore = create<LocationStore>((set, get) => ({
   location: null,
   setLocation: (newLocation) => set({ location: newLocation }),
   requestLocation: async () => {
@@ -30,6 +30,12 @@ export const useLocationStore = create<LocationStore>((set) => ({
       }
 
       const location = await Location.getCurrentPositionAsync({});
+      const currLocation = get().location;
+
+      if (currLocation?.coords.latitude === location.coords.latitude && currLocation?.coords.longitude === location.coords.longitude) {
+        return
+      }
+
       set({ location });
     } catch (error: any) {
       console.log('Location error', error)

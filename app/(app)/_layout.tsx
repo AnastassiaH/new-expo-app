@@ -6,13 +6,13 @@ import { useEffect } from "react";
 
 export default function RootLayout() {
   const { session, isReady } = useAuthStore();
-  const { requestLocation } = useLocationStore();
+  const { requestLocation, location } = useLocationStore();
 
   useEffect(() => {
-    (async () => {
-      await requestLocation();
-    })();
-  }, []);
+    if (!location) {
+      requestLocation()
+    }
+  }, [location]);
 
   if (!isReady) {
     return null;
@@ -28,6 +28,7 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="ride" options={{ headerShown: false }} />
         <Stack.Screen name="partners" options={{ headerShown: false }} />
+        <Stack.Screen name="develop" options={{ headerShown: false }} />
       </Stack>
     </>
   )
