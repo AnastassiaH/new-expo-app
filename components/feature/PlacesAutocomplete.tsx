@@ -1,7 +1,8 @@
 import { useCurrentLocationData } from '@/hooks/useCurrentLocationData';
 import { fetchAutocompletePredictions, getPlaceData } from '@/services/places.service';
 import { LocationPoint, PlacePrediction } from '@/types';
-import React, { useEffect, useState } from 'react';
+import { debounce } from 'lodash';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface Props {
@@ -14,40 +15,31 @@ interface Props {
 const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder, currentEnabled = false, minCharsToFetch = 2 }) => {
   const { currentLocationData, currentCoords } = useCurrentLocationData()
   const [query, setQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
   const [loading, setLoading] = useState(false);
   const [placeSelected, setPlaceSelected] = useState<PlacePrediction | null>(null)
   const [placesToRender, setPlacesToRender] = useState<PlacePrediction[] | null>(null)
 
 
-  useEffect(() => {
-    if (!currentLocationData) return
-
-    console.log('currentLocationData', currentLocationData)
-    console.log('currentCoords', currentCoords)
-
-  }, [currentLocationData, currentCoords])
-
-  // getting predictions by users query
-  useEffect(() => {
+  const handleSearch = async (query: string) => {
     if (query?.length < minCharsToFetch) return
-    if (placeSelected?.place_id) return
-    if (!currentCoords?.latitude || !currentCoords?.longitude) return
 
     setLoading(true)
 
-    const getPredictions = async () => {
-      const predictions = await fetchAutocompletePredictions(query, currentCoords);
-      console.log('predictions', predictions)
+    const predictions = await fetchAutocompletePredictions(query, currentCoords);
+    const filteredPredictions = predictions.filter(prediction => prediction.description?.includes(currentLocationData?.city || ''))
+    setPredictions(filteredPredictions)
 
-      const filteredPredictions = predictions.filter(prediction => prediction.description?.includes(currentLocationData?.city || ''))
-      console.log('filteredPredictions', filteredPredictions)
-      setPredictions(filteredPredictions)
-    }
-
-    getPredictions()
     setLoading(false)
-  }, [query, currentCoords])
+  };
+
+  const debouncedSearch = useCallback(debounce(handleSearch, 300), []);
+
+  const handleChange = (value: string) => {
+    setQuery(value);
+    debouncedSearch(value);
+  }
 
   // setting data to render 
   useEffect(() => {
@@ -60,10 +52,8 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder, curre
       setPlacesToRender([...predictions])
     }
 
-  }, [query, predictions, currentEnabled])
+  }, [query, predictions, currentEnabled, loading])
 
-
-  // actions
   const handleSelect = async (place: PlacePrediction) => {
     setLoading(true)
 
@@ -90,7 +80,7 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder, curre
           placeholder={placeholder || 'Search for a place'}
           placeholderTextColor="#000"
           value={query}
-          onChangeText={setQuery}
+          onChangeText={handleChange}
           style={styles.input}
         />
         {query && (
