@@ -1,23 +1,27 @@
-import { useCurrentLocationData } from '@/hooks/useCurrentLocationData';
 import { fetchAutocompletePredictions, getPlaceData } from '@/services/places.service';
-import { LocationPoint, PlacePrediction } from '@/types';
+import { LocationPoint, PlaceCoords, PlacePrediction, UserLocationData } from '@/types';
 import { debounce } from 'lodash';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface Props {
   onPlaceSelect: (place: LocationPoint) => void;
+  currentCoords?: PlaceCoords,
+  currentLocationData?: UserLocationData,
   placeholder?: string
   minCharsToFetch?: number
   currentEnabled?: boolean
 }
 
-const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder, currentEnabled = false, minCharsToFetch = 2 }) => {
-  const { currentLocationData, currentCoords } = useCurrentLocationData()
+const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, currentCoords, currentLocationData, placeholder, currentEnabled = false, minCharsToFetch = 2 }) => {
   const [query, setQuery] = useState('');
   const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
   const [loading, setLoading] = useState(false);
   const [placeSelected, setPlaceSelected] = useState<PlacePrediction | null>(null)
+
+  useEffect(() => {
+    console.log('places autocomplete rendered')
+  }, [])
 
   const handleSearch = async (query: string, city?: string) => {
     if (query?.length < minCharsToFetch || !city) return
@@ -28,8 +32,10 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, placeholder, curre
     const filteredPredictions = predictions.filter(prediction => prediction.description?.includes(city))
     const currentAdresses = currentLocationData?.addresses;
 
+    console.log('currentAdresses', currentAdresses)
+
     if (currentAdresses?.[0].formatted_address?.includes(query) && currentEnabled) {
-      setPredictions([...currentAdresses.slice(0, 2), ...filteredPredictions])
+      setPredictions([...currentAdresses, ...filteredPredictions])
     } else {
       setPredictions([...filteredPredictions])
     }

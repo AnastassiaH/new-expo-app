@@ -1,4 +1,5 @@
 import PlacesAutocomplete from "@/components/feature/PlacesAutocomplete"
+import { useCurrentLocationData } from "@/hooks/useCurrentLocationData"
 import { createRide } from "@/services/api.service"
 import useRideStore from "@/stores/rideStore"
 import { LocationPoint } from "@/types"
@@ -12,6 +13,7 @@ import { Button } from "../atoms"
 
 export default function RideForm() {
   const { setActiveRide } = useRideStore()
+  const { currentLocationData, currentCoords } = useCurrentLocationData()
   const [walkDistance, setWalkDistance] = useState<string | null>(null)
   const [fromLocation, setFromLocation] = useState<LocationPoint | null>(null)
   const [toLocation, setToLocation] = useState<LocationPoint | null>(null)
@@ -36,13 +38,24 @@ export default function RideForm() {
         <View style={styles.formRow}>
           <View style={[styles.inputContainer, { width: '100%' }]}>
             <Ionicons name="location" size={20} color="black" style={styles.inputIcon} />
-            <PlacesAutocomplete placeholder="From" onPlaceSelect={setFromLocation} currentEnabled={true} />
+            <PlacesAutocomplete
+              placeholder="From"
+              onPlaceSelect={setFromLocation}
+              currentCoords={currentCoords}
+              currentLocationData={currentLocationData}
+              currentEnabled={true}
+            />
           </View>
         </View>
         <View style={styles.formRow}>
           <View style={[styles.inputContainer]}>
             <Ionicons name="flag" size={20} color="black" style={styles.inputIcon} />
-            <PlacesAutocomplete placeholder="To" onPlaceSelect={(place) => setToLocation(place)} />
+            <PlacesAutocomplete
+              placeholder="To"
+              onPlaceSelect={(place) => setToLocation(place)}
+              currentCoords={currentCoords}
+              currentLocationData={currentLocationData}
+            />
           </View>
         </View>
         <View style={[styles.inputContainer, { backgroundColor: '#f5f5f5' }]}>

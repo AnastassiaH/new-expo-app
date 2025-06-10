@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 
 export const useCurrentLocationData = () => {
   const locationData = useLocationStore(state => state.location)
-  const [currentLocationData, setCurrentLocationData] = useState<UserLocationData | null>(null)
+  const [currentLocationData, setCurrentLocationData] = useState<UserLocationData | undefined>(undefined)
 
   useEffect(() => {
     if (!locationData?.coords.latitude || !locationData?.coords.longitude) return

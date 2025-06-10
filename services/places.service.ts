@@ -79,7 +79,7 @@ export const getDataFromCoordinates = async (
       city,
       region,
       country,
-      addresses
+      addresses: addresses.slice(0, 2)
     }
     return addressData || null;
   } catch (error) {
