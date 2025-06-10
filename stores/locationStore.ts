@@ -1,7 +1,7 @@
 import * as Location from 'expo-location';
 import { create } from 'zustand';
 
-interface LocationData {
+export interface LocationData {
   coords: {
     latitude: number;
     longitude: number;

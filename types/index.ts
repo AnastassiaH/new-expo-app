@@ -32,15 +32,18 @@ export interface AutocompleteInputData {
 	lng: number
 }
 
-export type Point = {
+export interface Point {
 	x: number
 	y: number
 }
 
-export type LocationPoint = {
+export interface PlaceCoords {
 	latitude: number
 	longitude: number
-	formatted_address?: string
+}
+
+export type LocationPoint = PlaceCoords & {
+	description: string
 }
 
 export type RideData = {
@@ -93,4 +96,27 @@ export type ApiEndpoints = {
 	confirmPhoneNumber: string
 	forgotPassword: string
 	resetPassword: string
+}
+
+export interface UserLocationData {
+	city: string;
+	region: string;
+	country: string;
+	addresses?: PlacePrediction[]
+}
+
+export interface PlacePrediction {
+	description: string;
+	place_id: string;
+	formatted_address: string;
+	structured_formatting?: {
+		main_text: string;
+		secondary_text: string;
+	},
+	geometry?: {
+		location: {
+			lat: number;
+			lng: number;
+		}
+	}
 }
