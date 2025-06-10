@@ -15,7 +15,7 @@ export const useCurrentLocationData = () => {
       setCurrentLocationData(regionData)
     }
     fetchRegionData()
-  }, [])
+  }, [locationData?.coords.latitude, locationData?.coords.longitude])
 
   return { currentLocationData, currentCoords: locationData?.coords }
 }
