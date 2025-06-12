@@ -4,7 +4,7 @@ export const generateRideData = (fromPlace: LocationPoint, toPlace: LocationPoin
   return {
     placeFrom: {
       distance,
-      name: fromPlace.formatted_address,
+      name: fromPlace.description,
       point: {
         x: fromPlace.latitude,
         y: fromPlace.longitude
@@ -12,7 +12,7 @@ export const generateRideData = (fromPlace: LocationPoint, toPlace: LocationPoin
     },
     placeTo: {
       distance,
-      name: toPlace.formatted_address,
+      name: toPlace.description,
       point: {
         x: toPlace.latitude,
         y: toPlace.longitude
