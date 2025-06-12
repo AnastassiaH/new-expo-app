@@ -18,6 +18,7 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, currentCoords, cur
   const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
   const [loading, setLoading] = useState(false);
   const [placeSelected, setPlaceSelected] = useState<PlacePrediction | null>(null)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     console.log('places autocomplete rendered')
@@ -32,7 +33,10 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, currentCoords, cur
     const filteredPredictions = predictions.filter(prediction => prediction.description?.includes(city))
     const currentAdresses = currentLocationData?.addresses;
 
-    console.log('currentAdresses', currentAdresses)
+    if (predictions.length === 1) {
+      handleSelect(predictions[0])
+      return
+    }
 
     if (currentAdresses?.[0].formatted_address?.includes(query) && currentEnabled) {
       setPredictions([...currentAdresses, ...filteredPredictions])
@@ -45,22 +49,39 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, currentCoords, cur
 
   const debouncedSearch = useCallback(debounce(handleSearch, 300), []);
 
+  const handleOnBlur = () => {
+    if (!query) {
+      setError(false)
+      return
+    }
+
+    if (predictions?.length > 0) {
+      setError(false)
+    } else if (!placeSelected) {
+      setError(true)
+    }
+  }
+
   const handleChange = (value: string) => {
+    setPlaceSelected(null)
     setQuery(value);
     debouncedSearch(value, currentLocationData?.city);
   }
 
   const handleSelect = async (place: PlacePrediction) => {
     setLoading(true)
+    setError(false)
+    setPredictions([])
 
-    const placeCoords = await getPlaceData(place.place_id)
-    if (!placeCoords) {
-      console.log('placeCoords not found')
+    const placeData = await getPlaceData(place.place_id)
+    if (!placeData) {
+      setError(true)
       return
+    } else {
+      onPlaceSelect(placeData)
     }
 
     setPlaceSelected(place)
-    onPlaceSelect(placeCoords)
     setQuery(place?.description || place?.formatted_address)
     setLoading(false)
   }
@@ -68,6 +89,7 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, currentCoords, cur
   const handleClear = () => {
     setQuery('')
     setPredictions([])
+    setError(false)
     setPlaceSelected(null)
   }
 
@@ -79,7 +101,9 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, currentCoords, cur
           placeholderTextColor="#000"
           value={query}
           onChangeText={handleChange}
-          style={styles.input}
+          onBlur={handleOnBlur}
+          onFocus={() => setError(false)}
+          style={[styles.input, error && styles.errorInput]}
         />
         {query && (
           <TouchableOpacity
@@ -90,14 +114,14 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, currentCoords, cur
           </TouchableOpacity>
         )}
       </View>
-      {!loading && query?.length > minCharsToFetch && predictions?.length && !placeSelected?.place_id && (
+      {!loading && query?.length > minCharsToFetch && predictions?.length > 0 && (
         <FlatList
           style={styles.predictionsContainer}
           data={predictions}
           keyExtractor={(item) => `${item.place_id}`}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handleSelect(item)} style={styles.predictionItem}>
-              <Text style={styles.predictionText}>{item.formatted_address || item.description}</Text>
+              <Text style={styles.predictionText}>{item.formatted_address || item.description || 'No address'}</Text>
             </TouchableOpacity>
           )}
         />
@@ -123,6 +147,9 @@ const styles = StyleSheet.create({
     color: '#000',
     width: '100%',
     backgroundColor: '#fff',
+  },
+  errorInput: {
+    borderColor: '#ff0000',
   },
   clearButton: {
     position: 'absolute',

@@ -10,10 +10,11 @@ import { useState } from "react"
 import { StyleSheet, View } from "react-native"
 import { TextInput } from "react-native-paper"
 import { Button } from "../atoms"
+import { Loader } from "../ui"
 
 export default function RideForm() {
   const { setActiveRide } = useRideStore()
-  const { currentLocationData, currentCoords } = useCurrentLocationData()
+  const { currentLocationData, currentCoords, loading } = useCurrentLocationData()
   const [walkDistance, setWalkDistance] = useState<string | null>(null)
   const [fromLocation, setFromLocation] = useState<LocationPoint | null>(null)
   const [toLocation, setToLocation] = useState<LocationPoint | null>(null)
@@ -28,9 +29,11 @@ export default function RideForm() {
         router.replace('/(app)/partners')
       }
     } catch (error: any) {
-      console.log('ride screen error', error?.code, error)
+      console.log('create ride error', error?.code, error)
     }
   }
+
+  if (loading) return <Loader />
 
   return (
     <View>
@@ -52,7 +55,7 @@ export default function RideForm() {
             <Ionicons name="flag" size={20} color="black" style={styles.inputIcon} />
             <PlacesAutocomplete
               placeholder="To"
-              onPlaceSelect={(place) => setToLocation(place)}
+              onPlaceSelect={setToLocation}
               currentCoords={currentCoords}
               currentLocationData={currentLocationData}
             />

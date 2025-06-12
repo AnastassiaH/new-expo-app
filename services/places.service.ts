@@ -89,6 +89,7 @@ export const getDataFromCoordinates = async (
 }
 
 export const getPlaceData = async (placeId: string): Promise<LocationPoint | null> => {
+  console.log('getPlaceData placeId', placeId)
   try {
     const response = await axios.get(
       'https://maps.googleapis.com/maps/api/place/details/json',
@@ -101,9 +102,21 @@ export const getPlaceData = async (placeId: string): Promise<LocationPoint | nul
       }
     );
 
-    console.log('getPlaceData response', response)
+    if (!response.data.result) {
+      console.log('No result in response', response.data);
+      return null;
+    }
+
+
+
+    console.log('getPlaceData response', 'response')
 
     const location = response.data.result.geometry.location;
+
+    if (!location) {
+      console.log('No geometry in result', response.data.result);
+      return null;
+    }
     return {
       latitude: location.lat,
       longitude: location.lng,
