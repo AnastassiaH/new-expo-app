@@ -23,7 +23,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const { session, hydrateSession } = useAuthStore();
+  const { session, hydrateSession, lastActivityTime, signOut } = useAuthStore();
   const { location, requestLocation } = useLocationStore();
 
   const [loaded] = useFonts({
@@ -41,6 +41,12 @@ export default function RootLayout() {
       await requestLocation();
     })();
   }, [loaded]);
+
+  useEffect(() => {
+    if (session && !lastActivityTime) {
+      signOut();
+    }
+  }, [lastActivityTime, session])
 
   if (!loaded) {
     return null;
