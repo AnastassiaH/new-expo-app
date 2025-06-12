@@ -13,11 +13,9 @@ import { Button } from "../atoms"
 import { Loader } from "../ui"
 
 export default function RideForm() {
-  const { setActiveRide } = useRideStore()
+  const { setActiveRide, fromLocation, toLocation, setFromLocation, setToLocation } = useRideStore()
   const { currentLocationData, currentCoords, loading } = useCurrentLocationData()
   const [walkDistance, setWalkDistance] = useState<string | null>(null)
-  const [fromLocation, setFromLocation] = useState<LocationPoint | null>(null)
-  const [toLocation, setToLocation] = useState<LocationPoint | null>(null)
 
   const onCreateRide = async () => {
     const rideData = generateRideData(fromLocation!, toLocation!, +walkDistance!)
@@ -43,7 +41,7 @@ export default function RideForm() {
             <Ionicons name="location" size={20} color="black" style={styles.inputIcon} />
             <PlacesAutocomplete
               placeholder="From"
-              onPlaceSelect={setFromLocation}
+              onPlaceSelect={(location) => setFromLocation(location)}
               currentCoords={currentCoords}
               currentLocationData={currentLocationData}
               currentEnabled={true}
@@ -55,7 +53,7 @@ export default function RideForm() {
             <Ionicons name="flag" size={20} color="black" style={styles.inputIcon} />
             <PlacesAutocomplete
               placeholder="To"
-              onPlaceSelect={setToLocation}
+              onPlaceSelect={(location) => setToLocation(location)}
               currentCoords={currentCoords}
               currentLocationData={currentLocationData}
             />

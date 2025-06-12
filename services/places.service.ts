@@ -1,4 +1,5 @@
 import { LocationPoint, PlaceCoords, PlacePrediction } from "@/types";
+import polyline from '@mapbox/polyline';
 import axios from "axios";
 
 const apiKey = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY
@@ -42,7 +43,7 @@ export const getDataFromCoordinates = async (
 
     if (response.data.results.length === 0) return null;
 
-    console.log('getDataFromCoordinates response', response.data.results)
+    console.log('getDataFromCoordinates response', 'response.data.results')
 
     const addresses = response.data.results.map((r: any) => ({
       formatted_address: r.formatted_address,
@@ -124,6 +125,21 @@ export const getPlaceData = async (placeId: string): Promise<LocationPoint | nul
     };
   } catch (error) {
     console.error('Error fetching place data:', error);
+    return null;
+  }
+};
+
+export const getRouteCoords = async (from: LocationPoint, to: LocationPoint): Promise<PlaceCoords[] | null> => {
+
+  try {
+    const res = await fetch(
+      `https://maps.googleapis.com/maps/api/directions/json?origin=${from.latitude},${from.longitude}&destination=${to.latitude},${to.longitude}&key=${apiKey}`
+    );
+    const json = await res.json();
+    const points = polyline.decode(json.routes[0].overview_polyline.points);
+    return points.map(([lat, lng]) => ({ latitude: lat, longitude: lng }));
+  } catch (error) {
+    console.error('Error fetching route data:', error);
     return null;
   }
 };

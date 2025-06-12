@@ -1,10 +1,8 @@
+import MapComponent from "@/components/feature/MapComponent";
 import RideForm from "@/components/feature/RideForm";
 import { DEFAULT_ERROR_MESSAGE } from "@/constants";
-import { useLocationStore } from "@/stores/locationStore";
-import shared from "@/styles/shared";
-import { LocationPoint } from "@/types";
 import { ErrorBoundaryProps } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
@@ -17,60 +15,15 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 }
 
 export default function Ride() {
-	const [stringLocation, setStringLocation] = useState<string | null>(null)
-	const [fromLocation, setFromLocation] = useState<LocationPoint | null>(null)
-	const [toLocation, setToLocation] = useState<LocationPoint | null>(null)
-	const [mapRegion, setMapRegion] = useState({
-		latitude: 49.8397,
-		longitude: 24.0297,
-		latitudeDelta: 0.0922,
-		longitudeDelta: 0.0421,
-	})
-	const [routeCoordinates, setRouteCoordinates] = useState<[] | null>([])
 	const [isCancelModalVisible, setIsCancelModalVisible] = useState(false)
-	// const loadPersistedHomeAddress = useUserStore(state => state.loadPersistedHomeAddress)
-	const { location: userLocation, requestLocation } = useLocationStore()
-
-	useEffect(() => {
-		console.log('ride rendered')
-	}, [])
-
-	// useEffect(() => {
-	// 	loadPersistedHomeAddress()
-	// }, [])
-
-	// useEffect(() => {
-	// 	if (stringLocation) {
-	// 		setMapRegion({
-	// 			latitude: +stringLocation.split(',')[0],
-	// 			longitude: +stringLocation.split(',')[1],
-	// 			latitudeDelta: 0.0922,
-	// 			longitudeDelta: 0.0421,
-	// 		})
-	// 	}
-	// }, [stringLocation])
-
-	// if (!userLocation) {
-	// 	return null // ask user for a permission to access location modal with portal later
-	// }
 
 	return (
 		<View style={{ flex: 1 }}>
-			<View style={[shared.container, { justifyContent: 'flex-start', paddingTop: 60 }]}>
-				{/* <MapComponent
-					currentLocation={stringLocation ? {
-						latitude: +stringLocation.split(',')[0],
-						longitude: +stringLocation.split(',')[1],
-						formatted_address: '',
-					} : null}
-					fromLocation={fromLocation}
-					toLocation={toLocation}
-					routeCoordinates={routeCoordinates}
-					mapRegion={mapRegion}
-				/> */}
-
-				<RideForm />
-
+			<View style={styles.container}>
+				<MapComponent />
+				<View style={styles.formContainer}>
+					<RideForm />
+				</View>
 			</View>
 
 			<Modal
@@ -107,6 +60,26 @@ export default function Ride() {
 }
 
 const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: '#fff',
+	},
+	formContainer: {
+		position: 'absolute',
+		top: 50,
+		left: 0,
+		right: 0,
+		backgroundColor: 'transparent',
+		padding: 16,
+		shadowColor: '#000',
+		shadowOffset: {
+			height: -2,
+			width: 0,
+		},
+		shadowOpacity: 0.1,
+		shadowRadius: 3,
+		elevation: 5,
+	},
 	modalOverlay: {
 		flex: 1,
 		backgroundColor: 'rgba(0, 0, 0, 0.5)',
