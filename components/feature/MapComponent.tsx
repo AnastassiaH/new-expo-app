@@ -1,19 +1,30 @@
 import { getRouteCoords } from "@/services/places.service";
 import useRideStore from "@/stores/rideStore";
 import { PlaceCoords } from "@/types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 
 export default function MapComponent() {
   const { fromLocation, toLocation } = useRideStore()
   const [routeCoords, setRouteCoords] = useState<PlaceCoords[]>([])
+  const mapRef = useRef<MapView>(null);
 
   useEffect(() => {
     const fetchRoute = async () => {
       try {
         const coords = await getRouteCoords(fromLocation!, toLocation!);
         setRouteCoords(coords!);
+
+        mapRef.current?.fitToCoordinates(coords!, {
+          edgePadding: {
+            top: 250,
+            bottom: 50,
+            left: 50,
+            right: 50,
+          },
+          animated: true,
+        });
       } catch (err) {
         console.error('Failed to get route coords:', err);
       }
@@ -26,6 +37,7 @@ export default function MapComponent() {
 
   return (
     <MapView
+      ref={mapRef}
       style={styles.map}
       showsUserLocation={true}
     >
