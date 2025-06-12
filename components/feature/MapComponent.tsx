@@ -1,3 +1,4 @@
+import { useCurrentLocationData } from "@/hooks/useCurrentLocationData";
 import { getRouteCoords } from "@/services/places.service";
 import useRideStore from "@/stores/rideStore";
 import { PlaceCoords } from "@/types";
@@ -5,8 +6,16 @@ import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 
+const edgeMapPadding = {
+  top: 250,
+  bottom: 50,
+  left: 50,
+  right: 50,
+}
+
 export default function MapComponent() {
   const { fromLocation, toLocation } = useRideStore()
+  const { currentCoords } = useCurrentLocationData()
   const [routeCoords, setRouteCoords] = useState<PlaceCoords[]>([])
   const mapRef = useRef<MapView>(null);
 
@@ -17,12 +26,7 @@ export default function MapComponent() {
         setRouteCoords(coords!);
 
         mapRef.current?.fitToCoordinates(coords!, {
-          edgePadding: {
-            top: 250,
-            bottom: 50,
-            left: 50,
-            right: 50,
-          },
+          edgePadding: edgeMapPadding,
           animated: true,
         });
       } catch (err) {
@@ -32,8 +36,15 @@ export default function MapComponent() {
 
     if (fromLocation && toLocation) {
       fetchRoute();
+    } else if (currentCoords) {
+      mapRef.current?.animateToRegion({
+        latitude: currentCoords.latitude + 0.002,
+        longitude: currentCoords.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      }, 500)
     }
-  }, [fromLocation, toLocation]);
+  }, [fromLocation, toLocation, currentCoords]);
 
   return (
     <MapView
