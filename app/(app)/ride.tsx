@@ -2,59 +2,29 @@ import MapComponent from "@/components/feature/MapComponent";
 import RideForm from "@/components/feature/RideForm";
 import { DEFAULT_ERROR_MESSAGE } from "@/constants";
 import { ErrorBoundaryProps } from "expo-router";
-import React, { useState } from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 	return (
-		<View style={{ flex: 1, backgroundColor: "beige" }}>
+		<SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
 			<Text>{error.message || DEFAULT_ERROR_MESSAGE}</Text>
 			<Text onPress={retry}>Try Again?</Text>
-		</View>
+		</SafeAreaView>
 	);
 }
 
 export default function Ride() {
-	const [isCancelModalVisible, setIsCancelModalVisible] = useState(false)
-
 	return (
 		<View style={{ flex: 1 }}>
 			<View style={styles.container}>
 				<MapComponent />
+
 				<View style={styles.formContainer}>
 					<RideForm />
 				</View>
 			</View>
-
-			<Modal
-				animationType="slide"
-				transparent={true}
-				visible={isCancelModalVisible}
-				onRequestClose={() => setIsCancelModalVisible(false)}
-			>
-				<View style={styles.modalOverlay}>
-					<View style={styles.modalContent}>
-						<Text style={styles.modalTitle}>Cancel Current Ride?</Text>
-						<Text style={styles.modalText}>
-							You have an active ride. Do you want to cancel it and create a new one?
-						</Text>
-						<View style={styles.modalButtons}>
-							<TouchableOpacity
-								style={[styles.modalButton, styles.cancelButton]}
-								onPress={() => setIsCancelModalVisible(false)}
-							>
-								<Text style={styles.buttonText}>Keep Current</Text>
-							</TouchableOpacity>
-							<TouchableOpacity
-								style={[styles.modalButton, styles.confirmButton]}
-							// onPress={handleCancelConfirmation}
-							>
-								<Text style={styles.buttonText}>Cancel & Create</Text>
-							</TouchableOpacity>
-						</View>
-					</View>
-				</View>
-			</Modal>
 		</View>
 	)
 }
@@ -79,133 +49,5 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.1,
 		shadowRadius: 3,
 		elevation: 5,
-	},
-	modalOverlay: {
-		flex: 1,
-		backgroundColor: 'rgba(0, 0, 0, 0.5)',
-		justifyContent: 'center',
-		alignItems: 'center',
-	},
-	modalContent: {
-		backgroundColor: 'white',
-		borderRadius: 10,
-		padding: 20,
-		width: '80%',
-		alignItems: 'center',
-	},
-	modalTitle: {
-		fontSize: 20,
-		fontWeight: 'bold',
-		marginBottom: 10,
-	},
-	modalText: {
-		fontSize: 16,
-		textAlign: 'center',
-		marginBottom: 20,
-	},
-	modalButtons: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		width: '100%',
-	},
-	modalButton: {
-		padding: 10,
-		borderRadius: 5,
-		minWidth: '45%',
-		alignItems: 'center',
-	},
-	cancelButton: {
-		backgroundColor: '#ccc',
-	},
-	confirmButton: {
-		backgroundColor: '#ff4444',
-	},
-	buttonText: {
-		color: 'white',
-		fontWeight: 'bold',
-	},
-	formWrapper: {
-		width: '100%',
-		gap: 10,
-		backgroundColor: 'transparent',
-		padding: 20,
-		borderRadius: 10,
-		marginTop: 20,
-		zIndex: 1,
-	},
-	formRow: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-	},
-	inputContainer: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		position: 'relative',
-		width: '100%',
-		borderRadius: 8,
-	},
-	inputIcon: {
-		position: 'absolute',
-		left: 10,
-		top: 14,
-		zIndex: 1
-	},
-	input: {
-		height: 52,
-		flex: 1,
-		width: '100%',
-		paddingLeft: 40,
-		borderRadius: 8,
-	},
-	separator: {
-		backgroundColor: '#000',
-		color: '#000',
-		height: 1
-	},
-	listView: {
-		position: 'absolute',
-		top: '100%',
-		left: 0,
-		height: '400%',
-		right: 0,
-		borderWidth: 1,
-		borderRadius: 8,
-		marginTop: 4,
-		zIndex: 10,
-		backgroundColor: '#dddddd',
-		opacity: 0.9,
-	},
-	row: {
-		padding: 12,
-		borderBottomWidth: 1,
-		backgroundColor: 'rgba(255,0,0,0.2)',
-		borderColor: '#blue',
-	},
-	homeButtonsContainer: {
-		flexDirection: 'row',
-		gap: 8,
-		marginBottom: 8,
-	},
-	homeButton: {
-		flex: 1,
-		flexDirection: 'row',
-		alignItems: 'center',
-		backgroundColor: '#f5f5f5',
-		borderRadius: 8,
-		padding: 12,
-	},
-	homeButtonFrom: {
-		backgroundColor: '#e3f2fd',
-	},
-	homeButtonTo: {
-		backgroundColor: '#fce4ec',
-	},
-	homeIcon: {
-		marginRight: 8,
-	},
-	homeText: {
-		fontSize: 16,
-		color: '#333',
-		flex: 1,
-	},
+	}
 })
