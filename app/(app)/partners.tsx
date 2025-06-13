@@ -1,304 +1,138 @@
 import { Loader } from '@/components/ui'
-import SearchingLoader from '@/components/ui/SearchingLoader'
-import { cancelRide, getPartners } from '@/services/api.service'
-import usePartnersStore from '@/stores/partnersStore'
+import { cancelRide } from '@/services/api.service'
 import useRideStore from '@/stores/rideStore'
 import shared from '@/styles/shared'
 import { PartnerData } from '@/types'
 import { router } from 'expo-router'
-import React, { useCallback, useEffect, useState } from 'react'
+import React from 'react'
 import {
   FlatList,
   RefreshControl,
   SafeAreaView,
   Text,
-  TouchableOpacity,
-  View
+  View,
 } from 'react-native'
 import { Button } from 'react-native-paper'
+import PartnerItem from '../../components/PartnerItem'
+import { usePartners } from '../../hooks/usePartners'
 
-const testArray = [
+const mockPartners: PartnerData[] = [
   {
     id: '1',
     date: '2024-02-12T13:46:03.952Z',
     placeFrom: {
-      point: {
-        x: 0,
-        y: 0
-      },
+      point: { x: 0, y: 0 },
       name: 'Random Address 1, Lviv, Ukraine',
       distance: 125
     },
     placeTo: {
-      point: {
-        x: 0,
-        y: 0
-      },
+      point: { x: 0, y: 0 },
       name: 'Random Address 2, Lviv, Ukraine',
       distance: 450
     },
     isActive: true,
-    userId: 'user1'
+    user: {
+      id: 'user2',
+      phoneNumber: '123456789',
+      email: 'user2@example.com',
+      firstName: 'John',
+      lastName: 'Doe',
+    }
   },
   {
     id: '2',
-    date: '2024-02-12T14:30:15.123Z',
+    date: '2024-02-12T13:46:03.952Z',
     placeFrom: {
-      point: {
-        x: 0,
-        y: 0
-      },
-      name: 'Random Address 3, Lviv, Ukraine',
-      distance: 80
+      point: { x: 0, y: 0 },
+      name: 'Random Address 1, Lviv, Ukraine',
+      distance: 125
     },
     placeTo: {
-      point: {
-        x: 0,
-        y: 0
-      },
-      name: 'Random Address 4, Lviv, Ukraine',
-      distance: 235
+      point: { x: 0, y: 0 },
+      name: 'Random Address 2, Lviv, Ukraine',
+      distance: 500
     },
     isActive: true,
-    userId: 'user2'
-  },
-  {
-    id: '3',
-    date: '2024-02-12T14:30:15.123Z',
-    placeFrom: {
-      point: {
-        x: 0,
-        y: 0
-      },
-      name: 'Random Address 3, Lviv, Ukraine',
-      distance: 80
-    },
-    placeTo: {
-      point: {
-        x: 0,
-        y: 0
-      },
-      name: 'Random Address 4, Lviv, Ukraine',
-      distance: 235
-    },
-    isActive: true,
-    userId: 'user2'
-  },
-  {
-    id: '4',
-    date: '2024-02-12T14:30:15.123Z',
-    placeFrom: {
-      point: {
-        x: 0,
-        y: 0
-      },
-      name: 'Random Address 3, Lviv, Ukraine',
-      distance: 80
-    },
-    placeTo: {
-      point: {
-        x: 0,
-        y: 0
-      },
-      name: 'Random Address 4, Lviv, Ukraine',
-      distance: 235
-    },
-    isActive: true,
-    userId: 'user2'
-  },
-  {
-    id: '5',
-    date: '2024-02-12T14:30:15.123Z',
-    placeFrom: {
-      point: {
-        x: 0,
-        y: 0
-      },
-      name: 'Random Address 3, Lviv, Ukraine',
-      distance: 80
-    },
-    placeTo: {
-      point: {
-        x: 0,
-        y: 0
-      },
-      name: 'Random Address 4, Lviv, Ukraine',
-      distance: 235
-    },
-    isActive: true,
-    userId: 'user2'
-  },
-  {
-    id: '6',
-    date: '2024-02-12T14:30:15.123Z',
-    placeFrom: {
-      point: {
-        x: 0,
-        y: 0
-      },
-      name: 'Random Address 3, Lviv, Ukraine',
-      distance: 80
-    },
-    placeTo: {
-      point: {
-        x: 0,
-        y: 0
-      },
-      name: 'Random Address 4, Lviv, Ukraine',
-      distance: 235
-    },
-    isActive: true,
-    userId: 'user2'
-  },
-  {
-    id: '7',
-    date: '2024-02-12T14:30:15.123Z',
-    placeFrom: {
-      point: {
-        x: 0,
-        y: 0
-      },
-      name: 'Random Address 3, Lviv, Ukraine',
-      distance: 80
-    },
-    placeTo: {
-      point: {
-        x: 0,
-        y: 0
-      },
-      name: 'Random Address 4, Lviv, Ukraine',
-      distance: 235
-    },
-    isActive: true,
-    userId: 'user2'
+    user: {
+      id: 'user1',
+      phoneNumber: '123456789',
+      email: 'user1@example.com',
+      firstName: 'John',
+      lastName: 'Doe',
+    }
   }
 ]
 
 const PartnersScreen: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<Error | null>(null)
-  const [expandedItem, setExpandedItem] = useState<string | null>(null)
-  const [refreshing, setRefreshing] = useState(false)
+  const { isLoading, error, refreshing, partners, handleRefresh } = usePartners()
   const { activeRide } = useRideStore()
-  const { partners, setPartners } = usePartnersStore()
+  const [expandedItem, setExpandedItem] = React.useState<string | null>(null)
+
+  console.log('isLoading', isLoading)
+
+  const handlePress = (itemId: string) => {
+    setExpandedItem(itemId === expandedItem ? null : itemId)
+  }
 
   const cancel = async () => {
-    if (!activeRide?.id) {
-      return
-    }
-    setIsLoading(true)
+    if (!activeRide?.id) return
+
     try {
-      const response = await cancelRide(activeRide?.id)
+      const response = await cancelRide(activeRide.id)
       if (response) {
         console.log('canceled', response.data)
       }
-    } catch (e: any) {
-      setError(e as Error)
+    } catch (e) {
+      console.error('Error canceling ride:', e)
     } finally {
-      setIsLoading(false)
+      router.replace('/(app)/ride')
     }
-    router.replace('/(app)/ride')
-  }
-
-  useEffect(() => {
-    ; (async () => {
-      if (activeRide?.id) {
-        const response = await getPartners(activeRide.id)
-        setPartners(response as PartnerData[])
-      }
-    })()
-
-    // const intervalId = setInterval(() => {
-    //   // activeRide && getPartners(activeRide?.id)
-    // }, 5000)
-    // return () => clearInterval(intervalId)
-  }, [activeRide])
-
-  const handlePress = useCallback(
-    (itemId: string) => {
-      if (!itemId) {
-        return
-      }
-      setExpandedItem((prevItem) => (prevItem === itemId ? null : itemId))
-    },
-    [expandedItem]
-  )
-
-  // manual refreshing
-  const fetchData = () => {
-    setTimeout(() => {
-      setRefreshing(false)
-      // activeRide && getPartners(activeRide?.id)
-    }, 1000)
-  }
-
-  const handleRefresh = () => {
-    setRefreshing(true)
-    fetchData()
   }
 
   if (isLoading) {
     return <Loader />
   }
 
-  const PartnerItem = ({ item }: { item: PartnerData }) => {
-    const isExpanded = expandedItem === item.id
-
+  if (error) {
     return (
-      <TouchableOpacity onPress={() => handlePress(item.id!)}>
-        <View
-          style={{
-            marginVertical: 10,
-            width: '100%',
-            borderWidth: 2,
-            borderRadius: 5,
-            borderColor: '#000',
-            flex: 1,
-            padding: 15
-          }}
-        >
-          <Text>{item.placeFrom.name}</Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginTop: 10
-            }}
-          >
-            <Text>{item.placeFrom.distance}</Text>
-            <Text>{item.placeTo.distance}</Text>
-          </View>
-          <View>
-            {isExpanded && <Text style={{ marginTop: 10 }}>{item?.user?.phoneNumber}</Text>}
-          </View>
-        </View>
-      </TouchableOpacity>
+      <View style={shared.container}>
+        <Text>Error loading partners: {error.message}</Text>
+      </View>
     )
   }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={[shared.container, { width: '100%' }]}>
-        {partners?.length > 1 && <FlatList
-          style={{ width: '100%' }}
-          contentContainerStyle={{ flexGrow: 1 }}
-          refreshing={true}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }
-          data={partners}
-          renderItem={({ item }) => <PartnerItem item={item} />}
-          keyExtractor={(item) => item.id!}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={<SearchingLoader />}
-        />}
+      <View style={[shared.container, { width: '100%', paddingTop: 40 }]}>
+        {partners?.length > 0 || mockPartners?.length > 0 && (
+          <FlatList
+            style={{ width: '100%' }}
+            contentContainerStyle={{ flexGrow: 1 }}
+            refreshing={refreshing}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+            }
+            data={partners.length > 0 ? partners : mockPartners}
+            renderItem={({ item }) => (
+              <PartnerItem
+                item={item}
+                isExpanded={expandedItem === item.id}
+                onPress={() => handlePress(item.id!)}
+              />
+            )}
+            keyExtractor={(item) => item.id!}
+            showsVerticalScrollIndicator={false}
+          // ListEmptyComponent={<SearchingLoader />}
+          />
+        )}
       </View>
       <View
         style={{
           alignSelf: 'flex-end',
           marginRight: 20,
           width: '100%',
-          alignItems: 'flex-end'
+          alignItems: 'flex-end',
+          marginBottom: 20,
         }}
       >
         <Button style={{ width: '50%' }} mode="contained" onPress={cancel}>
