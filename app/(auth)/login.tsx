@@ -1,3 +1,4 @@
+import { Header, Loader, Logo, Wrapper } from '@/components/ui'
 import { logInUser } from '@/services/api.service'
 import { useAuthStore } from '@/stores/authStore'
 import usePhoneStore from '@/stores/phoneStore'
@@ -6,10 +7,7 @@ import { router } from 'expo-router'
 import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
-import { Text, TextInput, useTheme } from 'react-native-paper'
-
-import { Button } from '@/components/atoms'
-import { Header, Loader, Logo, Wrapper } from '@/components/ui'
+import { Button, Text, TextInput, useTheme } from 'react-native-paper'
 
 
 export default function LoginScreen() {

@@ -1,4 +1,4 @@
-import SignOutButton from '@/components/SignOutButton'
+import SignOutButton from '@/components/feature/SignOutButton'
 import { Button, Loader } from '@/components/ui'
 import SearchingLoader from '@/components/ui/SearchingLoader'
 import { cancelRide, getPartners } from '@/services/api.service'

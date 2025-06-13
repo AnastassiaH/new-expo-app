@@ -1,4 +1,4 @@
-import { AutoLogoutTimer } from "@/components/AutoLogoutTimer";
+import { AutoLogoutTimer } from "@/components/feature/AutoLogoutTimer";
 import DrawerButton from "@/components/feature/DrawerButton";
 import { useAuthStore } from "@/stores/authStore";
 import { useLocationStore } from "@/stores/locationStore";

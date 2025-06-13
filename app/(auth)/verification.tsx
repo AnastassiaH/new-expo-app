@@ -1,4 +1,3 @@
-import { Button } from '@/components/atoms'
 import { Header, Loader, Logo, Wrapper } from '@/components/ui'
 import { verifyPhone } from '@/services/api.service'
 import usePhoneStore from '@/stores/phoneStore'
@@ -7,7 +6,7 @@ import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { StyleSheet, View } from 'react-native'
-import { Text, TextInput, useTheme } from 'react-native-paper'
+import { Button, Text, TextInput, useTheme } from 'react-native-paper'
 
 type VerificationFormData = {
   verificationCode: string

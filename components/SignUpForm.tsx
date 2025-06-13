@@ -1,8 +1,7 @@
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { StyleSheet, View } from 'react-native'
-import { TextInput, useTheme } from 'react-native-paper'
-import Button from './atoms/Button'
+import { Button, TextInput, useTheme } from 'react-native-paper'
 
 interface UserSignInData {
   email: string

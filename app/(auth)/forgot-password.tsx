@@ -3,11 +3,9 @@ import usePhoneStore from '@/stores/phoneStore'
 import { router } from 'expo-router'
 import React, { useState } from 'react'
 
-import { StyleSheet, View } from 'react-native'
-import { TextInput, useTheme } from 'react-native-paper'
-
-import { Button } from '@/components/atoms'
 import { Header, Loader, Logo, Wrapper } from '@/components/ui'
+import { StyleSheet, View } from 'react-native'
+import { Button, TextInput, useTheme } from 'react-native-paper'
 
 
 export default function ForgotPasswordScreen() {
