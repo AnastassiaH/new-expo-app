@@ -1,5 +1,4 @@
-import SignOutButton from '@/components/feature/SignOutButton'
-import { Button, Loader } from '@/components/ui'
+import { Loader } from '@/components/ui'
 import SearchingLoader from '@/components/ui/SearchingLoader'
 import { cancelRide, getPartners } from '@/services/api.service'
 import usePartnersStore from '@/stores/partnersStore'
@@ -16,6 +15,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
+import { Button } from 'react-native-paper'
 
 const testArray = [
   {
@@ -177,13 +177,10 @@ const testArray = [
 const PartnersScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
-  const [expandedItem, setExpandedItem] = useState(null)
+  const [expandedItem, setExpandedItem] = useState<string | null>(null)
   const [refreshing, setRefreshing] = useState(false)
   const { activeRide } = useRideStore()
-
   const { partners, setPartners } = usePartnersStore()
-
-  const partnersTest = partners ? partners : testArray
 
   const cancel = async () => {
     if (!activeRide?.id) {
@@ -218,11 +215,11 @@ const PartnersScreen: React.FC = () => {
   }, [activeRide])
 
   const handlePress = useCallback(
-    (itemId: string | undefined) => {
+    (itemId: string) => {
       if (!itemId) {
         return
       }
-      // setExpandedItem((prevItem) => (prevItem === itemId ? null : itemId))
+      setExpandedItem((prevItem) => (prevItem === itemId ? null : itemId))
     },
     [expandedItem]
   )
@@ -248,7 +245,7 @@ const PartnersScreen: React.FC = () => {
     const isExpanded = expandedItem === item.id
 
     return (
-      <TouchableOpacity onPress={() => handlePress(item.id)}>
+      <TouchableOpacity onPress={() => handlePress(item.id!)}>
         <View
           style={{
             marginVertical: 10,
@@ -281,33 +278,20 @@ const PartnersScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          width: '100%',
-          marginBottom: 10
-        }}
-      >
-        <SignOutButton />
-      </View>
       <View style={[shared.container, { width: '100%' }]}>
-        <FlatList
+        {partners?.length > 1 && <FlatList
           style={{ width: '100%' }}
           contentContainerStyle={{ flexGrow: 1 }}
           refreshing={true}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
           }
-          //data={partnersTest}
-          //data={testArray}
           data={partners}
-          //data={partners?.length ? partners : testArray}
           renderItem={({ item }) => <PartnerItem item={item} />}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id!}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={<SearchingLoader />}
-        />
+        />}
       </View>
       <View
         style={{
