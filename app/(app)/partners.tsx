@@ -68,8 +68,6 @@ const PartnersScreen: React.FC = () => {
   const { activeRide } = useRideStore()
   const [expandedItem, setExpandedItem] = React.useState<string | null>(null)
 
-  console.log('isLoading', isLoading)
-
   const handlePress = (itemId: string) => {
     setExpandedItem(itemId === expandedItem ? null : itemId)
   }
@@ -126,19 +124,21 @@ const PartnersScreen: React.FC = () => {
           />
         )}
       </View>
-      <View
-        style={{
-          alignSelf: 'flex-end',
-          marginRight: 20,
-          width: '100%',
-          alignItems: 'flex-end',
-          marginBottom: 20,
-        }}
-      >
-        <Button style={{ width: '50%' }} mode="contained" onPress={cancel}>
-          Cancel the ride
-        </Button>
-      </View>
+      {activeRide?.isActive && (
+        <View
+          style={{
+            alignSelf: 'flex-end',
+            marginRight: 20,
+            width: '100%',
+            alignItems: 'flex-end',
+            marginBottom: 20,
+          }}
+        >
+          <Button style={{ width: '50%' }} mode="contained" onPress={cancel}>
+            Cancel the ride
+          </Button>
+        </View>
+      )}
     </SafeAreaView>
   )
 }
