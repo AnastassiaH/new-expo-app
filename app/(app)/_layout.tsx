@@ -1,7 +1,9 @@
 import { AutoLogoutTimer } from "@/components/AutoLogoutTimer";
+import DrawerButton from "@/components/feature/DrawerButton";
 import { useAuthStore } from "@/stores/authStore";
 import { useLocationStore } from "@/stores/locationStore";
-import { Redirect, Stack } from "expo-router";
+import { Redirect } from "expo-router";
+import { Drawer } from "expo-router/drawer";
 import { useEffect } from "react";
 
 export default function RootLayout() {
@@ -25,11 +27,42 @@ export default function RootLayout() {
   return (
     <>
       <AutoLogoutTimer />
-      <Stack>
-        <Stack.Screen name="ride" options={{ headerShown: false }} />
-        <Stack.Screen name="partners" options={{ headerShown: false }} />
-        <Stack.Screen name="develop" options={{ headerShown: false }} />
-      </Stack>
+      <Drawer screenOptions={{
+        headerLeft: () => <DrawerButton />,
+        drawerActiveTintColor: 'black',
+        drawerActiveBackgroundColor: '#ccc',
+        drawerInactiveTintColor: 'black',
+        drawerInactiveBackgroundColor: 'transparent',
+        drawerType: 'slide',
+        overlayColor: '#ccc',
+        drawerStyle: {
+          backgroundColor: '#ccc',
+        },
+        headerTitle: '',
+        headerStyle: {
+          backgroundColor: 'transparent',
+          elevation: 0,
+          shadowOpacity: 0,
+        },
+        headerTransparent: true,
+      }}>
+        <Drawer.Screen
+          name="ride"
+          options={{ drawerLabel: 'Ride' }}
+        />
+        <Drawer.Screen
+          name="partners"
+          options={{ drawerLabel: 'Partners' }}
+        />
+        <Drawer.Screen
+          name="settings"
+          options={{ drawerLabel: 'Settings' }}
+        />
+        <Drawer.Screen
+          name="account"
+          options={{ drawerLabel: 'Account' }}
+        />
+      </Drawer>
     </>
   )
 }
