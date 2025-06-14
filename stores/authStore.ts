@@ -1,3 +1,4 @@
+import { AUTO_SIGN_OUT_TIMEOUT } from '@/constants';
 import { router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { create } from 'zustand';
@@ -28,7 +29,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 			}
 			const session = token;
 			await SecureStore.setItemAsync('session', session);
-			set({ session, isLoggedIn: true });
+			await SecureStore.setItemAsync('lastActivityTime', Date.now().toString());
+			set({ session, isLoggedIn: true, lastActivityTime: Date.now() });
 			router.replace('/(app)/ride');
 		} catch (error) {
 			console.error('Sign-in error:', error);
@@ -39,6 +41,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 	signOut: async () => {
 		try {
 			await SecureStore.deleteItemAsync('session');
+			await SecureStore.deleteItemAsync('lastActivityTime');
 			set({ session: null, isLoggedIn: false });
 			router.replace('/');
 		} catch (error) {
@@ -50,10 +53,12 @@ export const useAuthStore = create<AuthState>((set) => ({
 	hydrateSession: async () => {
 		try {
 			const session = await SecureStore.getItemAsync('session');
-			if (session) {
-				set({ session, isLoggedIn: true, isReady: true });
+			const lastActivityTime = await SecureStore.getItemAsync('lastActivityTime');
+			const lastActivityTimeNumber = Number(lastActivityTime);
+			if (session && lastActivityTimeNumber + AUTO_SIGN_OUT_TIMEOUT > Date.now()) {
+				set({ session, isLoggedIn: true, isReady: true, lastActivityTime: lastActivityTimeNumber });
 			} else {
-				set({ session: null, isLoggedIn: false, isReady: true });
+				set({ session: null, isLoggedIn: false, isReady: true, lastActivityTime: null });
 			}
 		} catch (error) {
 			console.error('Hydration error:', error);

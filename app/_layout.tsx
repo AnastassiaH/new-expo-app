@@ -42,12 +42,6 @@ export default function RootLayout() {
     })();
   }, [loaded]);
 
-  useEffect(() => {
-    if (session && !lastActivityTime) {
-      signOut();
-    }
-  }, [lastActivityTime, session])
-
   if (!loaded) {
     return null;
   }
