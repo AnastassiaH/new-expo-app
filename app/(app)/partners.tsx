@@ -65,8 +65,11 @@ const mockPartners: PartnerData[] = [
 
 const PartnersScreen: React.FC = () => {
   const { isLoading, error, refreshing, partners, handleRefresh } = usePartners()
-  const { activeRide } = useRideStore()
+  const { activeRide, setActiveRide } = useRideStore()
   const [expandedItem, setExpandedItem] = React.useState<string | null>(null)
+  const [cancelRideError, setCancelRideError] = React.useState<string | null>(null)
+
+  // to do notification service
 
   const handlePress = (itemId: string) => {
     setExpandedItem(itemId === expandedItem ? null : itemId)
@@ -80,9 +83,11 @@ const PartnersScreen: React.FC = () => {
       if (response) {
         console.log('canceled', response.data)
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error('Error canceling ride:', e)
+      setCancelRideError(e?.message)
     } finally {
+      setActiveRide(null)
       router.replace('/(app)/ride')
     }
   }

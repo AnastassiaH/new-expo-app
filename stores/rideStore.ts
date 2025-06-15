@@ -1,12 +1,12 @@
 import { create } from 'zustand'
-import { RideData, LocationPoint } from '../types'
+import { LocationPoint, RideData } from '../types'
 
 type RideStore = {
   activeRide: RideData | null
   historyRides: RideData[]
   fromLocation: LocationPoint | null
   toLocation: LocationPoint | null
-  setActiveRide: (ride: RideData) => void
+  setActiveRide: (ride: RideData | null) => void
   addRideToHistory?: (ride: RideData) => void
   removeRideFromHistory?: (id: string) => void
   setFromLocation: (location: LocationPoint | null) => void

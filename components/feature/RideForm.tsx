@@ -6,14 +6,15 @@ import { generateRideData } from "@/utils"
 import { Ionicons } from "@expo/vector-icons"
 import { router } from "expo-router"
 import { useState } from "react"
-import { StyleSheet, View } from "react-native"
-import { Button, TextInput } from "react-native-paper"
+import { StyleSheet, Text, View } from "react-native"
+import { Button, Modal, Portal, TextInput } from "react-native-paper"
 import { Loader } from "../ui"
 
 export default function RideForm() {
   const { setActiveRide, fromLocation, toLocation, setFromLocation, setToLocation } = useRideStore()
   const { currentLocationData, currentCoords, loading } = useCurrentLocationData()
   const [walkDistance, setWalkDistance] = useState<string | null>(null)
+  const [createRideError, setCreateRideError] = useState<string | null>(null)
 
   const onCreateRide = async () => {
     const rideData = generateRideData(fromLocation!, toLocation!, +walkDistance!)
@@ -26,8 +27,22 @@ export default function RideForm() {
       }
     } catch (error: any) {
       console.log('create ride error', error?.code, error)
+      setCreateRideError(error?.message)
     }
   }
+
+  if (createRideError) return (
+    <Portal>
+      <Modal visible={!!createRideError} onDismiss={() => {
+        setCreateRideError(null)
+        router.reload()
+      }}>
+        <View>
+          <Text style={{ color: '#ff0000', fontSize: 16 }}>{createRideError}</Text>
+        </View>
+      </Modal>
+    </Portal>
+  )
 
   if (loading) return <Loader />
 
