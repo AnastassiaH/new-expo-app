@@ -28,41 +28,18 @@ export default function RootLayout() {
     <>
       <AutoLogoutTimer />
       <Drawer screenOptions={{
+        headerTitle: '',
         headerLeft: () => <DrawerButton />,
-        drawerActiveTintColor: 'black',
+        headerTransparent: true,
+        headerTintColor: '#ccc',
+        drawerActiveTintColor: '#000',
         drawerActiveBackgroundColor: '#ccc',
-        drawerInactiveTintColor: 'black',
-        drawerInactiveBackgroundColor: 'transparent',
-        drawerType: 'slide',
-        overlayColor: '#ccc',
+        drawerInactiveTintColor: '#000',
         drawerStyle: {
           backgroundColor: '#ccc',
         },
-        headerTitle: '',
-        headerStyle: {
-          backgroundColor: 'transparent',
-          elevation: 0,
-          shadowOpacity: 0,
-        },
-        headerTransparent: true,
-      }}>
-        <Drawer.Screen
-          name="ride"
-          options={{ drawerLabel: 'Ride' }}
-        />
-        <Drawer.Screen
-          name="partners"
-          options={{ drawerLabel: 'Partners' }}
-        />
-        <Drawer.Screen
-          name="settings"
-          options={{ drawerLabel: 'Settings' }}
-        />
-        <Drawer.Screen
-          name="account"
-          options={{ drawerLabel: 'Account' }}
-        />
-      </Drawer>
+        overlayColor: '#ccc',
+      }} />
     </>
   )
 }
