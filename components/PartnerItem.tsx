@@ -21,6 +21,9 @@ const PartnerItem: React.FC<PartnerItemProps> = ({ item, isExpanded, onPress }) 
         {isExpanded && (
           <Card.Actions>
             <Text style={styles.phoneText} onPress={() => Linking.openURL(`tel:${item?.user?.phoneNumber}`)}>{item?.user?.phoneNumber}</Text>
+            <Text style={styles.phoneText} onPress={() => Linking.openURL(`tg://resolve?phone=${item?.user?.phoneNumber}`)}>Telegram</Text>
+            <Text style={styles.phoneText} onPress={() => Linking.openURL(`whatsapp://send?phone=${item?.user?.phoneNumber}`)}>WhatsApp</Text>
+            <Text style={styles.phoneText} onPress={() => Linking.openURL(`viber://contact?number=%2B${item?.user?.phoneNumber}`)}>Viber</Text>
           </Card.Actions>
         )}
       </Card>
