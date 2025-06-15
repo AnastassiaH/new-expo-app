@@ -10,14 +10,15 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
 import { type ErrorBoundaryProps } from 'expo-router';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   return (
-    <View style={{ flex: 1, backgroundColor: "red" }}>
-      <Text>{error.message}</Text>
-      <Text onPress={retry}>Try Again?</Text>
-    </View>
+    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: "black" }}>
+      <Text style={{ color: "white" }}>{error.message}</Text>
+      <Text style={{ color: "white" }} onPress={retry}>Try Again?</Text>
+    </SafeAreaView>
   );
 }
 

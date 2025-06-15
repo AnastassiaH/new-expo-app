@@ -24,7 +24,7 @@ export const fetchAutocompletePredictions = async (query: string, location?: Pla
     return res.data.predictions;
   } catch (error) {
     console.error('Error fetching autocomplete predictions:', error);
-    return [];
+    throw error;
   }
 };
 
@@ -43,7 +43,7 @@ export const getDataFromCoordinates = async (
 
     if (response.data.results.length === 0) return null;
 
-    console.log('getDataFromCoordinates response', 'response.data.results')
+    // console.log('getDataFromCoordinates response', response.data.results)
 
     const addresses = response.data.results.map((r: any) => ({
       formatted_address: r.formatted_address,
@@ -85,7 +85,7 @@ export const getDataFromCoordinates = async (
     return addressData || null;
   } catch (error) {
     console.error('Error fetching region data:', error);
-    return null;
+    throw error;
   }
 }
 
@@ -125,7 +125,7 @@ export const getPlaceData = async (placeId: string): Promise<LocationPoint | nul
     };
   } catch (error) {
     console.error('Error fetching place data:', error);
-    return null;
+    throw error;
   }
 };
 
@@ -140,6 +140,6 @@ export const getRouteCoords = async (from: LocationPoint, to: LocationPoint): Pr
     return points.map(([lat, lng]) => ({ latitude: lat, longitude: lng }));
   } catch (error) {
     console.error('Error fetching route data:', error);
-    return null;
+    throw error;
   }
 };
