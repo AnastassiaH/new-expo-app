@@ -2,10 +2,11 @@ import { fetchAutocompletePredictions, getPlaceData } from '@/services/places.se
 import { LocationPoint, PlaceCoords, PlacePrediction, UserLocationData } from '@/types';
 import { debounce } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { TextInput } from 'react-native-paper';
 
 interface Props {
-  onPlaceSelect: (place: LocationPoint) => void;
+  onPlaceSelect: (place: LocationPoint | null) => void;
   currentCoords?: PlaceCoords,
   currentLocationData?: UserLocationData,
   placeholder?: string
@@ -91,6 +92,7 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, currentCoords, cur
     setPredictions([])
     setError(false)
     setPlaceSelected(null)
+    onPlaceSelect(null)
   }
 
   return (
@@ -140,10 +142,8 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    borderColor: '#ccc',
-    borderWidth: 1,
+    borderRadius: 4,
     paddingHorizontal: 40,
-    borderRadius: 8,
     color: '#000',
     width: '100%',
     backgroundColor: '#fff',

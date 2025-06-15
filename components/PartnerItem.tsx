@@ -1,6 +1,7 @@
 import { PartnerData } from '@/types';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Linking, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Card } from 'react-native-paper';
 
 interface PartnerItemProps {
   item: PartnerData;
@@ -8,19 +9,21 @@ interface PartnerItemProps {
   onPress: () => void;
 }
 
+
 const PartnerItem: React.FC<PartnerItemProps> = ({ item, isExpanded, onPress }) => {
   return (
     <TouchableOpacity onPress={onPress}>
-      <View style={styles.container}>
-        <Text style={styles.placeName}>{item.placeFrom.name}</Text>
-        <View style={styles.distanceContainer}>
-          <Text style={styles.distanceText}>{item.user?.firstName}</Text>
-          <Text style={styles.distanceText}>{item.placeFrom.distance}</Text>
-        </View>
+      <Card mode='contained' style={styles.container}>
+        <Card.Title title={item.placeFrom.name} />
+        <Card.Content>
+          <Text style={styles.distanceText}>{item.user?.firstName} within {item.placeFrom.distance} m</Text>
+        </Card.Content>
         {isExpanded && (
-          <Text style={styles.phoneText}>{item?.user?.phoneNumber}</Text>
+          <Card.Actions>
+            <Text style={styles.phoneText} onPress={() => Linking.openURL(`tel:${item?.user?.phoneNumber}`)}>{item?.user?.phoneNumber}</Text>
+          </Card.Actions>
         )}
-      </View>
+      </Card>
     </TouchableOpacity>
   );
 };
@@ -29,9 +32,7 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: 10,
     width: '100%',
-    borderWidth: 2,
     borderRadius: 5,
-    borderColor: '#000',
     flex: 1,
     padding: 15,
   },
