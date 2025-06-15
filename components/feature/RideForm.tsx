@@ -76,13 +76,10 @@ export default function RideForm() {
           <Ionicons name="walk" size={20} color="black" style={styles.inputIcon} />
           <TextInput
             keyboardType="numeric"
-            style={[
-              styles.input,
-              // { borderColor: errors.fromDist ? 'red' : '#000', borderWidth: 0 }
-            ]}
+            style={styles.input}
             selectionColor="black"
+            placeholderTextColor="black"
             underlineColor="transparent"
-            mode="outlined"
             placeholder="Can walk (meters)"
             value={walkDistance || ''}
             onChangeText={(num) => setWalkDistance(num)}
@@ -102,46 +99,6 @@ export default function RideForm() {
 }
 
 const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 20,
-    width: '80%',
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  modalText: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  modalButton: {
-    padding: 10,
-    borderRadius: 5,
-    minWidth: '45%',
-    alignItems: 'center',
-  },
-  cancelButton: {
-    backgroundColor: '#ccc',
-  },
-  confirmButton: {
-    backgroundColor: '#ff4444',
-  },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
@@ -173,61 +130,11 @@ const styles = StyleSheet.create({
     zIndex: 1
   },
   input: {
-    height: 52,
-    flex: 1,
-    width: '100%',
-    paddingLeft: 40,
-    borderRadius: 8,
-  },
-  separator: {
-    backgroundColor: '#000',
+    height: 50,
+    borderRadius: 4,
+    paddingHorizontal: 40,
     color: '#000',
-    height: 1
-  },
-  listView: {
-    position: 'absolute',
-    top: '100%',
-    left: 0,
-    height: '400%',
-    right: 0,
-    borderWidth: 1,
-    borderRadius: 8,
-    marginTop: 4,
-    zIndex: 10,
-    backgroundColor: '#dddddd',
-    opacity: 0.9,
-  },
-  row: {
-    padding: 12,
-    borderBottomWidth: 1,
-    backgroundColor: 'rgba(255,0,0,0.2)',
-    borderColor: '#blue',
-  },
-  homeButtonsContainer: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 8,
-  },
-  homeButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    borderRadius: 8,
-    padding: 12,
-  },
-  homeButtonFrom: {
-    backgroundColor: '#e3f2fd',
-  },
-  homeButtonTo: {
-    backgroundColor: '#fce4ec',
-  },
-  homeIcon: {
-    marginRight: 8,
-  },
-  homeText: {
-    fontSize: 16,
-    color: '#333',
-    flex: 1,
+    width: '100%',
+    backgroundColor: '#fff',
   },
 })
