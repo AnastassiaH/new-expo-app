@@ -1,8 +1,7 @@
 import { AUTO_SIGN_OUT_TIMEOUT } from '@/constants';
 import { useAuthStore } from '@/stores/authStore';
 import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { StyleSheet } from 'react-native';
 
 export const AutoLogoutTimer = () => {
   const lastActivityTime = useAuthStore(state => state.lastActivityTime);
@@ -33,12 +32,7 @@ export const AutoLogoutTimer = () => {
   const minutes = Math.floor(timeLeft / 60000);
   const seconds = Math.floor((timeLeft % 60000) / 1000);
 
-  return (
-    <View style={styles.container}>
-      <Text>{minutes}:{seconds}</Text>
-    </View>
-  )
-
+  return null
 };
 
 const styles = StyleSheet.create({
