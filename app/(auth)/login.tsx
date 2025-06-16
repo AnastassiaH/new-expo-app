@@ -2,6 +2,7 @@ import { Header, Loader, Logo, Wrapper } from '@/components/ui'
 import { logInUser } from '@/services/api.service'
 import { useAuthStore } from '@/stores/authStore'
 import usePhoneStore from '@/stores/phoneStore'
+import { useUserStore } from '@/stores/userStore'
 import { LoginData } from '@/types'
 import { router } from 'expo-router'
 import React, { useState } from 'react'
@@ -17,7 +18,7 @@ export default function LoginScreen() {
   const { control, handleSubmit, setValue, clearErrors, getValues } = useForm<LoginData>()
   const { signIn } = useAuthStore()
   const { setPhone } = usePhoneStore()
-
+  const { setUser } = useUserStore()
 
   const onPhoneNumberFocus = () => {
     if (!getValues('phoneNumber')) {
@@ -32,7 +33,7 @@ export default function LoginScreen() {
       setIsLoading(true)
       const response = await logInUser(data)
       if (response) {
-        console.log(response)
+        setUser(response.user)
         signIn(response.token)
       }
     } catch (error) {
