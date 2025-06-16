@@ -74,6 +74,7 @@ export default function LoginScreen() {
                 clearErrors('phoneNumber')
               }}
               keyboardType="phone-pad"
+              returnKeyType="done"
               style={[styles.input, { backgroundColor: theme.colors.surface }]}
               selectionColor={theme.colors.primary}
               error={!!error}
@@ -115,7 +116,7 @@ export default function LoginScreen() {
           Login
         </Button>
         <View style={styles.row}>
-          <Text>Don't have an account? </Text>
+          <Text style={{ color: theme.colors.primary }}>Don't have an account? </Text>
           <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
             <Text style={[styles.link, { color: theme.colors.primary }]}>Sign up</Text>
           </TouchableOpacity>

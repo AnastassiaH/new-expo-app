@@ -1,7 +1,7 @@
 import { PartnerData } from '@/types';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { Card } from 'react-native-paper';
+import { Card, useTheme } from 'react-native-paper';
 import PartnerActions from './feature/PartnerActions';
 
 interface PartnerItemProps {
@@ -12,12 +12,13 @@ interface PartnerItemProps {
 
 
 const PartnerItem: React.FC<PartnerItemProps> = ({ item, isExpanded, onPress }) => {
+  const theme = useTheme()
   return (
     <TouchableOpacity onPress={onPress}>
-      <Card mode='contained' style={styles.container}>
+      <Card mode='elevated' style={[styles.container, { backgroundColor: theme.colors.surface }]}>
         <Card.Title title={item.placeFrom.name} />
         <Card.Content>
-          <Text style={styles.distanceText}>{item.user?.firstName} within {item.placeFrom.distance} m</Text>
+          <Text style={[styles.distanceText, { color: theme.colors.onSurfaceVariant }]}>{item.user?.firstName} within {item.placeFrom.distance} m</Text>
         </Card.Content>
         {isExpanded && (
           <Card.Actions>

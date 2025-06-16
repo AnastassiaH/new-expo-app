@@ -38,7 +38,7 @@ export default function RegisterScreen() {
       <Header>Create Account</Header>
       <SignUpForm onSubmit={signUpUser} />
       <View style={styles.row}>
-        <Text>Already have an account? </Text>
+        <Text style={{ color: theme.colors.primary }}>Already have an account? </Text>
         <TouchableOpacity onPress={() => router.replace('/(auth)/login')}>
           <Text style={[styles.link, { color: theme.colors.primary }]}>Login</Text>
         </TouchableOpacity>
