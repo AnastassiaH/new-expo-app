@@ -23,7 +23,7 @@ export default function RideForm() {
       const response = await createRide(rideData)
       if (response?.id) {
         setActiveRide(response)
-        router.replace('/(app)/partners')
+        router.replace('/(app)/Partners')
       }
     } catch (error: any) {
       console.log('create ride error', error?.code, error)

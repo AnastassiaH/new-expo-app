@@ -5,7 +5,7 @@ export default function AuthLayout() {
   const { session } = useAuthStore();
 
   if (session) {
-    return <Redirect href="/(app)/ride" />
+    return <Redirect href="/(app)/Ride" />
   }
 
   return (
