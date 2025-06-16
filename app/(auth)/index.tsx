@@ -6,7 +6,7 @@ import { Button } from 'react-native-paper'
 
 export default function StartScreen() {
 	return (
-		<Wrapper fullScreen>
+		<Wrapper fullScreen={false}>
 			<Logo />
 			<Header>Ride the city</Header>
 			<Button

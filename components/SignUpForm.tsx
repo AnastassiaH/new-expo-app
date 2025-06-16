@@ -187,7 +187,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     padding: 20,
     borderRadius: 10,
-    marginTop: 20
   },
   input: {
     marginBottom: 12

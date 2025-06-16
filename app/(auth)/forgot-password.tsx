@@ -37,7 +37,7 @@ export default function ForgotPasswordScreen() {
   if (isLoading) return <Loader />
 
   return (
-    <Wrapper fullScreen>
+    <Wrapper fullScreen={false}>
       <Logo />
       <Header>Forgot Password</Header>
       <View style={styles.form}>
@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     padding: 20,
     borderRadius: 10,
-    marginTop: 20
   },
   input: {
     marginBottom: 12
