@@ -8,7 +8,9 @@ import ViberIcon from '../icons/ViberIcon'
 const iconSize = 24;
 
 export const handlePressApp = async (url: string, appName?: string) => {
-  try {
+  if (__DEV__) {
+    await Linking.openURL(url);
+  } else {
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);
@@ -18,9 +20,6 @@ export const handlePressApp = async (url: string, appName?: string) => {
         `Будь ласка, встановіть ${appName || 'його'}, щоб продовжити.`
       );
     }
-  } catch (error) {
-    console.error('Помилка відкриття URL:', error);
-    Alert.alert('Помилка', 'Не вдалося відкрити застосунок.');
   }
 };
 
