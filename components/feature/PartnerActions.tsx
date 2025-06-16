@@ -5,7 +5,7 @@ import { Alert, Linking, Text, TouchableOpacity, View } from 'react-native'
 import TelegramIcon from '../icons/TelegramIcon'
 import ViberIcon from '../icons/ViberIcon'
 
-const iconSize = 28;
+const iconSize = 24;
 
 export const handlePressApp = async (url: string, appName?: string) => {
   try {
@@ -35,7 +35,7 @@ export default function PartnerActions({ item }: { item: PartnerData }) {
   };
 
   return (
-    <View>
+    <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
       <TouchableOpacity onPress={handlePressPhone}><Text>{item?.user?.phoneNumber}</Text></TouchableOpacity>
       <TouchableOpacity onPress={() => handlePressApp(`whatsapp://send?phone=${item?.user?.phoneNumber}`)}><Ionicons name="logo-whatsapp" size={iconSize} color="black" /></TouchableOpacity>
       <TouchableOpacity onPress={() => handlePressApp(`tg://resolve?phone=${item?.user?.phoneNumber}`)}><TelegramIcon color="black" size={iconSize} /></TouchableOpacity>
