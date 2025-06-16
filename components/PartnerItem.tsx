@@ -1,7 +1,8 @@
 import { PartnerData } from '@/types';
 import React from 'react';
-import { Linking, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Card } from 'react-native-paper';
+import PartnerActions from './feature/PartnerActions';
 
 interface PartnerItemProps {
   item: PartnerData;
@@ -20,10 +21,7 @@ const PartnerItem: React.FC<PartnerItemProps> = ({ item, isExpanded, onPress }) 
         </Card.Content>
         {isExpanded && (
           <Card.Actions>
-            <Text style={styles.phoneText} onPress={() => Linking.openURL(`tel:${item?.user?.phoneNumber}`)}>{item?.user?.phoneNumber}</Text>
-            <Text style={styles.phoneText} onPress={() => Linking.openURL(`tg://resolve?phone=${item?.user?.phoneNumber}`)}>Telegram</Text>
-            <Text style={styles.phoneText} onPress={() => Linking.openURL(`whatsapp://send?phone=${item?.user?.phoneNumber}`)}>WhatsApp</Text>
-            <Text style={styles.phoneText} onPress={() => Linking.openURL(`viber://contact?number=%2B${item?.user?.phoneNumber}`)}>Viber</Text>
+            <PartnerActions item={item} />
           </Card.Actions>
         )}
       </Card>
