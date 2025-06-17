@@ -1,5 +1,6 @@
 import { AutoLogoutTimer } from "@/components/feature/AutoLogoutTimer";
 import DrawerButton from "@/components/feature/DrawerButton";
+import { Loader } from "@/components/ui";
 import { useAuthStore } from "@/stores/authStore";
 import { useLocationStore } from "@/stores/locationStore";
 import { useUserStore } from "@/stores/userStore";
@@ -23,6 +24,7 @@ export default function RootLayout() {
   const { session, isReady, signOut } = useAuthStore();
   const { requestLocation, location } = useLocationStore();
   const user = useUserStore((state) => state.user);
+  const isHydrated = useUserStore((state) => state.isHydrated);
   const theme = useTheme()
 
   useEffect(() => {
@@ -37,6 +39,10 @@ export default function RootLayout() {
 
   if (!session) {
     return <Redirect href="/(auth)" />
+  }
+
+  if (!isHydrated) {
+    return <Loader />;
   }
 
   return (
