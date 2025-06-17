@@ -1,4 +1,5 @@
 import PlacesAutocomplete from "@/components/feature/PlacesAutocomplete"
+import { ErrorModal, Loader } from "@/components/ui"
 import { useCurrentLocationData } from "@/hooks/useCurrentLocationData"
 import { createRide } from "@/services/api.service"
 import { useGoogleMapsError } from "@/stores/errorStore"
@@ -7,9 +8,8 @@ import { generateRideData } from "@/utils"
 import { Ionicons } from "@expo/vector-icons"
 import { router } from "expo-router"
 import { useState } from "react"
-import { StyleSheet, Text, View } from "react-native"
-import { Button, Modal, Portal, TextInput } from "react-native-paper"
-import { Loader } from "../ui"
+import { StyleSheet, View } from "react-native"
+import { Button, TextInput } from "react-native-paper"
 
 export default function RideForm() {
   const { setActiveRide, fromLocation, toLocation, setFromLocation, setToLocation } = useRideStore()
@@ -33,18 +33,17 @@ export default function RideForm() {
     }
   }
 
-  if (createRideError) return (
-    <Portal>
-      <Modal visible={!!createRideError} onDismiss={() => {
+  if (createRideError) {
+    return (
+      <ErrorModal visible={!!createRideError} message={createRideError} onDismiss={() => {
         setCreateRideError(null)
-        router.reload()
-      }}>
-        <View>
-          <Text style={{ color: '#ff0000', fontSize: 16 }}>{createRideError}</Text>
-        </View>
-      </Modal>
-    </Portal>
-  )
+        router.replace('/(app)/Ride')
+        setFromLocation(null)
+        setToLocation(null)
+        setWalkDistance(null)
+      }} />
+    )
+  }
 
   if (loading) return <Loader />
 
