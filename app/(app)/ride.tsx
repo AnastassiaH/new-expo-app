@@ -1,6 +1,8 @@
 import MapComponent from "@/components/feature/MapComponent";
 import RideForm from "@/components/feature/RideForm";
-import { DEFAULT_ERROR_MESSAGE } from "@/constants";
+import ErrorOverlay from "@/components/ui/ErrorOverlay";
+import { DEFAULT_ERROR_MESSAGE, DEFAULT_MAPS_ERROR_MESSAGE } from "@/constants";
+import { useGoogleMapsError } from "@/stores/errorStore";
 import { ErrorBoundaryProps } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -8,7 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 	return (
-		<SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+		<SafeAreaView style={{ flex: 1, backgroundColor: "#fff", alignItems: 'center', justifyContent: 'center' }}>
 			<Text>{error.message || DEFAULT_ERROR_MESSAGE}</Text>
 			<Text onPress={retry}>Try Again?</Text>
 		</SafeAreaView>
@@ -16,6 +18,13 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 }
 
 export default function Ride() {
+	const mapError = useGoogleMapsError(s => s.error)
+	const clearMapError = useGoogleMapsError(s => s.clearError)
+
+	if (mapError) return (
+		<ErrorOverlay error={mapError || DEFAULT_MAPS_ERROR_MESSAGE} clearError={clearMapError} />
+	)
+
 	return (
 		<View style={{ flex: 1 }}>
 			<View style={styles.container}>

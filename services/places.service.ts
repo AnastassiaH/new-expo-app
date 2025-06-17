@@ -23,7 +23,6 @@ export const fetchAutocompletePredictions = async (query: string, location?: Pla
     );
     return res.data.predictions;
   } catch (error) {
-    console.error('Error fetching autocomplete predictions:', error);
     throw error;
   }
 };
@@ -42,8 +41,6 @@ export const getDataFromCoordinates = async (
     });
 
     if (response.data.results.length === 0) return null;
-
-    // console.log('getDataFromCoordinates response', response.data.results)
 
     const addresses = response.data.results.map((r: any) => ({
       formatted_address: r.formatted_address,
@@ -84,13 +81,11 @@ export const getDataFromCoordinates = async (
     }
     return addressData || null;
   } catch (error) {
-    console.error('Error fetching region data:', error);
     throw error;
   }
 }
 
 export const getPlaceData = async (placeId: string): Promise<LocationPoint | null> => {
-  console.log('getPlaceData placeId', placeId)
   try {
     const response = await axios.get(
       'https://maps.googleapis.com/maps/api/place/details/json',
@@ -104,19 +99,13 @@ export const getPlaceData = async (placeId: string): Promise<LocationPoint | nul
     );
 
     if (!response.data.result) {
-      console.log('No result in response', response.data);
-      return null;
+      throw new Error('Error fetching place data');
     }
-
-
-
-    console.log('getPlaceData response', 'response')
 
     const location = response.data.result.geometry.location;
 
     if (!location) {
-      console.log('No geometry in result', response.data.result);
-      return null;
+      throw new Error('No geometry in result');
     }
     return {
       latitude: location.lat,
@@ -124,7 +113,6 @@ export const getPlaceData = async (placeId: string): Promise<LocationPoint | nul
       description: response.data.result.formatted_address,
     };
   } catch (error) {
-    console.error('Error fetching place data:', error);
     throw error;
   }
 };
@@ -139,7 +127,6 @@ export const getRouteCoords = async (from: LocationPoint, to: LocationPoint): Pr
     const points = polyline.decode(json.routes[0].overview_polyline.points);
     return points.map(([lat, lng]) => ({ latitude: lat, longitude: lng }));
   } catch (error) {
-    console.error('Error fetching route data:', error);
     throw error;
   }
 };

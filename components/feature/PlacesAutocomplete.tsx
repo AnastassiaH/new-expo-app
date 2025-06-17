@@ -1,7 +1,8 @@
+import { DEFAULT_ERROR_MESSAGE } from '@/constants';
 import { fetchAutocompletePredictions, getPlaceData } from '@/services/places.service';
 import { LocationPoint, PlaceCoords, PlacePrediction, UserLocationData } from '@/types';
 import { debounce } from 'lodash';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 
@@ -12,40 +13,43 @@ interface Props {
   placeholder?: string
   minCharsToFetch?: number
   currentEnabled?: boolean
+  onError: (msg: string) => void
 }
 
-const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, currentCoords, currentLocationData, placeholder, currentEnabled = false, minCharsToFetch = 2 }) => {
+const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, currentCoords, currentLocationData, placeholder, onError, currentEnabled = false, minCharsToFetch = 2 }) => {
   const [query, setQuery] = useState('');
   const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
   const [loading, setLoading] = useState(false);
   const [placeSelected, setPlaceSelected] = useState<PlacePrediction | null>(null)
   const [error, setError] = useState(false)
 
-  useEffect(() => {
-    console.log('places autocomplete rendered')
-  }, [])
-
   const handleSearch = async (query: string, city?: string) => {
     if (query?.length < minCharsToFetch || !city) return
+    if (error) return
 
     setLoading(true)
 
-    const predictions = await fetchAutocompletePredictions(query, currentCoords);
-    const filteredPredictions = predictions.filter(prediction => prediction.description?.includes(city))
-    const currentAdresses = currentLocationData?.addresses;
+    try {
+      const predictions = await fetchAutocompletePredictions(query, currentCoords);
+      const filteredPredictions = predictions.filter(prediction => prediction.description?.includes(city))
+      const currentAdresses = currentLocationData?.addresses;
 
-    if (predictions.length === 1) {
-      handleSelect(predictions[0])
-      return
+      if (predictions.length === 1) {
+        handleSelect(predictions[0])
+        return
+      }
+
+      if (currentAdresses?.[0].formatted_address?.includes(query) && currentEnabled) {
+        setPredictions([...currentAdresses, ...filteredPredictions])
+      } else {
+        setPredictions([...filteredPredictions])
+      }
+    } catch (err: any) {
+      onError(err?.message || DEFAULT_ERROR_MESSAGE)
+      setPredictions([]);
+    } finally {
+      setLoading(false)
     }
-
-    if (currentAdresses?.[0].formatted_address?.includes(query) && currentEnabled) {
-      setPredictions([...currentAdresses, ...filteredPredictions])
-    } else {
-      setPredictions([...filteredPredictions])
-    }
-
-    setLoading(false)
   };
 
   const debouncedSearch = useCallback(debounce(handleSearch, 300), []);

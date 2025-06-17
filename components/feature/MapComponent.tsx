@@ -1,5 +1,7 @@
+import { DEFAULT_MAPS_ERROR_MESSAGE } from "@/constants";
 import { useCurrentLocationData } from "@/hooks/useCurrentLocationData";
 import { getRouteCoords } from "@/services/places.service";
+import { useGoogleMapsError } from "@/stores/errorStore";
 import useRideStore from "@/stores/rideStore";
 import { PlaceCoords } from "@/types";
 import { useEffect, useRef, useState } from "react";
@@ -18,6 +20,7 @@ export default function MapComponent() {
   const { currentCoords } = useCurrentLocationData()
   const [routeCoords, setRouteCoords] = useState<PlaceCoords[]>([])
   const mapRef = useRef<MapView>(null);
+  const setError = useGoogleMapsError(s => s.setError)
 
   useEffect(() => {
     const fetchRoute = async () => {
@@ -29,8 +32,8 @@ export default function MapComponent() {
           edgePadding: edgeMapPadding,
           animated: true,
         });
-      } catch (err) {
-        console.error('Failed to get route coords:', err);
+      } catch (err: any) {
+        setError(err?.message || DEFAULT_MAPS_ERROR_MESSAGE)
       }
     };
 

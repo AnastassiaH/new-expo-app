@@ -1,6 +1,7 @@
 import PlacesAutocomplete from "@/components/feature/PlacesAutocomplete"
 import { useCurrentLocationData } from "@/hooks/useCurrentLocationData"
 import { createRide } from "@/services/api.service"
+import { useGoogleMapsError } from "@/stores/errorStore"
 import useRideStore from "@/stores/rideStore"
 import { generateRideData } from "@/utils"
 import { Ionicons } from "@expo/vector-icons"
@@ -15,6 +16,7 @@ export default function RideForm() {
   const { currentLocationData, currentCoords, loading } = useCurrentLocationData()
   const [walkDistance, setWalkDistance] = useState<string | null>(null)
   const [createRideError, setCreateRideError] = useState<string | null>(null)
+  const setMapsError = useGoogleMapsError(s => s.setError)
 
   const onCreateRide = async () => {
     const rideData = generateRideData(fromLocation!, toLocation!, +walkDistance!)
@@ -58,6 +60,7 @@ export default function RideForm() {
               currentCoords={currentCoords}
               currentLocationData={currentLocationData}
               currentEnabled={true}
+              onError={setMapsError}
             />
           </View>
         </View>
@@ -69,6 +72,7 @@ export default function RideForm() {
               onPlaceSelect={(location) => setToLocation(location)}
               currentCoords={currentCoords}
               currentLocationData={currentLocationData}
+              onError={setMapsError}
             />
           </View>
         </View>

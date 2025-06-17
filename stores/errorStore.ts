@@ -9,3 +9,13 @@ export const useAuthError = create<{
   setError: (msg) => set({ error: msg }),
   clearError: () => set({ error: null }),
 }));
+
+export const useGoogleMapsError = create<{
+  error: string | null;
+  setError: (msg: string) => void;
+  clearError: () => void;
+}>((set) => ({
+  error: null,
+  setError: (msg) => set({ error: msg }),
+  clearError: () => set({ error: null }),
+}));
