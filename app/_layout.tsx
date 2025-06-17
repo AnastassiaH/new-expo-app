@@ -11,14 +11,15 @@ import { useEffect } from 'react';
 
 import { type ErrorBoundaryProps } from 'expo-router';
 import { Text, View } from 'react-native';
-import { MD3DarkTheme, PaperProvider } from 'react-native-paper';
+import { MD3DarkTheme, PaperProvider, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
+  const theme = useTheme()
   return (
-    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: "black" }}>
-      <Text style={{ color: "white" }}>{error.message}</Text>
-      <Text style={{ color: "white" }} onPress={retry}>Try Again?</Text>
+    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background }}>
+      <Text style={{ color: theme.colors.onSurface }}>{error.message}</Text>
+      <Text style={{ color: theme.colors.onSurface }} onPress={retry}>Try Again?</Text>
     </SafeAreaView>
   );
 }
@@ -35,6 +36,7 @@ export default function RootLayout() {
       primary: '#003049',
       onPrimary: '#fdf0d5',
       background: '#003049',
+      secondaryContainer: '#8d99ae',
       surface: '#669bbc',
       onSurface: '#fdf0d5',
       onSurfaceVariant: '#000000',

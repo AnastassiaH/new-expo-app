@@ -1,4 +1,5 @@
 import { Loader } from '@/components/ui'
+import ScreenWrapper from '@/components/ui/ScreenWrapper'
 import { cancelRide } from '@/services/api.service'
 import useRideStore from '@/stores/rideStore'
 import shared from '@/styles/shared'
@@ -8,9 +9,8 @@ import React from 'react'
 import {
   FlatList,
   RefreshControl,
-  SafeAreaView,
   Text,
-  View,
+  View
 } from 'react-native'
 import { Button } from 'react-native-paper'
 import PartnerItem from '../../components/PartnerItem'
@@ -105,8 +105,8 @@ const PartnersScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={[shared.container, { width: '100%', paddingTop: 40 }]}>
+    <ScreenWrapper>
+      <View>
         {partners?.length > 0 || mockPartners?.length > 0 && (
           <FlatList
             style={{ width: '100%' }}
@@ -144,7 +144,7 @@ const PartnersScreen: React.FC = () => {
           </Button>
         </View>
       )}
-    </SafeAreaView>
+    </ScreenWrapper>
   )
 }
 

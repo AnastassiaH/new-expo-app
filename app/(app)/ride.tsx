@@ -45,11 +45,11 @@ const styles = StyleSheet.create({
 	},
 	formContainer: {
 		position: 'absolute',
-		top: 50,
+		top: 80,
 		left: 0,
 		right: 0,
 		backgroundColor: 'transparent',
-		padding: 16,
+		paddingVertical: 20,
 		shadowColor: '#000',
 		shadowOffset: {
 			height: -2,

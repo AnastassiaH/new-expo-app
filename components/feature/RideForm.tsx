@@ -111,9 +111,9 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: 10,
     backgroundColor: 'transparent',
-    padding: 20,
+    paddingHorizontal: 20,
     borderRadius: 10,
-    marginTop: 20,
+    marginTop: 40,
     zIndex: 1,
   },
   formRow: {
