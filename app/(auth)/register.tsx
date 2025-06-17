@@ -1,6 +1,8 @@
-import SignUpForm from '@/components/SignUpForm'
+import SignUpForm from '@/components/feature/SignUpForm'
 import { Header, Loader, Logo, Wrapper } from '@/components/ui'
+import { DEFAULT_ERROR_MESSAGE } from '@/constants'
 import { registerUser } from '@/services/api.service'
+import { useAuthError } from '@/stores/errorStore'
 import usePhoneStore from '@/stores/phoneStore'
 import { UserData } from '@/types'
 import { router } from 'expo-router'
@@ -10,23 +12,27 @@ import { Text, useTheme } from 'react-native-paper'
 
 export default function RegisterScreen() {
   const theme = useTheme()
-  const [error, setError] = useState<Error | null>(null)
+  const setError = useAuthError(s => s.setError);
   const [isLoading, setIsLoading] = useState(false)
   const { setPhone } = usePhoneStore()
 
   async function signUpUser(data: UserData) {
-    setError(null)
+    setError('')
     setPhone(data.phoneNumber)
     console.log(data)
 
     try {
+      setIsLoading(true)
       const response = await registerUser(data)
       if (response) {
         router.replace('/(auth)/verification')
       }
-    } catch (error) {
-      setError(error as Error)
+    } catch (error: any) {
+      setError(error?.message || DEFAULT_ERROR_MESSAGE)
       router.replace('/(auth)')
+      throw error
+    } finally {
+      setIsLoading(false)
     }
   }
 

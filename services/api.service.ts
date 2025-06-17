@@ -13,9 +13,7 @@ const apiRequest = async <T>(
     const response = await axiosService({ method, url, data, params })
     return response.data
   } catch (error: any) {
-    console.error(`API error (${method.toUpperCase()} ${url}):`, error)
-
-    return new Error(error.message)
+    throw new Error(error.message)
   }
 }
 

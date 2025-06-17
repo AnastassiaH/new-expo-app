@@ -1,5 +1,7 @@
 import { Header, Loader, Logo, Wrapper } from '@/components/ui'
+import { DEFAULT_ERROR_MESSAGE } from '@/constants'
 import { resetPassword } from '@/services/api.service'
+import { useAuthError } from '@/stores/errorStore'
 import usePhoneStore from '@/stores/phoneStore'
 import { router } from 'expo-router'
 import React, { useState } from 'react'
@@ -25,9 +27,11 @@ const ResetPasswordScreen: React.FC = () => {
   } = useForm<FormData>()
   const [isLoading, setIsLoading] = useState(false)
   const { phone } = usePhoneStore()
+  const setError = useAuthError(s => s.setError)
 
   const sendResetPassword = async (data: FormData) => {
     try {
+      setIsLoading(true)
       const response = await resetPassword({
         phoneNumber: phone,
         code: data.verificationCode,
@@ -38,8 +42,12 @@ const ResetPasswordScreen: React.FC = () => {
       if (response) {
         router.replace('/(auth)/login')
       }
-    } catch (error) {
-      console.error(error)
+    } catch (error: any) {
+      setError(error?.message || DEFAULT_ERROR_MESSAGE)
+      router.replace('/(auth)')
+      throw error
+    } finally {
+      setIsLoading(false)
     }
   }
 

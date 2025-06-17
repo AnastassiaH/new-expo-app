@@ -27,8 +27,6 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
     getValues
   } = useForm<UserSignInData>()
 
-  console.log(getValues())
-
   const onPhoneNumberFocus = () => {
     if (!getValues('phoneNumber')) {
       setValue('phoneNumber', '+380')

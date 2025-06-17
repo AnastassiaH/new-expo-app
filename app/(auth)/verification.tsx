@@ -1,9 +1,11 @@
 import { Header, Loader, Logo, Wrapper } from '@/components/ui'
+import { DEFAULT_ERROR_MESSAGE } from '@/constants'
 import { verifyPhone } from '@/services/api.service'
+import { useAuthError } from '@/stores/errorStore'
 import usePhoneStore from '@/stores/phoneStore'
 import { useUserStore } from '@/stores/userStore'
 import { router } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { StyleSheet, View } from 'react-native'
 import { Button, Text, TextInput, useTheme } from 'react-native-paper'
@@ -14,10 +16,10 @@ type VerificationFormData = {
 
 const VerificationScreen: React.FC = () => {
   const theme = useTheme()
-  const [error, setError] = useState<Error | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const { phone } = usePhoneStore()
   const { setUser } = useUserStore()
+  const setError = useAuthError(s => s.setError)
 
   const handleVerification = async (verificationFormData: VerificationFormData) => {
     const data = {
@@ -33,8 +35,10 @@ const VerificationScreen: React.FC = () => {
         setUser(response)
         router.replace('/(app)/Ride')
       }
-    } catch (err) {
-      setError(err as Error)
+    } catch (err: any) {
+      setError(err?.message || DEFAULT_ERROR_MESSAGE)
+      router.replace('/(auth)/verification')
+      throw err
     } finally {
       setIsLoading(false)
     }
@@ -49,17 +53,6 @@ const VerificationScreen: React.FC = () => {
   } = useForm<VerificationFormData>()
 
   const onSubmit = handleSubmit(handleVerification)
-
-  useEffect(() => {
-    if (error !== null) {
-      // showMessage({
-      //   message: error.message,
-      //   type: 'danger'
-      // })
-    }
-    router.replace('/(auth)/verification')
-    setError(null)
-  }, [error])
 
   if (isLoading) return <Loader />
 

@@ -4,13 +4,14 @@ import { router } from 'expo-router'
 import React, { useState } from 'react'
 
 import { Header, Loader, Logo, Wrapper } from '@/components/ui'
+import { DEFAULT_ERROR_MESSAGE } from '@/constants'
+import { useAuthError } from '@/stores/errorStore'
 import { StyleSheet, View } from 'react-native'
 import { Button, TextInput, useTheme } from 'react-native-paper'
 
-
 export default function ForgotPasswordScreen() {
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<Error | null>(null)
+  const setError = useAuthError(s => s.setError)
   const theme = useTheme()
   const [phoneNumber, setPhoneNumber] = useState('')
   const { setPhone } = usePhoneStore()
@@ -28,9 +29,10 @@ export default function ForgotPasswordScreen() {
       if (response) {
         router.push('/(auth)/reset-password')
       }
-    } catch (error) {
-      setError(error as Error)
+    } catch (error: any) {
+      setError(error?.message || DEFAULT_ERROR_MESSAGE)
       router.push('/(auth)/login')
+      throw error
     }
   }
 

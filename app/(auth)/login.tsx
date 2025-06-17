@@ -1,6 +1,8 @@
 import { Header, Loader, Logo, Wrapper } from '@/components/ui'
+import { DEFAULT_ERROR_MESSAGE } from '@/constants'
 import { logInUser } from '@/services/api.service'
 import { useAuthStore } from '@/stores/authStore'
+import { useAuthError } from '@/stores/errorStore'
 import usePhoneStore from '@/stores/phoneStore'
 import { useUserStore } from '@/stores/userStore'
 import { LoginData } from '@/types'
@@ -13,7 +15,7 @@ import { Button, Text, TextInput, useTheme } from 'react-native-paper'
 
 export default function LoginScreen() {
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<Error | null>(null)
+  const setError = useAuthError(s => s.setError)
   const theme = useTheme()
   const { control, handleSubmit, setValue, clearErrors, getValues } = useForm<LoginData>()
   const { signIn } = useAuthStore()
@@ -36,9 +38,10 @@ export default function LoginScreen() {
         setUser(response.user)
         signIn(response.token)
       }
-    } catch (error) {
-      setError(error as Error)
+    } catch (error: any) {
+      setError(error?.message || DEFAULT_ERROR_MESSAGE)
       router.replace('/(auth)')
+      throw error
     } finally {
       setIsLoading(false)
     }
