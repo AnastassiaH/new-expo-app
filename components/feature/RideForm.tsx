@@ -80,6 +80,7 @@ export default function RideForm() {
           <Ionicons name="walk" size={20} color="black" style={styles.inputIcon} />
           <TextInput
             keyboardType="numeric"
+            textColor="black"
             style={styles.input}
             selectionColor="black"
             placeholderTextColor="black"

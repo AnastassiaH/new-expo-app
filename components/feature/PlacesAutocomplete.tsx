@@ -3,8 +3,7 @@ import { fetchAutocompletePredictions, getPlaceData } from '@/services/places.se
 import { LocationPoint, PlaceCoords, PlacePrediction, UserLocationData } from '@/types';
 import { debounce } from 'lodash';
 import React, { useCallback, useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface Props {
   onPlaceSelect: (place: LocationPoint | null) => void;
@@ -110,6 +109,8 @@ const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, currentCoords, cur
           onBlur={handleOnBlur}
           onFocus={() => setError(false)}
           style={[styles.input, error && styles.errorInput]}
+          numberOfLines={1}
+          multiline={false}
         />
         {query && (
           <TouchableOpacity
