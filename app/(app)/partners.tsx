@@ -1,20 +1,18 @@
-import { Loader } from '@/components/ui'
+import PartnerItem from '@/components/PartnerItem'
+import { ErrorModal, Loader } from '@/components/ui'
 import ScreenWrapper from '@/components/ui/ScreenWrapper'
+import { useAutoRefreshPartners } from '@/hooks/useAutoRefreshPartners'
 import { cancelRide } from '@/services/api.service'
-import useRideStore from '@/stores/rideStore'
-import shared from '@/styles/shared'
+import { usePartnersStore } from '@/stores/partnersStore'
 import { PartnerData } from '@/types'
 import { router } from 'expo-router'
 import React from 'react'
 import {
-  FlatList,
-  RefreshControl,
-  Text,
   View
 } from 'react-native'
+import { FlatList } from 'react-native-gesture-handler'
 import { Button } from 'react-native-paper'
-import PartnerItem from '../../components/PartnerItem'
-import { usePartners } from '../../hooks/usePartners'
+import { useActiveRideStore } from '../../stores/activeRideStore'
 
 const mockPartners: PartnerData[] = [
   {
@@ -64,18 +62,18 @@ const mockPartners: PartnerData[] = [
 ]
 
 const PartnersScreen: React.FC = () => {
-  const { isLoading, error, refreshing, partners, handleRefresh } = usePartners()
-  const { activeRide, setActiveRide } = useRideStore()
+  const { activeRide, setActiveRide } = useActiveRideStore()
   const [expandedItem, setExpandedItem] = React.useState<string | null>(null)
   const [cancelRideError, setCancelRideError] = React.useState<string | null>(null)
+  const { partners, loading, error: partnersError, fetchPartners } = usePartnersStore()
 
-  // to do notification service
+  useAutoRefreshPartners(activeRide?.id)
 
   const handlePress = (itemId: string) => {
     setExpandedItem(itemId === expandedItem ? null : itemId)
   }
 
-  const cancel = async () => {
+  const cancelActiveRide = async () => {
     if (!activeRide?.id) return
 
     try {
@@ -92,30 +90,33 @@ const PartnersScreen: React.FC = () => {
     }
   }
 
-  if (isLoading) {
+  if (loading) {
     return <Loader />
   }
 
-  if (error) {
-    return (
-      <View style={shared.container}>
-        <Text>Error loading partners: {error.message}</Text>
-      </View>
-    )
+  if (cancelRideError) {
+    return <ErrorModal
+      visible={!!cancelRideError}
+      message={cancelRideError}
+      onDismiss={() => setCancelRideError(null)} />
+  }
+
+  if (partnersError) {
+    return <ErrorModal
+      visible={!!partnersError}
+      message={partnersError}
+      onDismiss={() => usePartnersStore.setState({ error: null })}
+      tryAgain={() => fetchPartners(activeRide?.id!)} />
   }
 
   return (
     <ScreenWrapper>
       <View>
-        {partners?.length > 0 || mockPartners?.length > 0 && (
+        {partners && partners?.length > 0 || mockPartners?.length > 0 && (
           <FlatList
             style={{ width: '100%' }}
             contentContainerStyle={{ flexGrow: 1 }}
-            refreshing={refreshing}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-            }
-            data={partners.length > 0 ? partners : mockPartners}
+            data={partners && partners?.length > 0 ? partners : mockPartners}
             renderItem={({ item }) => (
               <PartnerItem
                 item={item}
@@ -125,7 +126,6 @@ const PartnersScreen: React.FC = () => {
             )}
             keyExtractor={(item) => item.id!}
             showsVerticalScrollIndicator={false}
-          // ListEmptyComponent={<SearchingLoader />}
           />
         )}
       </View>
@@ -139,7 +139,7 @@ const PartnersScreen: React.FC = () => {
             marginBottom: 20,
           }}
         >
-          <Button style={{ width: '50%' }} mode="contained" onPress={cancel}>
+          <Button style={{ width: '50%' }} mode="contained" onPress={cancelActiveRide}>
             Cancel the ride
           </Button>
         </View>

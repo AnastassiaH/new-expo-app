@@ -12,6 +12,7 @@ export const API_ENDPOINTS: ApiEndpoints = {
 	resetPassword: '/auth/recovery/password',
 }
 
-export const AUTO_SIGN_OUT_TIMEOUT = 3600_000;
+export const AUTO_SIGN_OUT_TIMEOUT = 600_000;
 export const DEFAULT_ERROR_MESSAGE = 'Oh, woe to me, My Lord!';
 export const DEFAULT_MAPS_ERROR_MESSAGE = 'Google Maps is not available';
+export const REFRESH_PARTNERS_INTERVAL = 60 * 1000 * 5;

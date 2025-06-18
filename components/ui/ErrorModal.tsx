@@ -6,9 +6,10 @@ interface ErrorModalProps {
   visible: boolean;
   message: string | null;
   onDismiss: () => void;
+  tryAgain?: () => void;
 }
 
-const ErrorModal: React.FC<ErrorModalProps> = ({ visible, message, onDismiss }) => {
+const ErrorModal: React.FC<ErrorModalProps> = ({ visible, message, onDismiss, tryAgain }) => {
   const theme = useTheme();
 
   return (
@@ -25,6 +26,17 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ visible, message, onDismiss }) 
           >
             Close
           </Button>
+          {tryAgain && (
+            <Button
+              mode="contained"
+              onPress={tryAgain}
+              style={styles.button}
+              buttonColor={theme.colors.primary}
+              textColor={theme.colors.onPrimary}
+            >
+              Try Again
+            </Button>
+          )}
         </View>
       </Modal>
     </Portal>
