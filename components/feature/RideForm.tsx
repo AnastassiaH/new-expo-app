@@ -2,8 +2,9 @@ import PlacesAutocomplete from "@/components/feature/PlacesAutocomplete"
 import { ErrorModal, Loader } from "@/components/ui"
 import { useCurrentLocationData } from "@/hooks/useCurrentLocationData"
 import { createRide } from "@/services/api.service"
+import { useActiveRideStore } from "@/stores/activeRideStore"
 import { useGoogleMapsError } from "@/stores/errorStore"
-import useRideStore from "@/stores/rideStore"
+import useRideFormStore from "@/stores/rideFormStore"
 import { generateRideData } from "@/utils"
 import { Ionicons } from "@expo/vector-icons"
 import { router } from "expo-router"
@@ -12,11 +13,12 @@ import { StyleSheet, View } from "react-native"
 import { Button, TextInput } from "react-native-paper"
 
 export default function RideForm() {
-  const { setActiveRide, fromLocation, toLocation, setFromLocation, setToLocation } = useRideStore()
+  const { fromLocation, toLocation, setFromLocation, setToLocation } = useRideFormStore()
   const { currentLocationData, currentCoords, loading } = useCurrentLocationData()
   const [walkDistance, setWalkDistance] = useState<string | null>(null)
   const [createRideError, setCreateRideError] = useState<string | null>(null)
   const setMapsError = useGoogleMapsError(s => s.setError)
+  const setActiveRide = useActiveRideStore(s => s.setActiveRide)
 
   const onCreateRide = async () => {
     const rideData = generateRideData(fromLocation!, toLocation!, +walkDistance!)

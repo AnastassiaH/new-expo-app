@@ -2,7 +2,7 @@ import { DEFAULT_MAPS_ERROR_MESSAGE } from "@/constants";
 import { useCurrentLocationData } from "@/hooks/useCurrentLocationData";
 import { getRouteCoords } from "@/services/places.service";
 import { useGoogleMapsError } from "@/stores/errorStore";
-import useRideStore from "@/stores/rideStore";
+import useRideFormStore from "@/stores/rideFormStore";
 import { PlaceCoords } from "@/types";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -16,7 +16,7 @@ const edgeMapPadding = {
 }
 
 export default function MapComponent() {
-  const { fromLocation, toLocation } = useRideStore()
+  const { fromLocation, toLocation } = useRideFormStore()
   const { currentCoords } = useCurrentLocationData()
   const [routeCoords, setRouteCoords] = useState<PlaceCoords[]>([])
   const mapRef = useRef<MapView>(null);

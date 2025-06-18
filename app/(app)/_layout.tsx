@@ -1,17 +1,17 @@
 import { AutoLogoutTimer } from "@/components/feature/AutoLogoutTimer";
 import DrawerButton from "@/components/feature/DrawerButton";
 import { Loader } from "@/components/ui";
+import { useActiveRideStore } from "@/stores/activeRideStore";
 import { useAuthStore } from "@/stores/authStore";
 import { useLocationStore } from "@/stores/locationStore";
 import { useUserStore } from "@/stores/userStore";
 import { Ionicons } from "@expo/vector-icons";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { Redirect } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { useEffect } from "react";
 import { View } from "react-native";
 import { Avatar, Text, useTheme } from "react-native-paper";
-
 
 const iconsMap: Record<string, keyof typeof Ionicons.glyphMap> = {
   Partners: 'people-outline',
@@ -23,9 +23,16 @@ const iconsMap: Record<string, keyof typeof Ionicons.glyphMap> = {
 export default function RootLayout() {
   const { session, isReady, signOut } = useAuthStore();
   const { requestLocation, location } = useLocationStore();
+  const { activeRide } = useActiveRideStore()
   const user = useUserStore((state) => state.user);
   const isHydrated = useUserStore((state) => state.isHydrated);
   const theme = useTheme()
+
+  useEffect(() => {
+    if (activeRide) {
+      router.replace('/(app)/Partners')
+    }
+  }, [activeRide])
 
   useEffect(() => {
     if (!location) {
@@ -125,9 +132,7 @@ export default function RootLayout() {
             </View>
           </DrawerContentScrollView>
         )}
-
       />
-
     </>
   )
 }
