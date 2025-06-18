@@ -23,10 +23,16 @@ const iconsMap: Record<string, keyof typeof Ionicons.glyphMap> = {
 export default function RootLayout() {
   const { session, isReady, signOut } = useAuthStore();
   const { requestLocation, location } = useLocationStore();
-  const { activeRide } = useActiveRideStore()
+  const { activeRide, fetchActiveRide, isLoading } = useActiveRideStore()
   const user = useUserStore((state) => state.user);
   const isHydrated = useUserStore((state) => state.isHydrated);
   const theme = useTheme()
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchActiveRide(user.id)
+    }
+  }, [user?.id])
 
   useEffect(() => {
     if (activeRide) {
@@ -48,7 +54,7 @@ export default function RootLayout() {
     return <Redirect href="/(auth)" />
   }
 
-  if (!isHydrated) {
+  if (!isHydrated || isLoading) {
     return <Loader />;
   }
 

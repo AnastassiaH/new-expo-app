@@ -49,5 +49,8 @@ export const createRide = (data: RideData) =>
 export const cancelRide = (id: string) =>
   apiRequest('delete', `${API_ENDPOINTS.ride}/${id}`, undefined, { id })
 
+export const getRide = (userId: string, isActive = false) =>
+  apiRequest('get', API_ENDPOINTS.ride, undefined, { userId, isActive })
+
 export const getPartners = (id: string) =>
   apiRequest('get', `/rides/${id}/partners`, undefined, { id })
