@@ -13,7 +13,7 @@ import { StyleSheet, View } from "react-native"
 import { Button, TextInput } from "react-native-paper"
 
 export default function RideForm() {
-  const { fromLocation, toLocation, setFromLocation, setToLocation } = useRideFormStore()
+  const { fromLocation, toLocation, setFromLocation, setToLocation, clearForm } = useRideFormStore()
   const { currentLocationData, currentCoords, loading } = useCurrentLocationData()
   const [walkDistance, setWalkDistance] = useState<string | null>(null)
   const [createRideError, setCreateRideError] = useState<string | null>(null)
@@ -32,6 +32,8 @@ export default function RideForm() {
     } catch (error: any) {
       console.log('create ride error', error?.code, error)
       setCreateRideError(error?.message)
+    } finally {
+      clearForm()
     }
   }
 
@@ -39,10 +41,8 @@ export default function RideForm() {
     return (
       <ErrorModal visible={!!createRideError} message={createRideError} onDismiss={() => {
         setCreateRideError(null)
-        router.replace('/(app)/Ride')
-        setFromLocation(null)
-        setToLocation(null)
-        setWalkDistance(null)
+        router.replace('/(app)/Ride' as never)
+        clearForm()
       }} />
     )
   }
