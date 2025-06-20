@@ -2,7 +2,7 @@ import { DEFAULT_ERROR_MESSAGE } from '@/constants';
 import { fetchAutocompletePredictions, getPlaceData } from '@/services/places.service';
 import { LocationPoint, PlaceCoords, PlacePrediction, UserLocationData } from '@/types';
 import { debounce } from 'lodash';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useImperativeHandle, useRef, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface Props {
@@ -15,127 +15,154 @@ interface Props {
   onError: (msg: string) => void
 }
 
-const PlacesAutocomplete: React.FC<Props> = ({ onPlaceSelect, currentCoords, currentLocationData, placeholder, onError, currentEnabled = false, minCharsToFetch = 2 }) => {
-  const [query, setQuery] = useState('');
-  const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [placeSelected, setPlaceSelected] = useState<PlacePrediction | null>(null)
-  const [error, setError] = useState(false)
+interface TextInputRef {
+  focus: () => void;
+  clear: () => void;
+}
 
-  const handleSearch = async (query: string, city?: string) => {
-    if (query?.length < minCharsToFetch || !city) return
-    if (error) return
+const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
+  (
+    {
+      onPlaceSelect,
+      currentCoords,
+      currentLocationData,
+      placeholder,
+      onError,
+      currentEnabled = false,
+      minCharsToFetch = 2,
+    },
+    ref
+  ) => {
+    const [query, setQuery] = useState('');
+    const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [placeSelected, setPlaceSelected] = useState<PlacePrediction | null>(null)
+    const [error, setError] = useState(false)
 
-    setLoading(true)
+    const inputRef = useRef<TextInput>(null);
 
-    try {
-      const predictions = await fetchAutocompletePredictions(query, currentCoords);
-      const filteredPredictions = predictions.filter(prediction => prediction.description?.includes(city))
-      const currentAdresses = currentLocationData?.addresses;
+    useImperativeHandle(ref, () => ({
+      focus: () => inputRef.current?.focus(),
+      clear: () => inputRef.current?.clear(),
+    }));
 
-      if (predictions.length === 1) {
-        handleSelect(predictions[0])
+
+    const handleSearch = async (query: string, city?: string) => {
+      if (query?.length < minCharsToFetch || !city) return
+      if (error) return
+
+      setLoading(true)
+
+      try {
+        const predictions = await fetchAutocompletePredictions(query, currentCoords);
+        const filteredPredictions = predictions.filter(prediction => prediction.description?.includes(city))
+        const currentAdresses = currentLocationData?.addresses;
+
+        if (predictions.length === 1) {
+          handleSelect(predictions[0])
+          return
+        }
+
+        if (currentAdresses?.[0].formatted_address?.includes(query) && currentEnabled) {
+          setPredictions([...currentAdresses, ...filteredPredictions])
+        } else {
+          setPredictions([...filteredPredictions])
+        }
+      } catch (err: any) {
+        onError(err?.message || DEFAULT_ERROR_MESSAGE)
+        setPredictions([]);
+      } finally {
+        setLoading(false)
+      }
+    };
+
+    const debouncedSearch = useCallback(debounce(handleSearch, 300), []);
+
+    const handleOnBlur = () => {
+      if (!query) {
+        setError(false)
         return
       }
 
-      if (currentAdresses?.[0].formatted_address?.includes(query) && currentEnabled) {
-        setPredictions([...currentAdresses, ...filteredPredictions])
-      } else {
-        setPredictions([...filteredPredictions])
+      if (predictions?.length > 0) {
+        setError(false)
+      } else if (!placeSelected) {
+        setError(true)
       }
-    } catch (err: any) {
-      onError(err?.message || DEFAULT_ERROR_MESSAGE)
-      setPredictions([]);
-    } finally {
+    }
+
+    const handleChange = (value: string) => {
+      setPlaceSelected(null)
+      setQuery(value);
+      debouncedSearch(value, currentLocationData?.city);
+    }
+
+    const handleSelect = async (place: PlacePrediction) => {
+      setLoading(true)
+      setError(false)
+      setPredictions([])
+
+      const placeData = await getPlaceData(place.place_id)
+      if (!placeData) {
+        setError(true)
+        return
+      } else {
+        onPlaceSelect(placeData)
+      }
+
+      setPlaceSelected(place)
+      setQuery(place?.description || place?.formatted_address)
       setLoading(false)
     }
-  };
 
-  const debouncedSearch = useCallback(debounce(handleSearch, 300), []);
-
-  const handleOnBlur = () => {
-    if (!query) {
+    const handleClear = () => {
+      setQuery('')
+      setPredictions([])
       setError(false)
-      return
+      setPlaceSelected(null)
+      onPlaceSelect(null)
     }
 
-    if (predictions?.length > 0) {
-      setError(false)
-    } else if (!placeSelected) {
-      setError(true)
-    }
-  }
-
-  const handleChange = (value: string) => {
-    setPlaceSelected(null)
-    setQuery(value);
-    debouncedSearch(value, currentLocationData?.city);
-  }
-
-  const handleSelect = async (place: PlacePrediction) => {
-    setLoading(true)
-    setError(false)
-    setPredictions([])
-
-    const placeData = await getPlaceData(place.place_id)
-    if (!placeData) {
-      setError(true)
-      return
-    } else {
-      onPlaceSelect(placeData)
-    }
-
-    setPlaceSelected(place)
-    setQuery(place?.description || place?.formatted_address)
-    setLoading(false)
-  }
-
-  const handleClear = () => {
-    setQuery('')
-    setPredictions([])
-    setError(false)
-    setPlaceSelected(null)
-    onPlaceSelect(null)
-  }
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder={placeholder || 'Search for a place'}
-          placeholderTextColor="#000"
-          value={query}
-          onChangeText={handleChange}
-          onBlur={handleOnBlur}
-          onFocus={() => setError(false)}
-          style={[styles.input, error && styles.errorInput]}
-          numberOfLines={1}
-          multiline={false}
-        />
-        {query && (
-          <TouchableOpacity
-            onPress={handleClear}
-            style={styles.clearButton}
-          >
-            <Text style={styles.clearButtonText}>×</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-      {!loading && query?.length > minCharsToFetch && predictions?.length > 0 && (
-        <FlatList
-          style={styles.predictionsContainer}
-          data={predictions}
-          keyExtractor={(item) => `${item.place_id}`}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleSelect(item)} style={styles.predictionItem}>
-              <Text style={styles.predictionText}>{item.formatted_address || item.description || 'No address'}</Text>
+    return (
+      <View style={styles.container}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder={placeholder || 'Search for a place'}
+            placeholderTextColor="#000"
+            value={query}
+            onChangeText={handleChange}
+            onBlur={handleOnBlur}
+            onFocus={() => setError(false)}
+            style={[styles.input, error && styles.errorInput]}
+            numberOfLines={1}
+            multiline={false}
+            ref={inputRef}
+          />
+          {query && (
+            <TouchableOpacity
+              onPress={handleClear}
+              style={styles.clearButton}
+            >
+              <Text style={styles.clearButtonText}>×</Text>
             </TouchableOpacity>
           )}
-        />
-      )}
-    </View>
-  );
-};
+        </View>
+        {!loading && query?.length > minCharsToFetch && predictions?.length > 0 && (
+          <FlatList
+            style={styles.predictionsContainer}
+            data={predictions}
+            keyExtractor={(item) => `${item.place_id}`}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => handleSelect(item)} style={styles.predictionItem}>
+                <Text style={styles.predictionText}>{item.formatted_address || item.description || 'No address'}</Text>
+              </TouchableOpacity>
+            )}
+          />
+        )}
+      </View>
+    );
+  }
+)
 
 const styles = StyleSheet.create({
   container: {
