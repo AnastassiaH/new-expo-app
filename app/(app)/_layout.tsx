@@ -23,7 +23,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (activeRide) {
-      router.replace('/(app)/Partners')
+      router.replace('/(app)/Partners' as never)
     }
   }, [activeRide])
 

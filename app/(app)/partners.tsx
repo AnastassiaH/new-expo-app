@@ -86,7 +86,7 @@ const PartnersScreen: React.FC = () => {
       setCancelRideError(e?.message)
     } finally {
       setActiveRide(null)
-      router.replace('/(app)/Ride')
+      router.replace('/(app)/Ride' as never)
     }
   }
 
