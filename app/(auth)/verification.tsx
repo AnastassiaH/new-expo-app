@@ -68,12 +68,12 @@ const VerificationScreen: React.FC = () => {
             rules={{
               required: 'Verification code is required',
               minLength: {
-                value: 4,
-                message: 'Code must be 4 digits'
+                value: 6,
+                message: 'Code must be 6 digits'
               },
               maxLength: {
-                value: 4,
-                message: 'Code must be 4 digits'
+                value: 6,
+                message: 'Code must be 6 digits'
               }
             }}
             render={({ field: { value, onChange, onBlur } }) => (
@@ -84,7 +84,7 @@ const VerificationScreen: React.FC = () => {
                 onChangeText={onChange}
                 onBlur={onBlur}
                 keyboardType="numeric"
-                maxLength={4}
+                maxLength={6}
                 style={[styles.input, { backgroundColor: theme.colors.surface }]}
                 selectionColor={theme.colors.primary}
                 error={!!errors.verificationCode}

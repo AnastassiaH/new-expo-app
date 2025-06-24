@@ -64,8 +64,8 @@ const ResetPasswordScreen: React.FC = () => {
           rules={{
             required: 'Verification code is required',
             pattern: {
-              value: /^\d{4}$/,
-              message: 'Please enter a valid 4-digit code'
+              value: /^\d{6}$/,
+              message: 'Please enter a valid 6-digit code'
             }
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
