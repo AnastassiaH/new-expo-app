@@ -11,6 +11,12 @@ export type RootStackParamList = {
 	AppDrawer: undefined
 }
 
+export interface City {
+	name: string;
+	latitude: number;
+	longitude: number;
+}
+
 // export enum Screens {
 // 	RideScreen = 'RideScreen',
 // 	VerificationScreen = 'VerificationScreen',

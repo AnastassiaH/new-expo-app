@@ -1,4 +1,4 @@
-import MapComponent from "@/components/feature/MapComponent";
+import Map from "@/components/feature/Map";
 import RideForm from "@/components/feature/RideForm";
 import ErrorOverlay from "@/components/ui/ErrorOverlay";
 import { DEFAULT_ERROR_MESSAGE, DEFAULT_MAPS_ERROR_MESSAGE } from "@/constants";
@@ -28,7 +28,7 @@ export default function Ride() {
 	return (
 		<View style={{ flex: 1 }}>
 			<View style={styles.container}>
-				<MapComponent />
+				<Map />
 
 				<View style={styles.formContainer}>
 					<RideForm />

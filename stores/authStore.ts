@@ -2,6 +2,7 @@ import { AUTO_SIGN_OUT_TIMEOUT } from '@/constants';
 import { router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { create } from 'zustand';
+import useRideFormStore from './rideFormStore';
 
 type AuthState = {
 	session: string | null;
@@ -43,6 +44,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 			await SecureStore.deleteItemAsync('session');
 			await SecureStore.deleteItemAsync('lastActivityTime');
 			set({ session: null, isLoggedIn: false });
+			useRideFormStore.getState().clearForm();
 			router.replace('/');
 		} catch (error) {
 			console.error('Sign-out error:', error);

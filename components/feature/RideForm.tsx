@@ -3,6 +3,7 @@ import { ErrorModal, Loader } from "@/components/ui"
 import { useCurrentLocationData } from "@/hooks/useCurrentLocationData"
 import { createRide } from "@/services/api.service"
 import { useActiveRideStore } from "@/stores/activeRideStore"
+import { useCitySelectorStore } from "@/stores/cityStore"
 import { useGoogleMapsError } from "@/stores/errorStore"
 import useRideFormStore from "@/stores/rideFormStore"
 import { generateRideData } from "@/utils"
@@ -19,6 +20,7 @@ export default function RideForm() {
   const [createRideError, setCreateRideError] = useState<string | null>(null)
   const setMapsError = useGoogleMapsError(s => s.setError)
   const setActiveRide = useActiveRideStore(s => s.setActiveRide)
+  const { setSelectorVisible, customCity } = useCitySelectorStore()
 
   const onCreateRide = async () => {
     const rideData = generateRideData(fromLocation!, toLocation!, +walkDistance!)
@@ -27,7 +29,7 @@ export default function RideForm() {
       const response = await createRide(rideData)
       if (response?.id) {
         setActiveRide(response)
-        router.replace('/(app)/Partners')
+        router.replace('/(app)/Partners' as never)
       }
     } catch (error: any) {
       console.log('create ride error', error?.code, error)
@@ -62,6 +64,7 @@ export default function RideForm() {
               currentLocationData={currentLocationData}
               currentEnabled={true}
               onError={setMapsError}
+              onFocus={() => !currentCoords && !customCity && setSelectorVisible(true)}
             />
           </View>
         </View>
@@ -74,6 +77,7 @@ export default function RideForm() {
               currentCoords={currentCoords}
               currentLocationData={currentLocationData}
               onError={setMapsError}
+              onFocus={() => !currentCoords && !customCity && setSelectorVisible(true)}
             />
           </View>
         </View>

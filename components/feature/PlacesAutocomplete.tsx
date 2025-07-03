@@ -12,6 +12,7 @@ interface Props {
   placeholder?: string
   minCharsToFetch?: number
   currentEnabled?: boolean
+  onFocus?: () => void
   onError: (msg: string) => void
 }
 
@@ -30,6 +31,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
       onError,
       currentEnabled = false,
       minCharsToFetch = 2,
+      onFocus,
     },
     ref
   ) => {
@@ -123,6 +125,11 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
       onPlaceSelect(null)
     }
 
+    const handleFocus = () => {
+      onFocus?.()
+      setError(false)
+    }
+
     return (
       <View style={styles.container}>
         <View style={styles.inputContainer}>
@@ -132,7 +139,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
             value={query}
             onChangeText={handleChange}
             onBlur={handleOnBlur}
-            onFocus={() => setError(false)}
+            onFocus={handleFocus}
             style={[styles.input, error && styles.errorInput]}
             numberOfLines={1}
             multiline={false}
