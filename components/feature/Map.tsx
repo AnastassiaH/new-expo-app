@@ -3,6 +3,7 @@ import { useRoute } from '@/hooks/useRoute';
 import { useCitySelectorStore } from '@/stores/cityStore';
 import { useLocationStore } from '@/stores/locationStore';
 import useRideFormStore from '@/stores/rideFormStore';
+import { PlaceCoords } from '@/types';
 import { MapRegion } from '@/types/MapTypes';
 import { getInitialRegion, getRegionFromCity, getRegionFromLocation } from '@/utils/mapUtils';
 import React, { useEffect, useRef, useState } from 'react';
@@ -31,7 +32,7 @@ export default function Map() {
 
     if (location || customCity) {
       const newRegion = location
-        ? getRegionFromLocation(location)
+        ? getRegionFromLocation({ coords: location.coords as PlaceCoords })
         : customCity
           ? getRegionFromCity(customCity)
           : getInitialRegion();

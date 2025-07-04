@@ -11,10 +11,8 @@ export type RootStackParamList = {
 	AppDrawer: undefined
 }
 
-export interface City {
+export interface City extends PlaceCoords {
 	name: string;
-	latitude: number;
-	longitude: number;
 }
 
 // export enum Screens {

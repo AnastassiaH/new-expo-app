@@ -1,25 +1,26 @@
 import { INITIAL_MAP_REGION } from '@/constants';
+import { PlaceCoords } from '@/types';
 
-export const getRegionFromLocation = (location: { coords: { latitude: number; longitude: number } }) => ({
+export const getRegionFromLocation = (location: { coords: PlaceCoords }) => ({
   latitude: location.coords.latitude,
   longitude: location.coords.longitude,
   latitudeDelta: 0.0922,
   longitudeDelta: 0.0421,
 });
 
-export const getRegionFromCity = (city: { latitude: number; longitude: number }) => ({
-  latitude: city.latitude,
-  longitude: city.longitude,
+export const getRegionFromCity = (place: PlaceCoords) => ({
+  latitude: place.latitude,
+  longitude: place.longitude,
   latitudeDelta: 0.0922,
   longitudeDelta: 0.0421,
 });
 
 export const getInitialRegion = (
-  location?: { coords: { latitude: number; longitude: number } },
-  customCity?: { latitude: number; longitude: number }
+  coords?: PlaceCoords,
+  customCity?: PlaceCoords
 ) => {
-  if (location) {
-    return getRegionFromLocation(location);
+  if (coords) {
+    return getRegionFromLocation({ coords });
   }
   if (customCity) {
     return getRegionFromCity(customCity);
