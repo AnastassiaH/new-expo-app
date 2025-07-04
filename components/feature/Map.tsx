@@ -1,3 +1,4 @@
+import { INITIAL_MAP_REGION } from '@/constants';
 import { useRoute } from '@/hooks/useRoute';
 import { useCitySelectorStore } from '@/stores/cityStore';
 import { useLocationStore } from '@/stores/locationStore';
@@ -16,9 +17,33 @@ export default function Map() {
   const routeCoords = useRoute(fromLocation, toLocation);
   const theme = useTheme();
   const mapRef = useRef<MapView>(null);
+  const [mapRegion, setMapRegion] = useState<MapRegion>(INITIAL_MAP_REGION);
+  const [mapReady, setMapReady] = useState(false);
 
   useEffect(() => {
-    if (fromLocation && toLocation && routeCoords && routeCoords.length > 0) {
+    if (mapRef.current) {
+      setMapReady(true);
+    }
+  }, [mapRef]);
+
+  useEffect(() => {
+    if (!mapReady) return;
+
+    if (location || customCity) {
+      const newRegion = location
+        ? getRegionFromLocation(location)
+        : customCity
+          ? getRegionFromCity(customCity)
+          : getInitialRegion();
+
+      if (JSON.stringify(newRegion) !== JSON.stringify(mapRegion)) {
+        setMapRegion(newRegion);
+      }
+    }
+  }, [location, customCity, mapReady]);
+
+  useEffect(() => {
+    if (fromLocation && toLocation && routeCoords && routeCoords.length > 0 && mapReady) {
       mapRef.current?.fitToCoordinates(routeCoords, {
         edgePadding: {
           top: 250,
@@ -29,23 +54,7 @@ export default function Map() {
         animated: true,
       });
     }
-  }, [fromLocation, toLocation, routeCoords]);
-
-  const [mapRegion, setMapRegion] = useState<MapRegion>(
-    getInitialRegion(location?.coords ? location : undefined, customCity?.latitude ? customCity : undefined)
-  );
-
-  useEffect(() => {
-    if (location) {
-      setMapRegion(getRegionFromLocation(location));
-    }
-  }, [location]);
-
-  useEffect(() => {
-    if (customCity) {
-      setMapRegion(getRegionFromCity(customCity));
-    }
-  }, [customCity]);
+  }, [fromLocation, toLocation, routeCoords, mapReady]);
 
   return (
     <View style={styles.container}>
