@@ -5,6 +5,7 @@ import { createRide } from "@/services/api.service"
 import { useActiveRideStore } from "@/stores/activeRideStore"
 import { useCitySelectorStore } from "@/stores/cityStore"
 import { useGoogleMapsError } from "@/stores/errorStore"
+import { useLocationStore } from "@/stores/locationStore"
 import useRideFormStore from "@/stores/rideFormStore"
 import { generateRideData } from "@/utils"
 import { Ionicons } from "@expo/vector-icons"
@@ -15,12 +16,13 @@ import { Button, TextInput } from "react-native-paper"
 
 export default function RideForm() {
   const { fromLocation, toLocation, setFromLocation, setToLocation, clearForm } = useRideFormStore()
-  const { currentLocationData, currentCoords, loading } = useCurrentLocationData()
+  const { currentLocationData, loading } = useCurrentLocationData()
   const [walkDistance, setWalkDistance] = useState<string | null>(null)
   const [createRideError, setCreateRideError] = useState<string | null>(null)
   const setMapsError = useGoogleMapsError(s => s.setError)
   const setActiveRide = useActiveRideStore(s => s.setActiveRide)
   const { setSelectorVisible, customCity } = useCitySelectorStore()
+  const location = useLocationStore(s => s.location)
 
   const onCreateRide = async () => {
     const rideData = generateRideData(fromLocation!, toLocation!, +walkDistance!)
@@ -60,11 +62,12 @@ export default function RideForm() {
             <PlacesAutocomplete
               placeholder="From"
               onPlaceSelect={(location) => setFromLocation(location)}
-              currentCoords={currentCoords}
+              currentCoords={location?.coords}
               currentLocationData={currentLocationData}
               currentEnabled={true}
               onError={setMapsError}
-              onFocus={() => !currentCoords && !customCity && setSelectorVisible(true)}
+              onFocus={() => !location?.coords && !customCity && setSelectorVisible(true)}
+              testID="from-input"
             />
           </View>
         </View>
@@ -74,10 +77,10 @@ export default function RideForm() {
             <PlacesAutocomplete
               placeholder="To"
               onPlaceSelect={(location) => setToLocation(location)}
-              currentCoords={currentCoords}
+              currentCoords={location?.coords}
               currentLocationData={currentLocationData}
               onError={setMapsError}
-              onFocus={() => !currentCoords && !customCity && setSelectorVisible(true)}
+              onFocus={() => !location?.coords && !customCity && setSelectorVisible(true)}
             />
           </View>
         </View>
