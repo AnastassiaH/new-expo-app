@@ -3,7 +3,6 @@ import { useFonts } from 'expo-font';
 import 'react-native-get-random-values';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { useAuthStore } from '@/stores/authStore';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -25,8 +24,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 }
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const { session, hydrateSession, lastActivityTime, signOut } = useAuthStore();
+  const { session, hydrateSession } = useAuthStore();
   const { location, requestLocation } = useLocationStore();
 
   const theme = {
