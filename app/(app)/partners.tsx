@@ -4,6 +4,7 @@ import ScreenWrapper from '@/components/ui/ScreenWrapper'
 import { useAutoRefreshPartners } from '@/hooks/useAutoRefreshPartners'
 import { cancelRide } from '@/services/api.service'
 import { usePartnersStore } from '@/stores/partnersStore'
+import useRideFormStore from '@/stores/rideFormStore'
 import { PartnerData } from '@/types'
 import { router } from 'expo-router'
 import React from 'react'
@@ -86,6 +87,7 @@ const PartnersScreen: React.FC = () => {
       setCancelRideError(e?.message)
     } finally {
       setActiveRide(null)
+      useRideFormStore.getState().clearForm()
       router.replace('/(app)/Ride' as never)
     }
   }
