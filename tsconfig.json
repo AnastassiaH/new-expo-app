@@ -6,13 +6,20 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "types": [
+      "jest",
+      "node",
+      "@testing-library/react-native",
+      "@testing-library/jest-native",
+    ],
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
-    "app/(app)/**/*"
+    "app/(app)/**/*",
+    "jest.config.js"
   ]
 }

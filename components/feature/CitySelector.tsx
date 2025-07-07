@@ -28,7 +28,7 @@ const CitySelector = ({ modalVisible, setModalVisible }: { modalVisible: boolean
   }
 
   return (
-    <CustomModal modalVisible={modalVisible} setModalVisible={setModalVisible}>
+    <CustomModal modalVisible={modalVisible} setModalVisible={setModalVisible} testID="city-modal">
       <Text style={{ marginBottom: 16, textAlign: 'center', color: '#000' }}>
         Location not granted. Grant permission or select your city:
       </Text>

@@ -1,12 +1,14 @@
+import { View } from "react-native";
 import { Modal, Portal } from "react-native-paper";
 
 type CustomModalProps = {
   modalVisible: boolean,
   setModalVisible: (visible: boolean) => void,
   children: React.ReactNode
+  testID?: string
 }
 
-export default function CustomModal({ modalVisible, setModalVisible, children }: CustomModalProps) {
+export default function CustomModal({ modalVisible, setModalVisible, children, testID }: CustomModalProps) {
   return (
     <Portal>
       <Modal
@@ -19,7 +21,9 @@ export default function CustomModal({ modalVisible, setModalVisible, children }:
           borderRadius: 12,
         }}
       >
-        {children}
+        <View testID={testID}>
+          {children}
+        </View>
       </Modal>
     </Portal>
   )

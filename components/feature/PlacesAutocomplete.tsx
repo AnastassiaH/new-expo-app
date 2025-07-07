@@ -13,7 +13,8 @@ interface Props {
   minCharsToFetch?: number
   currentEnabled?: boolean
   onFocus?: () => void
-  onError: (msg: string) => void
+  onError: (msg: string) => void,
+  testID?: string
 }
 
 interface TextInputRef {
@@ -32,6 +33,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
       currentEnabled = false,
       minCharsToFetch = 2,
       onFocus,
+      testID
     },
     ref
   ) => {
@@ -144,6 +146,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
             numberOfLines={1}
             multiline={false}
             ref={inputRef}
+            testID={testID}
           />
           {query && (
             <TouchableOpacity
