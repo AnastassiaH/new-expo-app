@@ -2,6 +2,7 @@ import { CITIES } from '@/constants';
 import { useCitySelectorStore } from '@/stores/cityStore';
 import { useLocationStore } from '@/stores/locationStore';
 import { City } from '@/types';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { Linking, ScrollView } from 'react-native';
 import { Button, RadioButton, Text, useTheme } from 'react-native-paper';
@@ -22,6 +23,7 @@ const CitySelector = ({ modalVisible, setModalVisible }: { modalVisible: boolean
       })
       setCustomCity(selectedCity)
       setModalVisible(false);
+      router.replace('/(app)/Ride' as never)
     }
   }
 
