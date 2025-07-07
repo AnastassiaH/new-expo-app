@@ -1,4 +1,3 @@
-import { useLocationStore } from '@/stores/locationStore';
 import { useFonts } from 'expo-font';
 import 'react-native-get-random-values';
 import 'react-native-reanimated';
@@ -8,6 +7,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
+import LocationFetcher from '@/components/feature/LocationFetcher';
 import { type ErrorBoundaryProps } from 'expo-router';
 import { Text, View } from 'react-native';
 import { MD3DarkTheme, PaperProvider, useTheme } from 'react-native-paper';
@@ -25,7 +25,6 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 
 export default function RootLayout() {
   const { session, hydrateSession } = useAuthStore();
-  const { location, requestLocation } = useLocationStore();
 
   const theme = {
     ...MD3DarkTheme,
@@ -56,12 +55,6 @@ export default function RootLayout() {
     })();
   }, []);
 
-  useEffect(() => {
-    (async () => {
-      await requestLocation();
-    })();
-  }, [loaded]);
-
   if (!loaded) {
     return null;
   }
@@ -70,6 +63,7 @@ export default function RootLayout() {
     <PaperProvider theme={theme}>
       <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
         <StatusBar style="auto" />
+        <LocationFetcher />
         <Stack>
           <Stack.Screen name="(app)" options={{ headerShown: false, animation: 'none' }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false, animation: 'none' }} />

@@ -5,14 +5,12 @@ import { Loader } from "@/components/ui";
 import { useActiveRideStore } from "@/stores/activeRideStore";
 import { useAuthStore } from "@/stores/authStore";
 import { useCitySelectorStore } from "@/stores/cityStore";
-import { useLocationStore } from "@/stores/locationStore";
 import { useUserStore } from "@/stores/userStore";
 import { Redirect, router } from "expo-router";
 import { useEffect } from "react";
 
 export default function RootLayout() {
-  const { session, isReady, signOut } = useAuthStore();
-  const { requestLocation, location } = useLocationStore();
+  const { session, isReady } = useAuthStore();
   const { activeRide, fetchActiveRide, isLoading } = useActiveRideStore()
   const user = useUserStore((state) => state.user);
   const isHydrated = useUserStore((state) => state.isHydrated);
@@ -29,12 +27,6 @@ export default function RootLayout() {
       router.replace('/(app)/Partners' as never)
     }
   }, [activeRide])
-
-  useEffect(() => {
-    if (!location) {
-      requestLocation()
-    }
-  }, [location]);
 
   if (!isReady) {
     return null;
