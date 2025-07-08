@@ -11,7 +11,7 @@ export default function CityToggle() {
   return (
     <Card style={[styles.card, { backgroundColor: theme.colors.primary }]} >
       <Card.Title
-        title="Вибране місто"
+        title={useCustomCity ? 'Вибране місто' : 'Ваше місто'}
         subtitle={useCustomCity
           ? customCity?.name || locationData?.city || 'Не встановлено'
           : locationData?.city || 'Не встановлено'}
