@@ -1,12 +1,11 @@
 import PlacesAutocomplete from "@/components/feature/PlacesAutocomplete"
 import { ErrorModal, Loader } from "@/components/ui"
-import { useCurrentLocationData } from "@/hooks/useCurrentLocationData"
 import { createRide } from "@/services/api.service"
 import { useActiveRideStore } from "@/stores/activeRideStore"
-import { useCitySelectorStore } from "@/stores/cityStore"
 import { useGoogleMapsError } from "@/stores/errorStore"
 import { useLocationStore } from "@/stores/locationStore"
 import useRideFormStore from "@/stores/rideFormStore"
+import { PlaceCoords } from "@/types"
 import { generateRideData } from "@/utils"
 import { Ionicons } from "@expo/vector-icons"
 import { router } from "expo-router"
@@ -16,13 +15,16 @@ import { Button, TextInput } from "react-native-paper"
 
 export default function RideForm() {
   const { fromLocation, toLocation, setFromLocation, setToLocation, clearForm } = useRideFormStore()
-  const { currentLocationData, loading } = useCurrentLocationData()
   const [walkDistance, setWalkDistance] = useState<string | null>(null)
   const [createRideError, setCreateRideError] = useState<string | null>(null)
   const setMapsError = useGoogleMapsError(s => s.setError)
   const setActiveRide = useActiveRideStore(s => s.setActiveRide)
-  const { setSelectorVisible, customCity } = useCitySelectorStore()
-  const location = useLocationStore(s => s.location)
+  const location = useLocationStore(s => s.currentLocation)
+  const setSelectorVisible = useLocationStore(s => s.setSelectorVisible)
+  const customCity = useLocationStore(s => s.customCity)
+  const useCustomCity = useLocationStore(s => s.useCustomCity)
+  const locationData = useLocationStore(s => s.locationData)
+  const loading = useLocationStore(s => s.loading)
 
   const onCreateRide = async () => {
     const rideData = generateRideData(fromLocation!, toLocation!, +walkDistance!)
@@ -34,7 +36,6 @@ export default function RideForm() {
         router.replace('/(app)/Partners' as never)
       }
     } catch (error: any) {
-      console.log('create ride error', error?.code, error)
       setCreateRideError(error?.message)
     } finally {
       clearForm()
@@ -62,8 +63,9 @@ export default function RideForm() {
             <PlacesAutocomplete
               placeholder="From"
               onPlaceSelect={(location) => setFromLocation(location)}
-              currentCoords={location?.coords}
-              currentLocationData={currentLocationData}
+              searchCoords={useCustomCity ? customCity! as PlaceCoords : location?.coords!}
+              predictedAddresses={locationData?.addresses}
+              city={useCustomCity ? customCity?.name! : locationData?.city!}
               currentEnabled={true}
               onError={setMapsError}
               onFocus={() => !location?.coords && !customCity && setSelectorVisible(true)}
@@ -77,8 +79,10 @@ export default function RideForm() {
             <PlacesAutocomplete
               placeholder="To"
               onPlaceSelect={(location) => setToLocation(location)}
-              currentCoords={location?.coords}
-              currentLocationData={currentLocationData}
+              searchCoords={useCustomCity ? customCity! as PlaceCoords : location?.coords!}
+              predictedAddresses={locationData?.addresses}
+              city={useCustomCity ? customCity?.name! : locationData?.city!}
+              currentEnabled={true}
               onError={setMapsError}
               onFocus={() => !location?.coords && !customCity && setSelectorVisible(true)}
             />

@@ -1,17 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native';
+import CityToggle from '@/components/feature/CityToggle';
+import ScreenWrapper from '@/components/ui/ScreenWrapper';
 
 export default function SettingsScreen() {
+
   return (
-    <View style={styles.container}>
-      <Text>Settings Screen</Text>
-    </View>
+    <ScreenWrapper>
+      <CityToggle />
+    </ScreenWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

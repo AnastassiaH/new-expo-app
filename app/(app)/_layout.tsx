@@ -4,7 +4,6 @@ import CustomDrawer from "@/components/feature/CustomDrawer";
 import { Loader } from "@/components/ui";
 import { useActiveRideStore } from "@/stores/activeRideStore";
 import { useAuthStore } from "@/stores/authStore";
-import { useCitySelectorStore } from "@/stores/cityStore";
 import { useUserStore } from "@/stores/userStore";
 import { Redirect, router } from "expo-router";
 import { useEffect } from "react";
@@ -14,7 +13,6 @@ export default function RootLayout() {
   const { activeRide, fetchActiveRide, isLoading } = useActiveRideStore()
   const user = useUserStore((state) => state.user);
   const isHydrated = useUserStore((state) => state.isHydrated);
-  const { selectorVisible, setSelectorVisible } = useCitySelectorStore()
 
   useEffect(() => {
     if (user?.id) {
@@ -44,10 +42,7 @@ export default function RootLayout() {
     <>
       <AutoLogoutTimer />
       <CustomDrawer />
-      <CitySelector
-        modalVisible={selectorVisible}
-        setModalVisible={setSelectorVisible}
-      />
+      <CitySelector />
     </>
   )
 }

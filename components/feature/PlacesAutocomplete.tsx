@@ -1,14 +1,15 @@
 import { DEFAULT_ERROR_MESSAGE } from '@/constants';
 import { fetchAutocompletePredictions, getPlaceData } from '@/services/places.service';
-import { LocationPoint, PlaceCoords, PlacePrediction, UserLocationData } from '@/types';
+import { LocationPoint, PlaceCoords, PlacePrediction } from '@/types';
 import { debounce } from 'lodash';
 import React, { useCallback, useImperativeHandle, useRef, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface Props {
   onPlaceSelect: (place: LocationPoint | null) => void;
-  currentCoords?: PlaceCoords,
-  currentLocationData?: UserLocationData,
+  searchCoords: PlaceCoords,
+  predictedAddresses?: PlacePrediction[],
+  city: string,
   placeholder?: string
   minCharsToFetch?: number
   currentEnabled?: boolean
@@ -26,8 +27,9 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
   (
     {
       onPlaceSelect,
-      currentCoords,
-      currentLocationData,
+      searchCoords,
+      predictedAddresses,
+      city,
       placeholder,
       onError,
       currentEnabled = false,
@@ -51,24 +53,24 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
     }));
 
 
-    const handleSearch = async (query: string, city?: string) => {
+    const handleSearch = async (query: string, city: string, searchCoords: PlaceCoords) => {
       if (query?.length < minCharsToFetch || !city) return
       if (error) return
 
       setLoading(true)
 
       try {
-        const predictions = await fetchAutocompletePredictions(query, currentCoords);
+        const predictions = await fetchAutocompletePredictions(query, searchCoords);
         const filteredPredictions = predictions.filter(prediction => prediction.description?.includes(city))
-        const currentAdresses = currentLocationData?.addresses;
 
         if (predictions.length === 1) {
+
           handleSelect(predictions[0])
           return
         }
 
-        if (currentAdresses?.[0].formatted_address?.includes(query) && currentEnabled) {
-          setPredictions([...currentAdresses, ...filteredPredictions])
+        if (predictedAddresses?.[0].formatted_address?.includes(query) && currentEnabled) {
+          setPredictions([...predictedAddresses, ...filteredPredictions])
         } else {
           setPredictions([...filteredPredictions])
         }
@@ -98,7 +100,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
     const handleChange = (value: string) => {
       setPlaceSelected(null)
       setQuery(value);
-      debouncedSearch(value, currentLocationData?.city);
+      debouncedSearch(value, city, searchCoords);
     }
 
     const handleSelect = async (place: PlacePrediction) => {

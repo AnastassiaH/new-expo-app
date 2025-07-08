@@ -1,34 +1,34 @@
 import { CITIES } from '@/constants';
-import { useCitySelectorStore } from '@/stores/cityStore';
 import { useLocationStore } from '@/stores/locationStore';
 import { City } from '@/types';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Linking, ScrollView } from 'react-native';
 import { Button, RadioButton, Text, useTheme } from 'react-native-paper';
 import CustomModal from '../ui/CustomModal';
 
-const CitySelector = ({ modalVisible, setModalVisible }: { modalVisible: boolean, setModalVisible: (visible: boolean) => void }) => {
+const CitySelector = () => {
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
-  const { setLocation } = useLocationStore()
-  const { setCustomCity } = useCitySelectorStore()
+  const { setCustomCity, selectorVisible, setSelectorVisible, setUseCustomCity } = useLocationStore()
   const theme = useTheme()
+
+  useEffect(() => {
+    return () => {
+      setSelectedCity(null)
+    }
+  }, [])
 
   const handleConfirmCity = () => {
     if (selectedCity) {
-
-      setLocation({
-        coords: { ...selectedCity },
-        timestamp: Date.now(),
-      })
       setCustomCity(selectedCity)
-      setModalVisible(false);
+      setUseCustomCity(true)
+      setSelectorVisible(false);
       router.replace('/(app)/Ride' as never)
     }
   }
 
   return (
-    <CustomModal modalVisible={modalVisible} setModalVisible={setModalVisible} testID="city-modal">
+    <CustomModal modalVisible={selectorVisible} setModalVisible={setSelectorVisible} testID="city-modal">
       <Text style={{ marginBottom: 16, textAlign: 'center', color: '#000' }}>
         Location not granted. Grant permission or select your city:
       </Text>
@@ -54,9 +54,9 @@ const CitySelector = ({ modalVisible, setModalVisible }: { modalVisible: boolean
         disabled={!selectedCity}
         style={[
           { marginTop: 16 },
-          !selectedCity && { backgroundColor: theme.colors.secondaryContainer, opacity: 1 }
+          !selectedCity && { backgroundColor: theme.colors.primary, opacity: 0.5 }
         ]}
-        labelStyle={!selectedCity && { color: theme.colors.onSecondaryContainer }}
+        labelStyle={!selectedCity && { color: theme.colors.onPrimary, opacity: 0.5 }}
       >
         Confirm City
       </Button>
@@ -65,7 +65,7 @@ const CitySelector = ({ modalVisible, setModalVisible }: { modalVisible: boolean
         mode="outlined"
         onPress={() => {
           Linking.openSettings()
-          setModalVisible(false)
+          setSelectorVisible(false)
         }}
         style={{ marginTop: 8 }}
       >

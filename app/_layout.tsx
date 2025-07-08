@@ -7,7 +7,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
-import LocationFetcher from '@/components/feature/LocationFetcher';
+import LocationWatcher from '@/components/feature/LocationWatcher';
 import { type ErrorBoundaryProps } from 'expo-router';
 import { Text, View } from 'react-native';
 import { MD3DarkTheme, PaperProvider, useTheme } from 'react-native-paper';
@@ -33,7 +33,7 @@ export default function RootLayout() {
       primary: '#003049',
       onPrimary: '#fdf0d5',
       background: '#003049',
-      secondaryContainer: '#8d99ae',
+      secondaryContainer: '##F0F6FA',
       surface: '#669bbc',
       onSurface: '#fdf0d5',
       onSurfaceVariant: '#000000',
@@ -63,7 +63,7 @@ export default function RootLayout() {
     <PaperProvider theme={theme}>
       <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
         <StatusBar style="auto" />
-        <LocationFetcher />
+        <LocationWatcher />
         <Stack>
           <Stack.Screen name="(app)" options={{ headerShown: false, animation: 'none' }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false, animation: 'none' }} />

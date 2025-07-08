@@ -17,13 +17,14 @@ export const getRegionFromCity = (place: PlaceCoords) => ({
 
 export const getInitialRegion = (
   coords?: PlaceCoords,
-  customCity?: PlaceCoords
+  customCity?: PlaceCoords,
+  useCustomCity?: boolean
 ) => {
+  if (customCity && useCustomCity) {
+    return getRegionFromCity(customCity);
+  }
   if (coords) {
     return getRegionFromLocation({ coords });
-  }
-  if (customCity) {
-    return getRegionFromCity(customCity);
   }
   return INITIAL_MAP_REGION;
 };
