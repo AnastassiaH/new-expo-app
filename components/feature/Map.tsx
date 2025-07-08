@@ -57,8 +57,8 @@ export default function Map() {
         region={mapRegion}
         ref={mapRef}
         style={styles.map}
-        showsUserLocation={!!location}
-        showsMyLocationButton={!!location}
+        showsUserLocation={!!currentLocation}
+        showsMyLocationButton={false}
       >
         {fromLocation && (
           <Marker
