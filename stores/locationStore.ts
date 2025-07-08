@@ -26,7 +26,6 @@ export interface LocationStore {
   setCurrentLocation: (location: LocationData) => void;
   setLocationData: (locationData: UserLocationData | null) => void;
   setCustomCity: (city: City | null) => void;
-  toggleUseCustomCity: () => void;
   setSelectorVisible: (visible: boolean) => void;
   setUseCustomCity: (useCustomCity: boolean) => void;
   setLoading: (loading: boolean) => void;
@@ -45,7 +44,6 @@ export const useLocationStore = create<LocationStore>()(
       setCurrentLocation: (newLocation: LocationData) => set({ currentLocation: newLocation }),
       setCustomCity: (city: City | null) => set({ customCity: city }),
       setUseCustomCity: (useCustomCity: boolean) => set({ useCustomCity }),
-      toggleUseCustomCity: () => set((state: LocationStore) => ({ useCustomCity: !state.useCustomCity })),
       setSelectorVisible: (visible: boolean) => set({ selectorVisible: visible }),
       setLocationData: (locationData: UserLocationData | null) => set({ locationData }),
       setLoading: (loading: boolean) => set({ loading }),
@@ -55,6 +53,7 @@ export const useLocationStore = create<LocationStore>()(
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state: LocationStore) => ({
         customCity: state.customCity,
+        useCustomCity: state.useCustomCity
       }),
     }
   )

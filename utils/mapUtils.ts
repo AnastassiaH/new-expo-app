@@ -15,10 +15,10 @@ export const getRegionFromCity = (place: PlaceCoords) => ({
   longitudeDelta: 0.0421,
 });
 
-export const getInitialRegion = (
-  coords?: PlaceCoords,
-  customCity?: PlaceCoords,
-  useCustomCity?: boolean
+export const getMapRegion = (
+  coords: PlaceCoords | null,
+  customCity: PlaceCoords | null,
+  useCustomCity: boolean
 ) => {
   if (customCity && useCustomCity) {
     return getRegionFromCity(customCity);

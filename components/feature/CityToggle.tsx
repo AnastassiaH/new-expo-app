@@ -1,9 +1,9 @@
 import { useLocationStore } from "@/stores/locationStore"
 import { StyleSheet } from "react-native"
-import { Button, Card, Switch, Text, useTheme } from "react-native-paper"
+import { Button, Card, useTheme } from "react-native-paper"
 
 export default function CityToggle() {
-  const { setSelectorVisible, customCity, useCustomCity, toggleUseCustomCity,
+  const { setSelectorVisible, customCity, useCustomCity,
     locationData
   } = useLocationStore()
   const theme = useTheme()
@@ -11,8 +11,10 @@ export default function CityToggle() {
   return (
     <Card style={[styles.card, { backgroundColor: theme.colors.primary }]} >
       <Card.Title
-        title="Ваше місто"
-        subtitle={useCustomCity ? customCity?.name : locationData?.city || 'Не встановлено'}
+        title="Вибране місто"
+        subtitle={useCustomCity
+          ? customCity?.name || locationData?.city || 'Не встановлено'
+          : locationData?.city || 'Не встановлено'}
         titleStyle={styles.title}
         subtitleStyle={styles.subtitle}
         right={() => (
@@ -26,13 +28,6 @@ export default function CityToggle() {
           </Button>
         )}
       />
-      <Card.Actions style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text>Використати поточну локацію:</Text>
-        <Switch
-          value={!useCustomCity}
-          onValueChange={toggleUseCustomCity}
-        />
-      </Card.Actions>
     </Card>
   )
 }

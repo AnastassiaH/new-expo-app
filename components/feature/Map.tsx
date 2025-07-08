@@ -4,7 +4,7 @@ import { useLocationStore } from '@/stores/locationStore';
 import useRideFormStore from '@/stores/rideFormStore';
 import { PlaceCoords } from '@/types';
 import { MapRegion } from '@/types/MapTypes';
-import { getInitialRegion } from '@/utils/mapUtils';
+import { getMapRegion } from '@/utils/mapUtils';
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
@@ -28,7 +28,7 @@ export default function Map() {
   useEffect(() => {
     if (!mapReady) return;
 
-    const newRegion = getInitialRegion(currentLocation?.coords as PlaceCoords, { ...customCity } as PlaceCoords, useCustomCity);
+    const newRegion = getMapRegion(currentLocation?.coords as PlaceCoords, { ...customCity } as PlaceCoords, useCustomCity);
 
     if (JSON.stringify(newRegion) !== JSON.stringify(mapRegion)) {
       setMapRegion(newRegion);

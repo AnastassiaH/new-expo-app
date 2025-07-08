@@ -9,7 +9,7 @@ import CustomModal from '../ui/CustomModal';
 
 const CitySelector = () => {
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
-  const { setCustomCity, selectorVisible, setSelectorVisible, setUseCustomCity } = useLocationStore()
+  const { setCustomCity, selectorVisible, setSelectorVisible, setUseCustomCity, locationData } = useLocationStore()
   const theme = useTheme()
 
   useEffect(() => {
@@ -58,19 +58,31 @@ const CitySelector = () => {
         ]}
         labelStyle={!selectedCity && { color: theme.colors.onPrimary, opacity: 0.5 }}
       >
-        Confirm City
+        Підтвердити вибір міста
       </Button>
 
-      <Button
-        mode="outlined"
-        onPress={() => {
-          Linking.openSettings()
-          setSelectorVisible(false)
-        }}
-        style={{ marginTop: 8 }}
-      >
-        Try Granting Location Again
-      </Button>
+      {locationData ?
+        <Button mode="outlined"
+          style={{ marginTop: 8 }}
+          onPress={() => {
+            setUseCustomCity(false)
+            setCustomCity(null)
+            setSelectorVisible(false)
+          }}
+        >
+          Використати поточну локацію
+        </Button>
+        :
+        <Button
+          mode="outlined"
+          onPress={() => {
+            Linking.openSettings()
+            setSelectorVisible(false)
+          }}
+          style={{ marginTop: 8 }}
+        >
+          Надати доступ до локації
+        </Button>}
     </CustomModal>
   );
 };
