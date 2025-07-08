@@ -16,6 +16,7 @@ import { Button, TextInput } from "react-native-paper"
 export default function RideForm() {
   const { fromLocation, toLocation, setFromLocation, setToLocation, clearForm } = useRideFormStore()
   const [walkDistance, setWalkDistance] = useState<string | null>(null)
+  const [isActive, setIsActive] = useState<'from' | 'to' | null>(null)
   const [createRideError, setCreateRideError] = useState<string | null>(null)
   const setMapsError = useGoogleMapsError(s => s.setError)
   const setActiveRide = useActiveRideStore(s => s.setActiveRide)
@@ -62,12 +63,19 @@ export default function RideForm() {
             <Ionicons name="location" size={20} color="black" style={styles.inputIcon} />
             <PlacesAutocomplete
               placeholder="From"
-              onPlaceSelect={(location) => setFromLocation(location)}
+              active={isActive === 'from'}
+              onPlaceSelect={(location) => {
+                setFromLocation(location)
+                setIsActive(null)
+              }}
               searchCoords={useCustomCity ? customCity! as PlaceCoords : location?.coords!}
               predictedAddresses={useCustomCity ? [] : locationData?.addresses}
               city={useCustomCity ? customCity?.name! : locationData?.city!}
               onError={setMapsError}
-              onFocus={() => !location?.coords && !customCity && setSelectorVisible(true)}
+              onFocus={() => {
+                !location?.coords && !customCity && setSelectorVisible(true)
+                setIsActive('from')
+              }}
               testID="from-input"
             />
           </View>
@@ -77,12 +85,18 @@ export default function RideForm() {
             <Ionicons name="flag" size={20} color="black" style={styles.inputIcon} />
             <PlacesAutocomplete
               placeholder="To"
-              onPlaceSelect={(location) => setToLocation(location)}
+              active={isActive === 'to'}
+              onPlaceSelect={(location) => {
+                setToLocation(location)
+                setIsActive(null)
+              }}
               searchCoords={useCustomCity ? customCity! as PlaceCoords : location?.coords!}
-              // predictedAddresses={useCustomCity ? [] : locationData?.addresses}
               city={useCustomCity ? customCity?.name! : locationData?.city!}
               onError={setMapsError}
-              onFocus={() => !location?.coords && !customCity && setSelectorVisible(true)}
+              onFocus={() => {
+                !location?.coords && !customCity && setSelectorVisible(true)
+                setIsActive('to')
+              }}
             />
           </View>
         </View>

@@ -15,6 +15,7 @@ interface Props {
   onFocus?: () => void
   onError: (msg: string) => void,
   testID?: string
+  active?: boolean
 }
 
 interface TextInputRef {
@@ -33,7 +34,8 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
       onError,
       minCharsToFetch = 2,
       onFocus,
-      testID
+      testID,
+      active,
     },
     ref
   ) => {
@@ -155,7 +157,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
             </TouchableOpacity>
           )}
         </View>
-        {!loading && query?.length > minCharsToFetch && predictions?.length > 0 && (
+        {!loading && query?.length > minCharsToFetch && predictions?.length > 0 && active && (
           <FlatList
             style={styles.predictionsContainer}
             data={predictions}
