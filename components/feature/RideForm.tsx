@@ -64,9 +64,8 @@ export default function RideForm() {
               placeholder="From"
               onPlaceSelect={(location) => setFromLocation(location)}
               searchCoords={useCustomCity ? customCity! as PlaceCoords : location?.coords!}
-              predictedAddresses={locationData?.addresses}
+              predictedAddresses={useCustomCity ? [] : locationData?.addresses}
               city={useCustomCity ? customCity?.name! : locationData?.city!}
-              currentEnabled={true}
               onError={setMapsError}
               onFocus={() => !location?.coords && !customCity && setSelectorVisible(true)}
               testID="from-input"
@@ -80,9 +79,8 @@ export default function RideForm() {
               placeholder="To"
               onPlaceSelect={(location) => setToLocation(location)}
               searchCoords={useCustomCity ? customCity! as PlaceCoords : location?.coords!}
-              predictedAddresses={locationData?.addresses}
+              // predictedAddresses={useCustomCity ? [] : locationData?.addresses}
               city={useCustomCity ? customCity?.name! : locationData?.city!}
-              currentEnabled={true}
               onError={setMapsError}
               onFocus={() => !location?.coords && !customCity && setSelectorVisible(true)}
             />

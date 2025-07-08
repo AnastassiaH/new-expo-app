@@ -12,7 +12,6 @@ interface Props {
   city: string,
   placeholder?: string
   minCharsToFetch?: number
-  currentEnabled?: boolean
   onFocus?: () => void
   onError: (msg: string) => void,
   testID?: string
@@ -32,7 +31,6 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
       city,
       placeholder,
       onError,
-      currentEnabled = false,
       minCharsToFetch = 2,
       onFocus,
       testID
@@ -51,9 +49,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
       focus: () => inputRef.current?.focus(),
       clear: () => inputRef.current?.clear(),
     }));
-
-
-    const handleSearch = async (query: string, city: string, searchCoords: PlaceCoords) => {
+    const handleSearch = async (query: string, city: string, searchCoords: PlaceCoords, predictedAddresses?: PlacePrediction[]) => {
       if (query?.length < minCharsToFetch || !city) return
       if (error) return
 
@@ -69,7 +65,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
           return
         }
 
-        if (predictedAddresses?.[0].formatted_address?.includes(query) && currentEnabled) {
+        if (predictedAddresses?.[0]?.formatted_address?.includes(query)) {
           setPredictions([...predictedAddresses, ...filteredPredictions])
         } else {
           setPredictions([...filteredPredictions])
@@ -100,7 +96,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
     const handleChange = (value: string) => {
       setPlaceSelected(null)
       setQuery(value);
-      debouncedSearch(value, city, searchCoords);
+      debouncedSearch(value, city, searchCoords, predictedAddresses);
     }
 
     const handleSelect = async (place: PlacePrediction) => {
