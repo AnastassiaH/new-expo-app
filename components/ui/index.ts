@@ -3,7 +3,8 @@ import Header from "./Header"
 import IconSymbol from "./IconSymbol"
 import Loader from "./Loader"
 import Logo from "./Logo"
+import Switch from "./Switch"
 import Wrapper from "./Wrapper"
 
-export { ErrorModal, Header, IconSymbol, Loader, Logo, Wrapper }
+export { ErrorModal, Header, IconSymbol, Loader, Logo, Switch, Wrapper }
 
