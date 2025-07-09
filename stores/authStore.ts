@@ -32,7 +32,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 			await SecureStore.setItemAsync('session', session);
 			await SecureStore.setItemAsync('lastActivityTime', Date.now().toString());
 			set({ session, isLoggedIn: true, lastActivityTime: Date.now() });
-			router.replace('/(app)/Ride');
+			router.replace('/(app)/ride');
 		} catch (error) {
 			console.error('Sign-in error:', error);
 			set({ error: error as Error });

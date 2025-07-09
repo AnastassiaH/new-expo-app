@@ -33,7 +33,7 @@ const VerificationScreen: React.FC = () => {
 
       if (response) {
         setUser(response)
-        router.replace('/(app)/Ride')
+        router.replace('/(app)/ride')
       }
     } catch (err: any) {
       setError(err?.message || DEFAULT_ERROR_MESSAGE)

@@ -34,7 +34,7 @@ export default function RideForm() {
       const response = await createRide(rideData)
       if (response?.id) {
         setActiveRide(response)
-        router.replace('/(app)/Partners' as never)
+        router.replace('/(app)/partners' as never)
       }
     } catch (error: any) {
       setCreateRideError(error?.message)
@@ -47,7 +47,7 @@ export default function RideForm() {
     return (
       <ErrorModal visible={!!createRideError} message={createRideError} onDismiss={() => {
         setCreateRideError(null)
-        router.replace('/(app)/Ride' as never)
+        router.replace('/(app)/ride' as never)
         clearForm()
       }} />
     )
