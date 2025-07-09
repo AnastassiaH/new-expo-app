@@ -8,7 +8,7 @@ export default function AuthLayout() {
   const { error, clearError } = useAuthError()
 
   if (session) {
-    return <Redirect href="/(app)/Ride" />
+    return <Redirect href="/(app)/ride" />
   }
 
   return (

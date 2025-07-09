@@ -10,10 +10,10 @@ import { AvatarBlock } from '../ui/AvatarBlock';
 import DrawerButton from './DrawerButton';
 
 const iconsMap: Record<string, keyof typeof Ionicons.glyphMap> = {
-  Partners: 'people-outline',
-  Profile: 'person-outline',
-  Settings: 'settings-outline',
-  Ride: 'car-outline',
+  partners: 'people-outline',
+  profile: 'person-outline',
+  settings: 'settings-outline',
+  ride: 'car-outline',
 };
 
 const CustomDrawer = () => {
@@ -35,22 +35,22 @@ const CustomDrawer = () => {
       }}
       drawerContent={(props) => (
         <DrawerContentScrollView {...props}>
-          <AvatarBlock onPress={() => router.replace('/(app)/Profile')} />
+          <AvatarBlock onPress={() => router.replace('/(app)/profile' as never)} />
           {props.state.routes
-            .filter((route) => route.name !== 'Profile')
+            .filter((route) => route.name !== 'profile')
             .map((route) => {
               const focused = props.state.routes[props.state.index].key === route.key
-              const label = props.descriptors[route.key].options.title || route.name;
+              const label = route.name;
 
               return (
                 <DrawerItem
                   key={route.key}
-                  label={label}
+                  label={label.charAt(0).toUpperCase() + label.slice(1)}
                   focused={focused}
                   onPress={() => props.navigation.navigate(route.name)}
                   labelStyle={{ color: focused ? theme.colors.primary : theme.colors.onSurface }}
                   icon={({ size }) => (
-                    <Ionicons name={iconsMap[route.name as keyof typeof iconsMap]} color={theme.colors.onSurface} size={size} />
+                    <Ionicons name={iconsMap[route.name.toLowerCase() as keyof typeof iconsMap]} color={theme.colors.onSurface} size={size} />
                   )}
                   style={{
                     backgroundColor: focused ? theme.colors.surface : 'transparent',

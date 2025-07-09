@@ -23,14 +23,14 @@ const CitySelector = () => {
       setCustomCity(selectedCity)
       setUseCustomCity(true)
       setSelectorVisible(false);
-      router.replace('/(app)/Ride' as never)
+      router.replace('/(app)/ride' as never)
     }
   }
 
   return (
     <CustomModal modalVisible={selectorVisible} setModalVisible={setSelectorVisible} testID="city-modal">
       <Text style={{ marginBottom: 16, textAlign: 'center', color: '#000' }}>
-        Location not granted. Grant permission or select your city:
+        Виберіть місто або скористайтесь поточною локацією:
       </Text>
 
       <RadioButton.Group

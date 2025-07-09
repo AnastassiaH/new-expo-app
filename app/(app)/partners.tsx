@@ -88,7 +88,7 @@ const PartnersScreen: React.FC = () => {
     } finally {
       setActiveRide(null)
       useRideFormStore.getState().clearForm()
-      router.replace('/(app)/Ride' as never)
+      router.replace('/(app)/ride' as never)
     }
   }
 
