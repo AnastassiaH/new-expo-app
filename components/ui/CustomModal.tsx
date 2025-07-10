@@ -1,30 +1,72 @@
-import { View } from "react-native";
-import { Modal, Portal } from "react-native-paper";
+import React from 'react'
+import {
+  Modal,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View
+} from 'react-native'
 
-type CustomModalProps = {
-  modalVisible: boolean,
-  setModalVisible: (visible: boolean) => void,
+type Props = {
+  visible: boolean
+  onClose: () => void
   children: React.ReactNode
   testID?: string
 }
 
-export default function CustomModal({ modalVisible, setModalVisible, children, testID }: CustomModalProps) {
+export default function CustomModal({ visible, onClose, children, testID }: Props) {
   return (
-    <Portal>
-      <Modal
-        visible={modalVisible}
-        onDismiss={() => setModalVisible(false)}
-        contentContainerStyle={{
-          backgroundColor: 'white',
-          padding: 24,
-          margin: 20,
-          borderRadius: 12,
-        }}
-      >
-        <View testID={testID}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+      testID={testID}
+    >
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={styles.backdrop} />
+      </TouchableWithoutFeedback>
+
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
           {children}
         </View>
-      </Modal>
-    </Portal>
+      </View>
+    </Modal>
   )
 }
+
+const styles = StyleSheet.create({
+  backdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  centeredView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 24,
+    width: '100%',
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  closeButton: {
+    marginTop: 20,
+    alignSelf: 'flex-end',
+  },
+  closeText: {
+    color: 'blue',
+  },
+})

@@ -1,3 +1,4 @@
+import { CustomModal } from '@/components/ui';
 import { CITIES } from '@/constants';
 import { useLocationStore } from '@/stores/locationStore';
 import { City } from '@/types';
@@ -5,7 +6,6 @@ import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Linking, ScrollView } from 'react-native';
 import { Button, RadioButton, Text, useTheme } from 'react-native-paper';
-import CustomModal from '../ui/CustomModal';
 
 const CitySelector = () => {
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
@@ -28,7 +28,7 @@ const CitySelector = () => {
   }
 
   return (
-    <CustomModal modalVisible={selectorVisible} setModalVisible={setSelectorVisible} testID="city-modal">
+    <CustomModal visible={selectorVisible} onClose={() => setSelectorVisible(false)} testID="city-modal">
       <Text style={{ marginBottom: 16, textAlign: 'center', color: '#000' }}>
         Виберіть місто або скористайтесь поточною локацією:
       </Text>
