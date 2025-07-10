@@ -51,4 +51,5 @@ export const INITIAL_MAP_REGION = {
 	longitudeDelta: 7.5,
 }
 
-export const DISTANCE_FILTER = 50;
+export const LOCATION_FETCHING_DISTANCE_FILTER = 50;
+export const WALK_DISTANCE_MAX = 500;

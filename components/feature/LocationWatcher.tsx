@@ -1,4 +1,4 @@
-import { DISTANCE_FILTER } from '@/constants';
+import { LOCATION_FETCHING_DISTANCE_FILTER } from '@/constants';
 import { getDataFromCoordinates } from '@/services/places.service';
 import { useLocationStore } from '@/stores/locationStore';
 import * as Location from 'expo-location';
@@ -37,7 +37,7 @@ export default function LocationWatcher() {
     watcher.current = await Location.watchPositionAsync(
       {
         accuracy: Location.Accuracy.Balanced,
-        distanceInterval: DISTANCE_FILTER,
+        distanceInterval: LOCATION_FETCHING_DISTANCE_FILTER,
       },
       onLocationUpdate
     );
