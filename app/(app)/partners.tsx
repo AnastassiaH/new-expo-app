@@ -1,5 +1,5 @@
-import PartnerItem from '@/components/PartnerItem'
 import { ErrorModal, Loader } from '@/components/ui'
+import PartnerItem from '@/components/ui/PartnerItem'
 import ScreenWrapper from '@/components/ui/ScreenWrapper'
 import { REFRESH_PARTNERS_INTERVAL } from '@/constants'
 import { cancelRide, getPartners } from '@/services/api.service'
@@ -34,7 +34,7 @@ const mockPartners: PartnerData[] = [
     isActive: true,
     user: {
       id: 'user2',
-      phoneNumber: '123456789',
+      phoneNumber: '+380956789',
       email: 'user2@example.com',
       firstName: 'John',
       lastName: 'Doe',
@@ -56,7 +56,7 @@ const mockPartners: PartnerData[] = [
     isActive: true,
     user: {
       id: 'user1',
-      phoneNumber: '123456789',
+      phoneNumber: '+123456789',
       email: 'user1@example.com',
       firstName: 'John',
       lastName: 'Doe',

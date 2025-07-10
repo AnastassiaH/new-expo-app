@@ -5,7 +5,7 @@ import { useTheme } from 'react-native-paper'
 import TelegramIcon from '../icons/TelegramIcon'
 import ViberIcon from '../icons/ViberIcon'
 
-const iconSize = 24;
+const iconSize = 26;
 
 export const handlePressApp = async (url: string, appName?: string) => {
   if (__DEV__) {
@@ -37,7 +37,7 @@ export default function SocialBlock({ phone }: { phone: string }) {
   if (!phone) return null;
 
   return (
-    <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+    <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
       <TouchableOpacity onPress={handlePressPhone}><Text style={{ color: theme.colors.onSurface }}>{phone}</Text></TouchableOpacity>
       <TouchableOpacity onPress={() => handlePressApp(`whatsapp://send?phone=${phone}`)}><Ionicons name="logo-whatsapp" size={iconSize} color={theme.colors.onSurface} /></TouchableOpacity>
       <TouchableOpacity onPress={() => handlePressApp(`tg://resolve?phone=${phone}`)}><TelegramIcon color={theme.colors.onSurface} size={iconSize} /></TouchableOpacity>
