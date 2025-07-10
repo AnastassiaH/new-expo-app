@@ -1,8 +1,7 @@
-import { Switch } from '@/components/ui';
 import { useLocationStore } from "@/stores/locationStore";
 import React from 'react';
 import { StyleSheet } from "react-native";
-import { Button, Card, Text, useTheme } from "react-native-paper";
+import { Button, Card, Switch, Text, useTheme } from "react-native-paper";
 
 export default function CityToggle() {
   const { setSelectorVisible, customCity, setUseCustomCity,
@@ -33,14 +32,10 @@ export default function CityToggle() {
           </>
         )}
       />
-      {useCustomCity && locationData?.city && customCity && customCity.name !== locationData.city && (
+      {locationData?.city && customCity && customCity.name !== locationData.city && (
         <Card.Actions style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Text style={{ color: '#fff' }}>Використати поточне місто</Text>
-          <Switch
-            value={false}
-            onValueChange={() => setUseCustomCity(false)}
-            style={styles.switchContainer}
-          />
+          <Switch value={!useCustomCity} onValueChange={() => setUseCustomCity(!useCustomCity)} />
         </Card.Actions>
       )}
     </Card>

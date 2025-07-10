@@ -51,4 +51,4 @@ export const INITIAL_MAP_REGION = {
 	longitudeDelta: 7.5,
 }
 
-export const DISTANCE_FILTER = 40;
+export const DISTANCE_FILTER = 50;
