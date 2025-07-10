@@ -66,7 +66,6 @@ const CitySelector = () => {
           style={{ marginTop: 8 }}
           onPress={() => {
             setUseCustomCity(false)
-            setCustomCity(null)
             setSelectorVisible(false)
           }}
         >

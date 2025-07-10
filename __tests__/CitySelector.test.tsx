@@ -1,5 +1,4 @@
 import RideForm from '@/components/feature/RideForm';
-import { useCitySelectorStore } from '@/stores/cityStore';
 import { useLocationStore } from '@/stores/locationStore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
@@ -8,7 +7,7 @@ import React from 'react';
 describe('CitySelector', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
-    useLocationStore.setState({ location: null });
+    useLocationStore.setState({ currentLocation: null });
     await AsyncStorage.clear();
   });
 
@@ -22,7 +21,7 @@ describe('CitySelector', () => {
     fireEvent(input, 'focus');
 
     await waitFor(() => {
-      expect(useCitySelectorStore.getState().selectorVisible).toBe(true)
+      expect(useLocationStore.getState().selectorVisible).toBe(true)
     });
   });
 });
