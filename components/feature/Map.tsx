@@ -59,6 +59,7 @@ export default function Map() {
         style={styles.map}
         showsUserLocation={!!currentLocation}
         showsMyLocationButton={false}
+        followsUserLocation={true} // IOS only
       >
         {fromLocation && (
           <Marker
