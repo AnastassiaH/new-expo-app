@@ -1,4 +1,5 @@
 import { ErrorModal, Loader } from '@/components/ui'
+import ConfirmationModal from '@/components/ui/ConfirmationModal'
 import PartnerItem from '@/components/ui/PartnerItem'
 import ScreenWrapper from '@/components/ui/ScreenWrapper'
 import { REFRESH_PARTNERS_INTERVAL } from '@/constants'
@@ -68,7 +69,8 @@ function PartnersScreen() {
   const { partners, setPartners } = usePartnersStore()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const { activeRide } = useActiveRideStore()
+  const [showCancelModal, setShowCancelModal] = useState(false)
+  const { activeRide, setActiveRide } = useActiveRideStore()
   const { clearForm } = useRideFormStore()
   const theme = useTheme()
 
@@ -104,17 +106,23 @@ function PartnersScreen() {
   }, [activeRide, fetchPartners])
 
   const handleCancelRide = async () => {
+    setShowCancelModal(true)
+  }
+
+  const handleConfirmCancel = async () => {
     setLoading(true)
     setError(null)
     try {
       if (!activeRide?.id) return
       await cancelRide(activeRide.id)
+      setActiveRide(null)
       clearForm()
       router.replace('/(app)/ride' as never)
     } catch (error: any) {
       setError(error?.message || 'Failed to cancel ride')
     } finally {
       setLoading(false)
+      setShowCancelModal(false)
     }
   }
 
@@ -136,13 +144,21 @@ function PartnersScreen() {
             />
           }
         />
-        {activeRide?.isActive && <Button
-          mode="outlined"
-          onPress={handleCancelRide}
-          style={styles.cancelButton}
-        >
-          Cancel Ride
-        </Button>}
+        {activeRide?.isActive && !showCancelModal &&
+          <Button
+            mode="outlined"
+            onPress={handleCancelRide}
+            style={styles.cancelButton}
+          >
+            Відмінити поїздку та пошук партнерів
+          </Button>}
+        <ConfirmationModal
+          visible={showCancelModal}
+          onClose={() => setShowCancelModal(false)}
+          onConfirm={handleConfirmCancel}
+          title="Відмінити поїздку"
+          message="Ви впевнені, що хочете відмінити поїздку? Ця дія не може бути скасована."
+        />
       </View>
     </ScreenWrapper>
   )
