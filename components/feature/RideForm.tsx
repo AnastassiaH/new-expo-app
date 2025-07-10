@@ -60,13 +60,20 @@ export default function RideForm() {
     }
   }
 
+  const onCloseRideError = () => {
+    setCreateRideError(null)
+    router.replace('/(app)/ride' as never)
+    clearForm()
+  }
+
   if (createRideError) {
     return (
-      <ErrorModal visible={!!createRideError} message={createRideError} onDismiss={() => {
-        setCreateRideError(null)
-        router.replace('/(app)/ride' as never)
-        clearForm()
-      }} />
+      <ErrorModal
+        visible={!!createRideError}
+        message={createRideError}
+        onClose={onCloseRideError}
+        tryAgain={onCreateRide}
+      />
     )
   }
 
