@@ -1,19 +1,21 @@
 import PartnerItem from '@/components/PartnerItem'
 import { ErrorModal, Loader } from '@/components/ui'
 import ScreenWrapper from '@/components/ui/ScreenWrapper'
-import { useAutoRefreshPartners } from '@/hooks/useAutoRefreshPartners'
-import { cancelRide } from '@/services/api.service'
+import { REFRESH_PARTNERS_INTERVAL } from '@/constants'
+import { cancelRide, getPartners } from '@/services/api.service'
+import { useActiveRideStore } from '@/stores/activeRideStore'
 import { usePartnersStore } from '@/stores/partnersStore'
 import useRideFormStore from '@/stores/rideFormStore'
 import { PartnerData } from '@/types'
 import { router } from 'expo-router'
-import React from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
+  RefreshControl,
+  StyleSheet,
   View
 } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
-import { Button } from 'react-native-paper'
-import { useActiveRideStore } from '../../stores/activeRideStore'
+import { Button, useTheme } from 'react-native-paper'
 
 const mockPartners: PartnerData[] = [
   {
@@ -62,92 +64,97 @@ const mockPartners: PartnerData[] = [
   }
 ]
 
-const PartnersScreen: React.FC = () => {
-  const { activeRide, setActiveRide } = useActiveRideStore()
-  const [expandedItem, setExpandedItem] = React.useState<string | null>(null)
-  const [cancelRideError, setCancelRideError] = React.useState<string | null>(null)
-  const { partners, loading, error: partnersError, fetchPartners } = usePartnersStore()
+function PartnersScreen() {
+  const { partners, setPartners } = usePartnersStore()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const { activeRide } = useActiveRideStore()
+  const { clearForm } = useRideFormStore()
+  const theme = useTheme()
 
-  useAutoRefreshPartners(activeRide?.id)
+  const fetchPartners = useCallback(async () => {
+    if (!activeRide?.id) {
+      setPartners(null)
+      return
+    }
 
-  const handlePress = (itemId: string) => {
-    setExpandedItem(itemId === expandedItem ? null : itemId)
-  }
-
-  const cancelActiveRide = async () => {
-    if (!activeRide?.id) return
-
+    setLoading(true)
+    setError(null)
     try {
-      const response = await cancelRide(activeRide.id)
-      if (response) {
-        console.log('canceled', response.data)
-      }
-    } catch (e: any) {
-      console.error('Error canceling ride:', e)
-      setCancelRideError(e?.message)
+      const partnersData = await getPartners(activeRide.id)
+      setPartners(partnersData)
+    } catch (error: any) {
+      setError(error?.message || 'Failed to fetch partners')
+      setPartners(null)
     } finally {
-      setActiveRide(null)
-      useRideFormStore.getState().clearForm()
+      setLoading(false)
+    }
+  }, [activeRide, setPartners, setLoading, setError])
+
+  useEffect(() => {
+    // if (!activeRide) {
+    //   router.replace('/(app)/ride' as never)
+    //   return
+    // }
+
+    const interval = setInterval(fetchPartners, REFRESH_PARTNERS_INTERVAL)
+    fetchPartners()
+
+    return () => clearInterval(interval)
+  }, [activeRide, fetchPartners])
+
+  const handleCancelRide = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      if (!activeRide?.id) return
+      await cancelRide(activeRide.id)
+      clearForm()
       router.replace('/(app)/ride' as never)
+    } catch (error: any) {
+      setError(error?.message || 'Failed to cancel ride')
+    } finally {
+      setLoading(false)
     }
   }
 
-  if (loading) {
-    return <Loader />
-  }
-
-  if (cancelRideError) {
-    return <ErrorModal
-      visible={!!cancelRideError}
-      message={cancelRideError}
-      onClose={() => setCancelRideError(null)} />
-  }
-
-  if (partnersError) {
-    return <ErrorModal
-      visible={!!partnersError}
-      message={partnersError}
-      onClose={() => usePartnersStore.setState({ error: null })}
-      tryAgain={() => fetchPartners(activeRide?.id!)} />
-  }
+  if (loading) return <Loader />
+  if (error) return <ErrorModal visible={!!error} message={error} onClose={() => setError(null)} />
 
   return (
     <ScreenWrapper>
-      <View>
-        {partners && partners?.length > 0 || mockPartners?.length > 0 && (
-          <FlatList
-            style={{ width: '100%' }}
-            contentContainerStyle={{ flexGrow: 1 }}
-            data={partners && partners?.length > 0 ? partners : mockPartners}
-            renderItem={({ item }) => (
-              <PartnerItem
-                item={item}
-                isExpanded={expandedItem === item.id}
-                onPress={() => handlePress(item.id!)}
-              />
-            )}
-            keyExtractor={(item) => item.id!}
-            showsVerticalScrollIndicator={false}
-          />
-        )}
-      </View>
-      {activeRide?.isActive && (
-        <View
-          style={{
-            alignSelf: 'flex-end',
-            marginRight: 20,
-            width: '100%',
-            alignItems: 'flex-end',
-            marginBottom: 20,
-          }}
+      <View style={styles.container}>
+        <FlatList
+          data={partners || mockPartners}
+          renderItem={({ item }) => <PartnerItem item={item} />}
+          keyExtractor={(item) => item.id ?? ''}
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={fetchPartners}
+              tintColor={theme.colors.primary}
+            />
+          }
+        />
+        {activeRide?.isActive && <Button
+          mode="outlined"
+          onPress={handleCancelRide}
+          style={styles.cancelButton}
         >
-          <Button style={{ width: '50%' }} mode="contained" onPress={cancelActiveRide}>
-            Cancel the ride
-          </Button>
-        </View>
-      )}
+          Cancel Ride
+        </Button>}
+      </View>
     </ScreenWrapper>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  cancelButton: {
+    marginVertical: 16,
+  },
+})
 
 export default PartnersScreen
