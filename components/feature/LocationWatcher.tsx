@@ -9,7 +9,6 @@ export default function LocationWatcher() {
   const setLocation = useLocationStore((s) => s.setCurrentLocation);
   const setLocationData = useLocationStore((s) => s.setLocationData);
   const setLoading = useLocationStore((s) => s.setLoading);
-  const useCustomCity = useLocationStore((s) => s.useCustomCity);
 
   const watcher = useRef<Location.LocationSubscription | null>(null);
 
