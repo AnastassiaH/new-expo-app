@@ -3,13 +3,13 @@ import { ErrorModal, Loader } from "@/components/ui"
 import { createRide } from "@/services/api.service"
 import { useActiveRideStore } from "@/stores/activeRideStore"
 import { useGoogleMapsError } from "@/stores/errorStore"
-import { useLocationStore } from "@/stores/locationStore"
+import { LocationData, useLocationStore } from "@/stores/locationStore"
 import useRideFormStore from "@/stores/rideFormStore"
 import { PlaceCoords } from "@/types"
 import { generateRideData } from "@/utils"
 import { Ionicons } from "@expo/vector-icons"
 import { router } from "expo-router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { StyleSheet, View } from "react-native"
 import { Button, TextInput } from "react-native-paper"
 
@@ -18,6 +18,8 @@ export default function RideForm() {
   const [walkDistance, setWalkDistance] = useState<string | null>(null)
   const [isActive, setIsActive] = useState<'from' | 'to' | null>(null)
   const [createRideError, setCreateRideError] = useState<string | null>(null)
+  const [lastLocation, setLastLocation] = useState<LocationData | null>(null)
+  const [locationUpdating, setLocationUpdating] = useState(false)
   const setMapsError = useGoogleMapsError(s => s.setError)
   const setActiveRide = useActiveRideStore(s => s.setActiveRide)
   const location = useLocationStore(s => s.currentLocation)
@@ -26,6 +28,21 @@ export default function RideForm() {
   const useCustomCity = useLocationStore(s => s.useCustomCity)
   const locationData = useLocationStore(s => s.locationData)
   const loading = useLocationStore(s => s.loading)
+
+  useEffect(() => {
+    if (!location) return;
+
+    const isSignificantChange = lastLocation
+      ? Math.abs(location.coords.latitude - lastLocation.coords.latitude) > 0.0001 ||
+      Math.abs(location.coords.longitude - lastLocation.coords.longitude) > 0.0001
+      : true;
+
+    if (isSignificantChange) {
+      setLocationUpdating(true);
+      setLastLocation(location);
+      setTimeout(() => setLocationUpdating(false), 500);
+    }
+  }, [location]);
 
   const onCreateRide = async () => {
     const rideData = generateRideData(fromLocation!, toLocation!, +walkDistance!)
@@ -58,6 +75,9 @@ export default function RideForm() {
   return (
     <View>
       <View style={styles.formWrapper}>
+        {locationUpdating && (
+          <Loader />
+        )}
         <View style={styles.formRow}>
           <View style={[styles.inputContainer, { width: '100%' }]}>
             <Ionicons name="location" size={20} color="black" style={styles.inputIcon} />
@@ -68,12 +88,12 @@ export default function RideForm() {
                 setFromLocation(location)
                 setIsActive(null)
               }}
-              searchCoords={useCustomCity ? customCity! as PlaceCoords : location?.coords!}
+              searchCoords={useCustomCity ? customCity! as PlaceCoords : lastLocation?.coords!}
               predictedAddresses={useCustomCity ? [] : locationData?.addresses}
               city={useCustomCity ? customCity?.name! : locationData?.city!}
               onError={setMapsError}
               onFocus={() => {
-                !location?.coords && !customCity && setSelectorVisible(true)
+                !lastLocation?.coords && !customCity && setSelectorVisible(true)
                 setIsActive('from')
               }}
               testID="from-input"
@@ -128,10 +148,6 @@ export default function RideForm() {
 }
 
 const styles = StyleSheet.create({
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
   formWrapper: {
     width: '100%',
     gap: 10,
@@ -165,5 +181,10 @@ const styles = StyleSheet.create({
     color: '#000',
     width: '100%',
     backgroundColor: '#fff',
+    flex: 1,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 })
