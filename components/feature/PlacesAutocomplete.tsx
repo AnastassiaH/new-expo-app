@@ -4,6 +4,7 @@ import { LocationPoint, PlaceCoords, PlacePrediction } from '@/types';
 import { debounce } from 'lodash';
 import React, { useCallback, useImperativeHandle, useRef, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useTheme } from 'react-native-paper';
 
 interface Props {
   onPlaceSelect: (place: LocationPoint | null) => void;
@@ -16,6 +17,8 @@ interface Props {
   onError: (msg: string) => void,
   testID?: string
   active?: boolean
+  isValidationError?: boolean
+  clearValidationErrors?: () => void
 }
 
 interface TextInputRef {
@@ -36,6 +39,8 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
       onFocus,
       testID,
       active,
+      isValidationError,
+      clearValidationErrors
     },
     ref
   ) => {
@@ -44,6 +49,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
     const [loading, setLoading] = useState(false);
     const [placeSelected, setPlaceSelected] = useState<PlacePrediction | null>(null)
     const [error, setError] = useState(false)
+    const theme = useTheme()
 
     const inputRef = useRef<TextInput>(null);
 
@@ -96,6 +102,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
     }
 
     const handleChange = (value: string) => {
+      clearValidationErrors?.()
       setPlaceSelected(null)
       setQuery(value);
       debouncedSearch(value, city, searchCoords, predictedAddresses);
@@ -122,6 +129,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
     const handleClear = () => {
       setQuery('')
       setPredictions([])
+      clearValidationErrors?.()
       setError(false)
       setPlaceSelected(null)
       onPlaceSelect(null)
@@ -142,7 +150,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
             onChangeText={handleChange}
             onBlur={handleOnBlur}
             onFocus={handleFocus}
-            style={[styles.input, error && styles.errorInput]}
+            style={[styles.input, (isValidationError) && { borderColor: theme.colors.error }]}
             numberOfLines={1}
             multiline={false}
             ref={inputRef}
@@ -189,9 +197,8 @@ const styles = StyleSheet.create({
     color: '#000',
     width: '100%',
     backgroundColor: '#fff',
-  },
-  errorInput: {
-    borderColor: '#ff0000',
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
   clearButton: {
     position: 'absolute',

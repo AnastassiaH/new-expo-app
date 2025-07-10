@@ -1,17 +1,18 @@
 import PlacesAutocomplete from "@/components/feature/PlacesAutocomplete"
 import { ErrorModal, Loader } from "@/components/ui"
+import { WALK_DISTANCE_MAX } from "@/constants"
 import { createRide } from "@/services/api.service"
 import { useActiveRideStore } from "@/stores/activeRideStore"
 import { useGoogleMapsError } from "@/stores/errorStore"
 import { LocationData, useLocationStore } from "@/stores/locationStore"
 import useRideFormStore from "@/stores/rideFormStore"
-import { PlaceCoords } from "@/types"
+import { LocationPoint, PlaceCoords } from "@/types"
 import { generateRideData } from "@/utils"
 import { Ionicons } from "@expo/vector-icons"
 import { router } from "expo-router"
 import { useEffect, useState } from "react"
 import { StyleSheet, View } from "react-native"
-import { Button, TextInput } from "react-native-paper"
+import { Button, TextInput, useTheme } from "react-native-paper"
 
 export default function RideForm() {
   const { fromLocation, toLocation, setFromLocation, setToLocation, clearForm } = useRideFormStore()
@@ -28,6 +29,16 @@ export default function RideForm() {
   const useCustomCity = useLocationStore(s => s.useCustomCity)
   const locationData = useLocationStore(s => s.locationData)
   const loading = useLocationStore(s => s.loading)
+  const [validationErrors, setValidationErrors] = useState<{
+    from?: boolean
+    to?: boolean
+    walk?: boolean
+  }>({
+    from: false,
+    to: false,
+    walk: false,
+  })
+  const theme = useTheme()
 
   useEffect(() => {
     if (!location) return;
@@ -44,7 +55,28 @@ export default function RideForm() {
     }
   }, [location]);
 
+  const validateForm = (fromLocation: LocationPoint | null, toLocation: LocationPoint | null, walkDistance: string | null) => {
+    const newErrors = {
+      from: !fromLocation?.latitude || !fromLocation?.longitude,
+      to: !toLocation?.latitude || !toLocation?.longitude,
+      walk: !walkDistance || isNaN(+walkDistance) || +walkDistance <= 0 || +walkDistance > WALK_DISTANCE_MAX,
+    }
+    setValidationErrors(newErrors)
+
+    return !Object.values(newErrors).some(Boolean)
+  }
+
+  const clearValidationErrors = () => {
+    setValidationErrors({
+      from: false,
+      to: false,
+      walk: false,
+    })
+  }
+
   const onCreateRide = async () => {
+    if (!validateForm(fromLocation, toLocation, walkDistance)) return
+
     const rideData = generateRideData(fromLocation!, toLocation!, +walkDistance!)
 
     try {
@@ -82,9 +114,6 @@ export default function RideForm() {
   return (
     <View>
       <View style={styles.formWrapper}>
-        {locationUpdating && (
-          <Loader />
-        )}
         <View style={styles.formRow}>
           <View style={[styles.inputContainer, { width: '100%' }]}>
             <Ionicons name="location" size={20} color="black" style={styles.inputIcon} />
@@ -102,13 +131,20 @@ export default function RideForm() {
               onFocus={() => {
                 !lastLocation?.coords && !customCity && setSelectorVisible(true)
                 setIsActive('from')
+                setValidationErrors({
+                  from: false,
+                  to: false,
+                  walk: false,
+                })
               }}
               testID="from-input"
+              isValidationError={validationErrors?.from}
+              clearValidationErrors={clearValidationErrors}
             />
           </View>
         </View>
         <View style={styles.formRow}>
-          <View style={[styles.inputContainer]}>
+          <View style={[styles.inputContainer, validationErrors?.to && { borderColor: theme.colors.error }]}>
             <Ionicons name="flag" size={20} color="black" style={styles.inputIcon} />
             <PlacesAutocomplete
               placeholder="To"
@@ -123,7 +159,14 @@ export default function RideForm() {
               onFocus={() => {
                 !location?.coords && !customCity && setSelectorVisible(true)
                 setIsActive('to')
+                setValidationErrors({
+                  from: false,
+                  to: false,
+                  walk: false,
+                })
               }}
+              isValidationError={validationErrors?.to}
+              clearValidationErrors={clearValidationErrors}
             />
           </View>
         </View>
@@ -132,14 +175,26 @@ export default function RideForm() {
           <TextInput
             keyboardType="numeric"
             textColor="black"
-            style={styles.input}
+            style={[styles.input, validationErrors?.walk && { borderColor: theme.colors.error }]}
             selectionColor="black"
             placeholderTextColor="black"
             underlineColor="transparent"
             placeholder="Can walk (meters)"
             value={walkDistance || ''}
-            onChangeText={(num) => setWalkDistance(num)}
+            onChangeText={(num) => {
+              setWalkDistance(num)
+              clearValidationErrors()
+            }}
             returnKeyType="done"
+            mode="outlined"
+            outlineStyle={{ borderColor: 'transparent' }}
+            onFocus={() => {
+              setValidationErrors({
+                from: false,
+                to: false,
+                walk: false,
+              })
+            }}
           />
         </View>
         <Button
@@ -184,11 +239,13 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     borderRadius: 4,
-    paddingHorizontal: 40,
+    paddingHorizontal: 25,
     color: '#000',
     width: '100%',
     backgroundColor: '#fff',
     flex: 1,
+    borderColor: 'transparent',
+    borderWidth: 1,
   },
   buttonText: {
     color: 'white',
