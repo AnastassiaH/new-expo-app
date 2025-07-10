@@ -1,7 +1,7 @@
 import ErrorOverlay from '@/components/ui/ErrorOverlay';
 import { useAuthStore } from '@/stores/authStore';
 import { useAuthError } from '@/stores/errorStore';
-import { Redirect, Stack } from 'expo-router';
+import { Redirect, router, Stack } from 'expo-router';
 
 export default function AuthLayout() {
   const { session } = useAuthStore();
@@ -13,7 +13,10 @@ export default function AuthLayout() {
 
   return (
     <>
-      <ErrorOverlay error={error} clearError={clearError} />
+      <ErrorOverlay error={error} clearError={() => {
+        clearError()
+        router.replace('/(auth)/login')
+      }} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="login" />

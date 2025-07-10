@@ -100,14 +100,14 @@ const PartnersScreen: React.FC = () => {
     return <ErrorModal
       visible={!!cancelRideError}
       message={cancelRideError}
-      onDismiss={() => setCancelRideError(null)} />
+      onClose={() => setCancelRideError(null)} />
   }
 
   if (partnersError) {
     return <ErrorModal
       visible={!!partnersError}
       message={partnersError}
-      onDismiss={() => usePartnersStore.setState({ error: null })}
+      onClose={() => usePartnersStore.setState({ error: null })}
       tryAgain={() => fetchPartners(activeRide?.id!)} />
   }
 
