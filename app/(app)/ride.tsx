@@ -3,7 +3,7 @@ import RideForm from "@/components/feature/RideForm";
 import ErrorOverlay from "@/components/ui/ErrorOverlay";
 import { DEFAULT_ERROR_MESSAGE, DEFAULT_MAPS_ERROR_MESSAGE } from "@/constants";
 import { useGoogleMapsError } from "@/stores/errorStore";
-import { ErrorBoundaryProps } from "expo-router";
+import { ErrorBoundaryProps, router } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -22,7 +22,12 @@ export default function Ride() {
 	const clearMapError = useGoogleMapsError(s => s.clearError)
 
 	if (mapError) return (
-		<ErrorOverlay error={mapError || DEFAULT_MAPS_ERROR_MESSAGE} clearError={clearMapError} />
+		<ErrorOverlay
+			error={mapError || DEFAULT_MAPS_ERROR_MESSAGE}
+			clearError={() => {
+				clearMapError()
+				router.replace('/(app)/ride')
+			}} />
 	)
 
 	return (
