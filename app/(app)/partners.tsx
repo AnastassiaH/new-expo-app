@@ -5,12 +5,11 @@ import PartnerItem from '@/components/ui/PartnerItem'
 import PartnerSearchLoading from '@/components/ui/PartnerSearchLoading'
 import ScreenWrapper from '@/components/ui/ScreenWrapper'
 import { REFRESH_PARTNERS_INTERVAL } from '@/constants'
-import { cancelRide, getPartners } from '@/services/api.service'
+import { useRideCancellation } from '@/hooks/useRideCancellation'
+import { getPartners } from '@/services/api.service'
 import { useActiveRideStore } from '@/stores/activeRideStore'
 import { usePartnersStore } from '@/stores/partnersStore'
-import useRideFormStore from '@/stores/rideFormStore'
 import { PartnerData } from '@/types'
-import { router } from 'expo-router'
 import React, { useCallback, useEffect, useState } from 'react'
 import {
   RefreshControl,
@@ -116,9 +115,8 @@ function PartnersScreen() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showCancelModal, setShowCancelModal] = useState(false)
+  const { handleConfirmCancel } = useRideCancellation()
   const activeRide = useActiveRideStore(s => s.activeRide)
-  const setActiveRide = useActiveRideStore(s => s.setActiveRide)
-  const { clearForm } = useRideFormStore()
   const theme = useTheme()
   const [availableHeight, setAvailableHeight] = useState(0)
   const [listHeight, setListHeight] = useState(0)
@@ -143,36 +141,14 @@ function PartnersScreen() {
   }, [activeRide, setPartners, setLoading, setError])
 
   useEffect(() => {
-    // if (!activeRide) {
-    //   router.replace('/(app)/ride' as never)
-    //   return
-    // }
-
     const interval = setInterval(fetchPartners, REFRESH_PARTNERS_INTERVAL)
     fetchPartners()
 
     return () => clearInterval(interval)
   }, [activeRide, fetchPartners])
 
-  const handleCancelRide = async () => {
+  const handleCancelRide = () => {
     setShowCancelModal(true)
-  }
-
-  const handleConfirmCancel = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      if (!activeRide?.id) return
-      await cancelRide(activeRide.id)
-      setActiveRide(null)
-      clearForm()
-      router.replace('/(app)/ride' as never)
-    } catch (error: any) {
-      setError(error?.message || 'Failed to cancel ride')
-    } finally {
-      setLoading(false)
-      setShowCancelModal(false)
-    }
   }
 
   if (error) return <ErrorModal visible={!!error} message={error} onClose={() => setError(null)} />
@@ -219,7 +195,10 @@ function PartnersScreen() {
         <ConfirmationModal
           visible={showCancelModal}
           onClose={() => setShowCancelModal(false)}
-          onConfirm={handleConfirmCancel}
+          onConfirm={() => {
+            handleConfirmCancel()
+            setShowCancelModal(false)
+          }}
           title="Відмінити поїздку"
           message="Ви впевнені, що хочете відмінити поїздку?"
         />

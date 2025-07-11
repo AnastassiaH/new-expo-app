@@ -1,6 +1,7 @@
 import PlacesAutocomplete from "@/components/feature/PlacesAutocomplete"
 import { ErrorModal, Loader } from "@/components/ui"
 import { WALK_DISTANCE_MAX } from "@/constants"
+import { useRideCancellation } from "@/hooks/useRideCancellation"
 import { createRide } from "@/services/api.service"
 import { useActiveRideStore } from "@/stores/activeRideStore"
 import { useGoogleMapsError } from "@/stores/errorStore"
@@ -13,6 +14,7 @@ import { router, useFocusEffect } from "expo-router"
 import { useCallback, useEffect, useState } from "react"
 import { StyleSheet, View } from "react-native"
 import { Button, TextInput, useTheme } from "react-native-paper"
+import ConfirmationModal from "../ui/ConfirmationModal"
 
 export default function RideForm() {
   const { fromLocation, toLocation, setFromLocation, setToLocation, clearForm } = useRideFormStore()
@@ -22,6 +24,8 @@ export default function RideForm() {
   const [lastLocation, setLastLocation] = useState<LocationData | null>(null)
   const [locationUpdating, setLocationUpdating] = useState(false)
   const setMapsError = useGoogleMapsError(s => s.setError)
+  const [isActiveRideModalVisible, setIsActiveRideModalVisible] = useState(false)
+  const activeRide = useActiveRideStore(s => s.activeRide)
   const setActiveRide = useActiveRideStore(s => s.setActiveRide)
   const location = useLocationStore(s => s.currentLocation)
   const setSelectorVisible = useLocationStore(s => s.setSelectorVisible)
@@ -41,6 +45,7 @@ export default function RideForm() {
   const theme = useTheme()
   const [fromInputValue, setFromInputValue] = useState('');
   const [toInputValue, setToInputValue] = useState('');
+  const { handleConfirmCancel, loading: cancellationLoading, error: cancellationError } = useRideCancellation()
 
   useFocusEffect(
     useCallback(() => {
@@ -94,6 +99,10 @@ export default function RideForm() {
   }
 
   const onCreateRide = async () => {
+    if (activeRide?.id) {
+      setIsActiveRideModalVisible(true)
+      return
+    }
     if (!validateForm(fromLocation, toLocation, walkDistance)) return
 
     const rideData = generateRideData(fromLocation!, toLocation!, +walkDistance!)
@@ -231,6 +240,18 @@ export default function RideForm() {
           Create a ride
         </Button>
       </View>
+      <ConfirmationModal
+        visible={isActiveRideModalVisible}
+        message="Хочете скасувати цю та створиити нову?"
+        title="Активна поїздка вже створена"
+        onConfirm={() => {
+          handleConfirmCancel()
+          setIsActiveRideModalVisible(false)
+        }}
+        onClose={() => {
+          setIsActiveRideModalVisible(false)
+        }}
+      />
     </View>
   )
 }

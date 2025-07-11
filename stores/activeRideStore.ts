@@ -10,7 +10,6 @@ interface ActiveRideStore {
   setError: (error: string | null) => void
   activeRide: RideData | null
   setActiveRide: (ride: RideData | null) => void
-  clearError: () => void
   fetchActiveRide: (userId: string, isActive?: boolean) => Promise<void>
 }
 
@@ -21,7 +20,6 @@ export const useActiveRideStore = create<ActiveRideStore>((set) => ({
   setIsLoading: (isLoading: boolean) => set(() => ({ isLoading })),
   error: null,
   setError: (error: string | null) => set(() => ({ error })),
-  clearError: () => set(() => ({ error: null })),
   fetchActiveRide: async (userId: string, isActive = true) => {
     set({ isLoading: true, error: null })
     try {
