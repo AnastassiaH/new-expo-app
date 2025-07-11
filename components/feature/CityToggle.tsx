@@ -1,5 +1,5 @@
 import { useLocationStore } from "@/stores/locationStore";
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet } from "react-native";
 import { Button, Card, Switch, Text, useTheme } from "react-native-paper";
 
@@ -9,6 +9,11 @@ export default function CityToggle() {
   } = useLocationStore()
   const theme = useTheme()
 
+  useEffect(() => {
+    if (customCity && !locationData?.city) {
+      setUseCustomCity(true)
+    }
+  }, [customCity, locationData?.city])
 
   return (
     <Card style={[styles.card, { backgroundColor: theme.colors.primary }]} >
