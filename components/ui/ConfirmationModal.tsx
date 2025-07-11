@@ -1,6 +1,7 @@
 import React from 'react';
-import { Modal, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Button, Text, useTheme } from 'react-native-paper';
+import CustomModal from './CustomModal';
 
 interface ConfirmationModalProps {
   visible: boolean;
@@ -20,50 +21,35 @@ export default function ConfirmationModal({
   const theme = useTheme();
 
   return (
-    <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.overlay}>
-        <View style={[styles.modal, { backgroundColor: theme.colors.primary }]}>
-          <Text style={[styles.title, { color: theme.colors.onSurface }]}>{title}</Text>
-          <Text style={[styles.message, { color: theme.colors.onSurface }]}>{message}</Text>
-          <View style={styles.buttonContainer}>
-            <Button
-              style={{ backgroundColor: theme.colors.error, flexGrow: 1, minWidth: '50%' }}
-              onPress={onClose}
-            >
-              Скасувати
-            </Button>
-            <Button
-              style={{ backgroundColor: theme.colors.onPrimary, flexGrow: 1, minWidth: '50%' }}
-              onPress={onConfirm}
-            >
-              Підтвердити
-            </Button>
-          </View>
-        </View>
+    <CustomModal visible={visible} onClose={onClose}>
+      <Text style={[styles.title, { color: theme.colors.primary }]}>{title}</Text>
+      <Text style={[styles.message, { color: theme.colors.primary }]}>{message}</Text>
+      <View style={styles.buttonContainer}>
+        <Button
+          style={{ backgroundColor: theme.colors.error, flexGrow: 1, minWidth: '50%' }}
+          onPress={onClose}
+          textColor={theme.colors.onSurface}
+        >
+          Скасувати
+        </Button>
+        <Button
+          style={{ backgroundColor: theme.colors.primary, flexGrow: 1, minWidth: '50%' }}
+          onPress={onConfirm}
+          textColor={theme.colors.onPrimary}
+        >
+          Підтвердити
+        </Button>
       </View>
-    </Modal>
+    </CustomModal>
   );
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modal: {
-    width: '90%',
-    borderRadius: 10,
-    paddingHorizontal: 20,
-    paddingBottom: 30,
-    paddingTop: 40,
-    alignItems: 'center',
-  },
   title: {
     fontSize: 20,
     fontWeight: '600',
     marginBottom: 20,
+    textAlign: 'center',
   },
   message: {
     fontSize: 14,
