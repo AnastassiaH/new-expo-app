@@ -1,6 +1,7 @@
-import { ErrorModal, Loader } from '@/components/ui'
+import { ErrorModal } from '@/components/ui'
 import ConfirmationModal from '@/components/ui/ConfirmationModal'
 import PartnerItem from '@/components/ui/PartnerItem'
+import PartnerSearchLoading from '@/components/ui/PartnerSearchLoading'
 import ScreenWrapper from '@/components/ui/ScreenWrapper'
 import { REFRESH_PARTNERS_INTERVAL } from '@/constants'
 import { cancelRide, getPartners } from '@/services/api.service'
@@ -126,27 +127,36 @@ function PartnersScreen() {
     }
   }
 
-  if (loading) return <Loader />
   if (error) return <ErrorModal visible={!!error} message={error} onClose={() => setError(null)} />
 
   return (
     <ScreenWrapper>
       <View style={styles.container}>
-        <FlatList
-          data={partners || mockPartners}
-          renderItem={({ item }) => <PartnerItem item={item} />}
-          keyExtractor={(item) => item.id ?? ''}
-          refreshControl={
-            <RefreshControl
-              refreshing={loading}
-              onRefresh={fetchPartners}
-              tintColor={theme.colors.primary}
+        {
+          partners?.length ? (
+            <FlatList
+              data={partners}
+              renderItem={({ item }) => <PartnerItem item={item} />}
+              keyExtractor={(item) => item.id ?? ''}
+              refreshControl={
+                <RefreshControl
+                  refreshing={loading}
+                  onRefresh={fetchPartners}
+                  tintColor={theme.colors.primary}
+                />
+              }
             />
-          }
-        />
+          ) : (
+            <PartnerSearchLoading
+              visible={loading || !partners?.length}
+              primaryColor={theme.colors.primary}
+              onSurfaceColor={theme.colors.onSurface}
+            />
+          )
+        }
         {activeRide?.isActive && !showCancelModal &&
           <Button
-            mode="outlined"
+            mode="contained"
             onPress={handleCancelRide}
             style={styles.cancelButton}
           >
