@@ -1,5 +1,6 @@
 import { ErrorModal } from '@/components/ui'
 import ConfirmationModal from '@/components/ui/ConfirmationModal'
+import { NoActiveRideBlock } from '@/components/ui/NoActiveRideBlock'
 import PartnerItem from '@/components/ui/PartnerItem'
 import PartnerSearchLoading from '@/components/ui/PartnerSearchLoading'
 import ScreenWrapper from '@/components/ui/ScreenWrapper'
@@ -13,11 +14,10 @@ import { router } from 'expo-router'
 import React, { useCallback, useEffect, useState } from 'react'
 import {
   RefreshControl,
+  ScrollView,
   StyleSheet,
-  Text,
   View
 } from 'react-native'
-import { FlatList } from 'react-native-gesture-handler'
 import { Button, useTheme } from 'react-native-paper'
 
 const mockPartners: PartnerData[] = [
@@ -64,6 +64,50 @@ const mockPartners: PartnerData[] = [
       firstName: 'John',
       lastName: 'Doe',
     }
+  },
+  {
+    id: '3',
+    date: '2024-02-12T13:46:03.952Z',
+    placeFrom: {
+      point: { x: 0, y: 0 },
+      name: 'Random Address 1, Lviv, Ukraine',
+      distance: 125
+    },
+    placeTo: {
+      point: { x: 0, y: 0 },
+      name: 'Random Address 2, Lviv, Ukraine',
+      distance: 500
+    },
+    isActive: true,
+    user: {
+      id: 'user1',
+      phoneNumber: '+123456789',
+      email: 'user1@example.com',
+      firstName: 'John',
+      lastName: 'Doe',
+    }
+  },
+  {
+    id: '4',
+    date: '2024-02-12T13:46:03.952Z',
+    placeFrom: {
+      point: { x: 0, y: 0 },
+      name: 'Random Address 1, Lviv, Ukraine',
+      distance: 125
+    },
+    placeTo: {
+      point: { x: 0, y: 0 },
+      name: 'Random Address 2, Lviv, Ukraine',
+      distance: 500
+    },
+    isActive: true,
+    user: {
+      id: 'user1',
+      phoneNumber: '+123456789',
+      email: 'user1@example.com',
+      firstName: 'John',
+      lastName: 'Doe',
+    }
   }
 ]
 
@@ -75,6 +119,8 @@ function PartnersScreen() {
   const { activeRide, setActiveRide } = useActiveRideStore()
   const { clearForm } = useRideFormStore()
   const theme = useTheme()
+  const [availableHeight, setAvailableHeight] = useState(0)
+  const [listHeight, setListHeight] = useState(0)
 
   const fetchPartners = useCallback(async () => {
     if (!activeRide?.id) {
@@ -86,6 +132,7 @@ function PartnersScreen() {
     setError(null)
     try {
       const partnersData = await getPartners(activeRide.id)
+      // console.log('partnersData', partnersData)
       setPartners(partnersData)
     } catch (error: any) {
       setError(error?.message || 'Failed to fetch partners')
@@ -132,12 +179,12 @@ function PartnersScreen() {
 
   return (
     <ScreenWrapper>
-      <View style={styles.container}>
-        {partners?.length ? (
-          <FlatList
-            data={partners}
-            renderItem={({ item }) => <PartnerItem item={item} />}
-            keyExtractor={(item) => item.id ?? ''}
+      <View style={styles.container} onLayout={(e) => {
+        setAvailableHeight(e.nativeEvent.layout.height)
+      }}>
+        {activeRide?.isActive ? (
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
             refreshControl={
               <RefreshControl
                 refreshing={loading}
@@ -145,27 +192,25 @@ function PartnersScreen() {
                 tintColor={theme.colors.primary}
               />
             }
-          />
-        ) : activeRide?.isActive ? (
-          <PartnerSearchLoading />
-        ) : (
-          <View style={styles.emptyStateContainer}>
-            <Text style={styles.emptyTitle}>Пошук ще не розпочато</Text>
-            <Text style={styles.emptyDescription}>
-              Створіть поїздку, щоб знайти попутника
-            </Text>
-            <Button
-              mode="contained"
-              onPress={() => router.replace('/(app)/ride')}
-              style={styles.goToRideButton}
+          >
+            <View
+              onLayout={(e) => {
+                setListHeight(e.nativeEvent.layout.height)
+              }}
             >
-              Створити поїздку
-            </Button>
-          </View>
+              {partners?.map((item) => (
+                <PartnerItem key={item.id} item={item} />
+              ))}
+            </View>
+
+            <PartnerSearchLoading iconOnly={availableHeight - listHeight < 250} />
+          </ScrollView>
+        ) : (
+          <NoActiveRideBlock />
         )}
         {activeRide?.isActive && !showCancelModal &&
           <Button
-            mode="contained"
+            mode={partners?.length ? 'outlined' : 'contained'}
             onPress={handleCancelRide}
             style={styles.cancelButton}
           >

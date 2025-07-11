@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   Animated,
   Easing,
@@ -17,10 +17,14 @@ const messages = [
   'Перевіряємо їхні маршрути...',
 ]
 
-const PartnerSearchLoading: React.FC = () => {
+interface PartnerSearchLoadingProps {
+  iconOnly?: boolean
+}
+
+const PartnerSearchLoading: React.FC<PartnerSearchLoadingProps> = ({ iconOnly = false }) => {
   const floatAnim = useRef(new Animated.Value(0)).current
   const progressAnim = useRef(new Animated.Value(0)).current
-  const [currentMessage, setCurrentMessage] = useState(0)
+  const messageIndex = useRef(0)
   const theme = useTheme()
 
   useEffect(() => {
@@ -41,20 +45,22 @@ const PartnerSearchLoading: React.FC = () => {
       ])
     ).start()
 
-    const loopProgress = () => {
+    const changeMessage = () => {
+      messageIndex.current = (messageIndex.current + 1) % messages.length
+      setTimeout(changeMessage, 3000)
+    }
+    changeMessage()
+
+    const animateProgress = () => {
       progressAnim.setValue(0)
       Animated.timing(progressAnim, {
         toValue: 1,
         duration: 10000,
         useNativeDriver: false,
         easing: Easing.linear,
-      }).start(() => {
-        setCurrentMessage((prev) => (prev + 1) % messages.length)
-        loopProgress()
-      })
+      }).start(() => animateProgress())
     }
-
-    loopProgress()
+    animateProgress()
 
     return () => {
       progressAnim.stopAnimation()
@@ -75,35 +81,41 @@ const PartnerSearchLoading: React.FC = () => {
           styles.iconWrapper,
           {
             transform: [{ translateY }],
+            marginTop: iconOnly ? 20 : 0,
           },
         ]}
       >
         <Ionicons name="search" size={40} color={theme.colors.primary} />
       </Animated.View>
 
-      <Text style={[styles.message, { color: theme.colors.primary }]}>
-        {messages[currentMessage]}
-      </Text>
+      {!iconOnly && (
+        <>
+          <Text style={[styles.message, { color: theme.colors.primary }]}>
+            {messages[messageIndex.current]}
+          </Text>
 
-      <View style={styles.progressContainer}>
-        <Animated.View
-          style={[
-            styles.progressBar,
-            {
-              width,
-              backgroundColor: theme.colors.primary,
-            },
-          ]}
-        />
-      </View>
+          <View style={styles.progressContainer}>
+            <Animated.View
+              style={[
+                styles.progressBar,
+                {
+                  width,
+                  backgroundColor: theme.colors.primary,
+                },
+              ]}
+            />
+          </View>
+        </>
+      )}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: '55%',
     alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
     paddingHorizontal: 24,
     flex: 1,
   },
