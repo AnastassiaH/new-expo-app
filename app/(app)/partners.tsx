@@ -10,10 +10,11 @@ import { usePartnersStore } from '@/stores/partnersStore'
 import useRideFormStore from '@/stores/rideFormStore'
 import { PartnerData } from '@/types'
 import { router } from 'expo-router'
-import { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   RefreshControl,
   StyleSheet,
+  Text,
   View
 } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
@@ -132,24 +133,36 @@ function PartnersScreen() {
   return (
     <ScreenWrapper>
       <View style={styles.container}>
-        {
-          partners?.length ? (
-            <FlatList
-              data={partners}
-              renderItem={({ item }) => <PartnerItem item={item} />}
-              keyExtractor={(item) => item.id ?? ''}
-              refreshControl={
-                <RefreshControl
-                  refreshing={loading}
-                  onRefresh={fetchPartners}
-                  tintColor={theme.colors.primary}
-                />
-              }
-            />
-          ) : (
-            <PartnerSearchLoading />
-          )
-        }
+        {partners?.length ? (
+          <FlatList
+            data={partners}
+            renderItem={({ item }) => <PartnerItem item={item} />}
+            keyExtractor={(item) => item.id ?? ''}
+            refreshControl={
+              <RefreshControl
+                refreshing={loading}
+                onRefresh={fetchPartners}
+                tintColor={theme.colors.primary}
+              />
+            }
+          />
+        ) : activeRide?.isActive ? (
+          <PartnerSearchLoading />
+        ) : (
+          <View style={styles.emptyStateContainer}>
+            <Text style={styles.emptyTitle}>Пошук ще не розпочато</Text>
+            <Text style={styles.emptyDescription}>
+              Створіть поїздку, щоб знайти попутника
+            </Text>
+            <Button
+              mode="contained"
+              onPress={() => router.replace('/(app)/ride')}
+              style={styles.goToRideButton}
+            >
+              Створити поїздку
+            </Button>
+          </View>
+        )}
         {activeRide?.isActive && !showCancelModal &&
           <Button
             mode="contained"
@@ -176,6 +189,28 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     marginVertical: 16,
+  },
+  emptyStateContainer: {
+    flex: 1,
+    paddingTop: '65%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  emptyDescription: {
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  goToRideButton: {
+    maxWidth: 200,
+    alignSelf: 'center',
   },
 })
 
