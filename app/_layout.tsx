@@ -3,12 +3,11 @@ import 'react-native-get-random-values';
 import 'react-native-reanimated';
 
 import { useAuthStore } from '@/stores/authStore';
-import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
 import LocationWatcher from '@/components/feature/LocationWatcher';
-import { type ErrorBoundaryProps } from 'expo-router';
+import { Stack, type ErrorBoundaryProps } from 'expo-router';
 import { Text, View } from 'react-native';
 import { MD3DarkTheme, PaperProvider, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -65,8 +64,16 @@ export default function RootLayout() {
         <StatusBar style="auto" />
         <LocationWatcher />
         <Stack>
-          <Stack.Screen name="(app)" options={{ headerShown: false, animation: 'none' }} />
-          <Stack.Screen name="(auth)" options={{ headerShown: false, animation: 'none' }} />
+          <Stack.Screen name="(app)" options={{
+            headerShown: false,
+            animation: 'fade',
+            animationDuration: 500,
+          }} />
+          <Stack.Screen name="(auth)" options={{
+            headerShown: false,
+            animation: 'fade',
+            animationDuration: 500,
+          }} />
         </Stack>
       </View>
     </PaperProvider>
