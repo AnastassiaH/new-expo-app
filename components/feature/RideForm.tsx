@@ -9,8 +9,8 @@ import useRideFormStore from "@/stores/rideFormStore"
 import { LocationPoint, PlaceCoords } from "@/types"
 import { generateRideData } from "@/utils"
 import { Ionicons } from "@expo/vector-icons"
-import { router } from "expo-router"
-import { useEffect, useState } from "react"
+import { router, useFocusEffect } from "expo-router"
+import { useCallback, useEffect, useState } from "react"
 import { StyleSheet, View } from "react-native"
 import { Button, TextInput, useTheme } from "react-native-paper"
 
@@ -41,6 +41,23 @@ export default function RideForm() {
   const theme = useTheme()
   const [fromInputValue, setFromInputValue] = useState('');
   const [toInputValue, setToInputValue] = useState('');
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        clearForm()
+        setFromInputValue('')
+        setToInputValue('')
+        setWalkDistance(null)
+        setIsActive(null)
+        setValidationErrors({
+          from: false,
+          to: false,
+          walk: false,
+        })
+      }
+    }, [])
+  )
 
   useEffect(() => {
     if (!location) return;
