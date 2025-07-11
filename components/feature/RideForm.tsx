@@ -102,7 +102,6 @@ export default function RideForm() {
       const response = await createRide(rideData)
       if (response?.id) {
         setActiveRide(response)
-        router.replace('/(app)/partners' as never)
       }
     } catch (error: any) {
       setCreateRideError(error?.message)
@@ -140,7 +139,6 @@ export default function RideForm() {
               value={fromInputValue}
               onChangeText={text => {
                 setFromInputValue(text);
-                setFromLocation(null);
               }}
               onPlaceSelect={place => {
                 setFromLocation(place);
@@ -175,7 +173,6 @@ export default function RideForm() {
               value={toInputValue}
               onChangeText={text => {
                 setToInputValue(text);
-                setToLocation(null);
               }}
               active={isActive === 'to'}
               onPlaceSelect={(location) => {
