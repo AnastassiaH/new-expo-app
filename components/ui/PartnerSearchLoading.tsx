@@ -7,12 +7,7 @@ import {
   Text,
   View,
 } from 'react-native'
-
-interface PartnerSearchLoadingProps {
-  visible: boolean
-  primaryColor: string
-  onSurfaceColor: string
-}
+import { useTheme } from 'react-native-paper'
 
 const messages = [
   'Шукаємо найкращих партнерів для вас...',
@@ -22,18 +17,13 @@ const messages = [
   'Перевіряємо їхні маршрути...',
 ]
 
-const PartnerSearchLoading: React.FC<PartnerSearchLoadingProps> = ({
-  visible,
-  primaryColor,
-  onSurfaceColor,
-}) => {
+const PartnerSearchLoading: React.FC = () => {
   const floatAnim = useRef(new Animated.Value(0)).current
   const progressAnim = useRef(new Animated.Value(0)).current
   const [currentMessage, setCurrentMessage] = useState(0)
+  const theme = useTheme()
 
   useEffect(() => {
-    if (!visible) return
-
     Animated.loop(
       Animated.sequence([
         Animated.timing(floatAnim, {
@@ -70,9 +60,7 @@ const PartnerSearchLoading: React.FC<PartnerSearchLoadingProps> = ({
       progressAnim.stopAnimation()
       floatAnim.stopAnimation()
     }
-  }, [visible])
-
-  if (!visible) return null
+  }, [])
 
   const translateY = floatAnim
   const width = progressAnim.interpolate({
@@ -90,10 +78,10 @@ const PartnerSearchLoading: React.FC<PartnerSearchLoadingProps> = ({
           },
         ]}
       >
-        <Ionicons name="search" size={40} color={primaryColor} />
+        <Ionicons name="search" size={40} color={theme.colors.primary} />
       </Animated.View>
 
-      <Text style={[styles.message, { color: primaryColor }]}>
+      <Text style={[styles.message, { color: theme.colors.primary }]}>
         {messages[currentMessage]}
       </Text>
 
@@ -103,7 +91,7 @@ const PartnerSearchLoading: React.FC<PartnerSearchLoadingProps> = ({
             styles.progressBar,
             {
               width,
-              backgroundColor: primaryColor,
+              backgroundColor: theme.colors.primary,
             },
           ]}
         />
@@ -114,7 +102,7 @@ const PartnerSearchLoading: React.FC<PartnerSearchLoadingProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: '50%',
+    paddingTop: '55%',
     alignItems: 'center',
     paddingHorizontal: 24,
     flex: 1,
@@ -126,6 +114,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 20,
+    minHeight: 40,
   },
   progressContainer: {
     width: '100%',

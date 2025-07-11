@@ -55,13 +55,15 @@ const styles = StyleSheet.create({
   modal: {
     width: '90%',
     borderRadius: 10,
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+    paddingTop: 40,
     alignItems: 'center',
   },
   title: {
     fontSize: 20,
     fontWeight: '600',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   message: {
     fontSize: 14,

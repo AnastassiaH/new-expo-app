@@ -147,11 +147,7 @@ function PartnersScreen() {
               }
             />
           ) : (
-            <PartnerSearchLoading
-              visible={loading || !partners?.length}
-              primaryColor={theme.colors.primary}
-              onSurfaceColor={theme.colors.onSurface}
-            />
+            <PartnerSearchLoading />
           )
         }
         {activeRide?.isActive && !showCancelModal &&
@@ -167,7 +163,7 @@ function PartnersScreen() {
           onClose={() => setShowCancelModal(false)}
           onConfirm={handleConfirmCancel}
           title="Відмінити поїздку"
-          message="Ви впевнені, що хочете відмінити поїздку? Ця дія не може бути скасована."
+          message="Ви впевнені, що хочете відмінити поїздку?"
         />
       </View>
     </ScreenWrapper>
