@@ -53,3 +53,4 @@ export const INITIAL_MAP_REGION = {
 
 export const LOCATION_FETCHING_DISTANCE_FILTER = 50;
 export const WALK_DISTANCE_MAX = 500;
+export const UNAUTHORIZED_ERROR_MESSAGE = 'Упс, потрібно перезайти в систему';

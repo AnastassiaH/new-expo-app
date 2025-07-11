@@ -16,12 +16,13 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ visible, message, onClose, tryA
   return (
     <CustomModal visible={visible} onClose={onClose}>
       <Text style={{ color: theme.colors.primary, fontSize: 16, fontWeight: 'bold', marginBottom: 40 }}>{message}</Text>
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 16 }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 10 }}>
         <Button
           mode="contained"
           onPress={onClose}
           buttonColor={theme.colors.error}
           textColor={theme.colors.onError}
+          style={styles.button}
         >
           Close
         </Button>
@@ -31,6 +32,7 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ visible, message, onClose, tryA
             onPress={tryAgain}
             buttonColor={theme.colors.primary}
             textColor={theme.colors.onPrimary}
+            style={styles.button}
           >
             Try Again
           </Button>
@@ -47,8 +49,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   button: {
-    marginTop: 16,
     alignSelf: 'flex-end',
+    minWidth: 120,
   },
 });
 

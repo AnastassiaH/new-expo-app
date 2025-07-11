@@ -116,7 +116,8 @@ function PartnersScreen() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showCancelModal, setShowCancelModal] = useState(false)
-  const { activeRide, setActiveRide } = useActiveRideStore()
+  const activeRide = useActiveRideStore(s => s.activeRide)
+  const setActiveRide = useActiveRideStore(s => s.setActiveRide)
   const { clearForm } = useRideFormStore()
   const theme = useTheme()
   const [availableHeight, setAvailableHeight] = useState(0)
@@ -132,7 +133,6 @@ function PartnersScreen() {
     setError(null)
     try {
       const partnersData = await getPartners(activeRide.id)
-      // console.log('partnersData', partnersData)
       setPartners(partnersData)
     } catch (error: any) {
       setError(error?.message || 'Failed to fetch partners')
@@ -203,7 +203,7 @@ function PartnersScreen() {
               ))}
             </View>
 
-            <PartnerSearchLoading iconOnly={availableHeight - listHeight < 250} />
+            {!loading && <PartnerSearchLoading iconOnly={availableHeight - listHeight < 250} />}
           </ScrollView>
         ) : (
           <NoActiveRideBlock />
