@@ -39,6 +39,8 @@ export default function RideForm() {
     walk: false,
   })
   const theme = useTheme()
+  const [fromInputValue, setFromInputValue] = useState('');
+  const [toInputValue, setToInputValue] = useState('');
 
   useEffect(() => {
     if (!location) return;
@@ -57,8 +59,8 @@ export default function RideForm() {
 
   const validateForm = (fromLocation: LocationPoint | null, toLocation: LocationPoint | null, walkDistance: string | null) => {
     const newErrors = {
-      from: !fromLocation?.latitude || !fromLocation?.longitude,
-      to: !toLocation?.latitude || !toLocation?.longitude,
+      from: !fromLocation || (!fromLocation?.latitude || !fromLocation?.longitude),
+      to: !toLocation || (!toLocation?.latitude || !toLocation?.longitude),
       walk: !walkDistance || isNaN(+walkDistance) || +walkDistance <= 0 || +walkDistance > WALK_DISTANCE_MAX,
     }
     setValidationErrors(newErrors)
@@ -118,12 +120,17 @@ export default function RideForm() {
           <View style={[styles.inputContainer, { width: '100%' }]}>
             <Ionicons name="location" size={20} color="black" style={styles.inputIcon} />
             <PlacesAutocomplete
+              value={fromInputValue}
+              onChangeText={text => {
+                setFromInputValue(text);
+                setFromLocation(null);
+              }}
+              onPlaceSelect={place => {
+                setFromLocation(place);
+                setFromInputValue(place?.description || '');
+              }}
               placeholder="From"
               active={isActive === 'from'}
-              onPlaceSelect={(location) => {
-                setFromLocation(location)
-                setIsActive(null)
-              }}
               searchCoords={useCustomCity ? customCity! as PlaceCoords : lastLocation?.coords!}
               predictedAddresses={useCustomCity ? [] : locationData?.addresses}
               city={useCustomCity ? customCity?.name! : locationData?.city!}
@@ -148,10 +155,15 @@ export default function RideForm() {
             <Ionicons name="flag" size={20} color="black" style={styles.inputIcon} />
             <PlacesAutocomplete
               placeholder="To"
+              value={toInputValue}
+              onChangeText={text => {
+                setToInputValue(text);
+                setToLocation(null);
+              }}
               active={isActive === 'to'}
               onPlaceSelect={(location) => {
                 setToLocation(location)
-                setIsActive(null)
+                setToInputValue(location?.description || '')
               }}
               searchCoords={useCustomCity ? customCity! as PlaceCoords : location?.coords!}
               city={useCustomCity ? customCity?.name! : locationData?.city!}

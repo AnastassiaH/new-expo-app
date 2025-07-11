@@ -7,6 +7,8 @@ import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'r
 import { useTheme } from 'react-native-paper';
 
 interface Props {
+  value: string;
+  onChangeText: (text: string) => void;
   onPlaceSelect: (place: LocationPoint | null) => void;
   searchCoords: PlaceCoords,
   predictedAddresses?: PlacePrediction[],
@@ -29,6 +31,8 @@ interface TextInputRef {
 const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
   (
     {
+      value,
+      onChangeText,
       onPlaceSelect,
       searchCoords,
       predictedAddresses,
@@ -44,10 +48,8 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
     },
     ref
   ) => {
-    const [query, setQuery] = useState('');
     const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
     const [loading, setLoading] = useState(false);
-    const [placeSelected, setPlaceSelected] = useState<PlacePrediction | null>(null)
     const [error, setError] = useState(false)
     const theme = useTheme()
 
@@ -57,6 +59,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
       focus: () => inputRef.current?.focus(),
       clear: () => inputRef.current?.clear(),
     }));
+
     const handleSearch = async (query: string, city: string, searchCoords: PlaceCoords, predictedAddresses?: PlacePrediction[]) => {
       if (query?.length < minCharsToFetch || !city) return
       if (error) return
@@ -89,49 +92,48 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
     const debouncedSearch = useCallback(debounce(handleSearch, 300), []);
 
     const handleOnBlur = () => {
-      if (!query) {
+      if (!value) {
         setError(false)
         return
       }
 
       if (predictions?.length > 0) {
         setError(false)
-      } else if (!placeSelected) {
-        setError(true)
       }
+      // else if (!placeSelected) {
+      //   setError(true)
+      // }
     }
 
     const handleChange = (value: string) => {
       clearValidationErrors?.()
-      setPlaceSelected(null)
-      setQuery(value);
+      onChangeText(value);
       debouncedSearch(value, city, searchCoords, predictedAddresses);
     }
 
     const handleSelect = async (place: PlacePrediction) => {
+      if (!place) return
       setLoading(true)
       setError(false)
       setPredictions([])
 
-      const placeData = await getPlaceData(place.place_id)
-      if (!placeData) {
-        setError(true)
-        return
-      } else {
+      try {
+        const placeData = await getPlaceData(place.place_id)
         onPlaceSelect(placeData)
+        onChangeText(place?.description || place?.formatted_address)
+      } catch (error) {
+        onError(error instanceof Error ? error.message : 'Error selecting place')
+        setError(true)
+      } finally {
+        setLoading(false)
       }
-
-      setPlaceSelected(place)
-      setQuery(place?.description || place?.formatted_address)
-      setLoading(false)
     }
 
     const handleClear = () => {
-      setQuery('')
+      onChangeText('')
       setPredictions([])
-      clearValidationErrors?.()
       setError(false)
-      setPlaceSelected(null)
+      clearValidationErrors?.()
       onPlaceSelect(null)
     }
 
@@ -146,7 +148,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
           <TextInput
             placeholder={placeholder || 'Search for a place'}
             placeholderTextColor="#000"
-            value={query}
+            value={value}
             onChangeText={handleChange}
             onBlur={handleOnBlur}
             onFocus={handleFocus}
@@ -156,7 +158,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
             ref={inputRef}
             testID={testID}
           />
-          {query && (
+          {value && (
             <TouchableOpacity
               onPress={handleClear}
               style={styles.clearButton}
@@ -165,7 +167,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
             </TouchableOpacity>
           )}
         </View>
-        {!loading && query?.length > minCharsToFetch && predictions?.length > 0 && active && (
+        {!loading && value?.length > minCharsToFetch && predictions?.length > 0 && active && (
           <FlatList
             style={styles.predictionsContainer}
             data={predictions}
