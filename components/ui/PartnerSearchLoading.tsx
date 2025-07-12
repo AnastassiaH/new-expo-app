@@ -24,8 +24,10 @@ interface PartnerSearchLoadingProps {
 const PartnerSearchLoading: React.FC<PartnerSearchLoadingProps> = ({ iconOnly = false }) => {
   const floatAnim = useRef(new Animated.Value(0)).current
   const progressAnim = useRef(new Animated.Value(0)).current
-  const messageIndex = useRef(0)
   const theme = useTheme()
+
+  const messageIndex = useRef(0)
+  const messageRef = useRef<Text>(null)
 
   useEffect(() => {
     Animated.loop(
@@ -45,22 +47,26 @@ const PartnerSearchLoading: React.FC<PartnerSearchLoadingProps> = ({ iconOnly = 
       ])
     ).start()
 
-    const changeMessage = () => {
-      messageIndex.current = (messageIndex.current + 1) % messages.length
-      setTimeout(changeMessage, 3000)
-    }
-    changeMessage()
-
-    const animateProgress = () => {
+    const animate = () => {
       progressAnim.setValue(0)
+
       Animated.timing(progressAnim, {
         toValue: 1,
-        duration: 10000,
+        duration: 5000,
         useNativeDriver: false,
         easing: Easing.linear,
-      }).start(() => animateProgress())
+      }).start(() => {
+        messageIndex.current = (messageIndex.current + 1) % messages.length
+
+        if (messageRef.current) {
+          messageRef.current.setNativeProps({ text: messages[messageIndex.current] })
+        }
+
+        animate()
+      })
     }
-    animateProgress()
+
+    animate()
 
     return () => {
       progressAnim.stopAnimation()
@@ -90,8 +96,11 @@ const PartnerSearchLoading: React.FC<PartnerSearchLoadingProps> = ({ iconOnly = 
 
       {!iconOnly && (
         <>
-          <Text style={[styles.message, { color: theme.colors.primary }]}>
-            {messages[messageIndex.current]}
+          <Text
+            ref={messageRef}
+            style={[styles.message, { color: theme.colors.primary }]}
+          >
+            {messages[0]}
           </Text>
 
           <View style={styles.progressContainer}>
