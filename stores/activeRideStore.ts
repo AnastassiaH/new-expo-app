@@ -1,7 +1,7 @@
 import { UNAUTHORIZED_ERROR_MESSAGE } from "@/constants";
 import { getRide } from "@/services/api.service";
+import { RideData } from "@/types";
 import { create } from "zustand";
-import { RideData } from "../types";
 
 interface ActiveRideStore {
   isLoading: boolean
@@ -28,11 +28,12 @@ export const useActiveRideStore = create<ActiveRideStore>((set) => ({
         set({ activeRide: rides[rides.length - 1] })
       }
     } catch (error: any) {
-      if (error.status === 401 || error.status === 403) {
+      if (error?.message === 'Request failed with status code 401'
+        || error?.message === 'Request failed with status code 403') {
         set({ error: UNAUTHORIZED_ERROR_MESSAGE })
-        return
+      } else {
+        set({ error: error?.message })
       }
-      set({ error: error.message })
     } finally {
       set({ isLoading: false })
     }

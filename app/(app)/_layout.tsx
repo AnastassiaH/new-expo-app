@@ -13,8 +13,10 @@ export default function RootLayout() {
   const { session, isReady } = useAuthStore();
   const { activeRide, fetchActiveRide, isLoading } = useActiveRideStore()
   const activeRideError = useActiveRideStore(s => s.error)
+  const setActiveRideError = useActiveRideStore(s => s.setError)
   const user = useUserStore((state) => state.user);
   const isHydrated = useUserStore((state) => state.isHydrated);
+  const signOut = useAuthStore(s => s.signOut)
 
   useEffect(() => {
     if (user?.id) {
@@ -49,9 +51,12 @@ export default function RootLayout() {
       <ErrorModal
         visible={!!activeRideError}
         message={activeRideError}
-        onClose={activeRideError === UNAUTHORIZED_ERROR_MESSAGE
-          ? () => router.replace('/(auth)' as never)
-          : () => router.replace('/(app)/ride' as never)}
+        onClose={() => {
+          setActiveRideError(null)
+          activeRideError === UNAUTHORIZED_ERROR_MESSAGE
+            ? signOut()
+            : router.reload()
+        }}
       />
     )
   }
