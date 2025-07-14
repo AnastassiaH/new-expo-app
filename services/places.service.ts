@@ -117,7 +117,7 @@ export const getPlaceData = async (placeId: string): Promise<LocationPoint | nul
   }
 };
 
-export const getRouteCoords = async (from: PlaceCoords, to: PlaceCoords): Promise<PlaceCoords[] | null> => {
+export const getRouteCoords = async (from: PlaceCoords, to: PlaceCoords): Promise<PlaceCoords[]> => {
 
   try {
     const res = await fetch(

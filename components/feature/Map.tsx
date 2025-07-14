@@ -1,39 +1,24 @@
-import { INITIAL_MAP_REGION } from '@/constants';
+import { useMapRegion } from '@/hooks/useMapRegion';
 import { useRoute } from '@/hooks/useRoute';
 import { useLocationStore } from '@/stores/locationStore';
 import useRideFormStore from '@/stores/rideFormStore';
-import { PlaceCoords } from '@/types';
-import { MapRegion } from '@/types/MapTypes';
-import { getMapRegion } from '@/utils/mapUtils';
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
-import { useTheme } from 'react-native-paper';
+import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 
 export default function Map() {
   const { customCity, useCustomCity, currentLocation } = useLocationStore();
   const { fromLocation, toLocation } = useRideFormStore();
-  const routeCoords = useRoute(fromLocation, toLocation);
-  const theme = useTheme();
   const mapRef = useRef<MapView>(null);
-  const [mapRegion, setMapRegion] = useState<MapRegion>(INITIAL_MAP_REGION);
   const [mapReady, setMapReady] = useState(false);
+  const routeCoords = useRoute(fromLocation, toLocation);
+  const mapRegion = useMapRegion(currentLocation, customCity, useCustomCity);
 
   useEffect(() => {
     if (mapRef.current) {
       setMapReady(true);
     }
   }, [mapRef]);
-
-  useEffect(() => {
-    if (!mapReady) return;
-
-    const newRegion = getMapRegion(currentLocation?.coords as PlaceCoords, { ...customCity } as PlaceCoords, useCustomCity);
-
-    if (JSON.stringify(newRegion) !== JSON.stringify(mapRegion)) {
-      setMapRegion(newRegion);
-    }
-  }, [customCity, mapReady, useCustomCity, currentLocation]);
 
   useEffect(() => {
     if (fromLocation && toLocation && routeCoords && routeCoords.length > 0 && mapReady) {
@@ -60,8 +45,9 @@ export default function Map() {
         showsUserLocation={!!currentLocation}
         showsMyLocationButton={false}
         followsUserLocation={true} // IOS only
+        onMapReady={() => setMapReady(true)}
       >
-        {fromLocation && (
+        {/* {fromLocation && (
           <Marker
             coordinate={{
               latitude: fromLocation.latitude,
@@ -74,9 +60,9 @@ export default function Map() {
               <View style={styles.markerDot} />
             </View>
           </Marker>
-        )}
+        )} */}
 
-        {toLocation && (
+        {/* {toLocation && (
           <Marker
             coordinate={{
               latitude: toLocation.latitude,
@@ -89,7 +75,7 @@ export default function Map() {
               <View style={[styles.markerDot, { backgroundColor: theme.colors.primary }]} />
             </View>
           </Marker>
-        )}
+        )} */}
 
         {fromLocation && toLocation && (
           <Polyline
