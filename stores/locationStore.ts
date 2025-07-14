@@ -1,19 +1,7 @@
-import { City, UserLocationData } from '@/types';
+import { City, LocationData, UserLocationData } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-
-export interface LocationData {
-  coords: {
-    latitude: number;
-    longitude: number;
-    altitude?: number | null;
-    accuracy?: number | null;
-    heading?: number | null;
-    speed?: number | null;
-  };
-  timestamp: number;
-}
 
 export interface LocationStore {
   currentLocation: LocationData | null;

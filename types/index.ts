@@ -11,25 +11,6 @@ export type RootStackParamList = {
 	AppDrawer: undefined
 }
 
-export interface City extends PlaceCoords {
-	name: string;
-}
-
-// export enum Screens {
-// 	RideScreen = 'RideScreen',
-// 	VerificationScreen = 'VerificationScreen',
-// 	PartnersScreen = 'PartnersScreen',
-// 	StartScreen = 'StartScreen',
-// 	LoginScreen = 'LoginScreen',
-// 	RegisterScreen = 'RegisterScreen',
-// 	ResetPasswordScreen = 'ResetPasswordScreen',
-// 	ForgotPasswordScreen = 'ForgotPasswordScreen',
-// 	AppDrawer = 'AppDrawer',
-// 	Settings = 'Settings',
-// 	Account = 'Account',
-// 	History = 'History'
-// }
-
 export interface AutocompleteInputData {
 	formatted_address: string
 	lat: number
@@ -48,6 +29,10 @@ export interface PlaceCoords {
 
 export type LocationPoint = PlaceCoords & {
 	description: string
+}
+
+export interface City extends PlaceCoords {
+	name: string;
 }
 
 export type RideData = {
@@ -102,6 +87,20 @@ export type ApiEndpoints = {
 	resetPassword: string
 }
 
+// expo location
+export interface LocationData {
+	coords: {
+		latitude: number;
+		longitude: number;
+		altitude?: number | null;
+		accuracy?: number | null;
+		heading?: number | null;
+		speed?: number | null;
+	};
+	timestamp: number;
+}
+
+// additional user location data
 export interface UserLocationData {
 	city: string;
 	region: string;
