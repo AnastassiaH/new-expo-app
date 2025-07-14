@@ -17,7 +17,10 @@ import { Button, TextInput, useTheme } from "react-native-paper"
 import ConfirmationModal from "../ui/ConfirmationModal"
 
 export default function RideForm() {
-  const { fromLocation, toLocation, setFromLocation, setToLocation, clearForm } = useRideFormStore()
+  const fromLocation = useRideFormStore(s => s.fromLocation)
+  const toLocation = useRideFormStore(s => s.toLocation)
+  const setFromLocation = useRideFormStore(s => s.setFromLocation)
+  const setToLocation = useRideFormStore(s => s.setToLocation)
   const [walkDistance, setWalkDistance] = useState<string | null>(null)
   const [isActive, setIsActive] = useState<'from' | 'to' | null>(null)
   const [createRideError, setCreateRideError] = useState<string | null>(null)
@@ -48,7 +51,8 @@ export default function RideForm() {
   useFocusEffect(
     useCallback(() => {
       return () => {
-        clearForm()
+        setFromLocation(null)
+        setToLocation(null)
         setWalkDistance(null)
         setIsActive(null)
         setValidationErrors({
@@ -111,14 +115,18 @@ export default function RideForm() {
     } catch (error: any) {
       setCreateRideError(error?.message)
     } finally {
-      clearForm()
+      setFromLocation(null)
+      setToLocation(null)
+      setWalkDistance(null)
     }
   }
 
   const onCloseRideError = () => {
     setCreateRideError(null)
     router.replace('/(app)/ride' as never)
-    clearForm()
+    setFromLocation(null)
+    setToLocation(null)
+    setWalkDistance(null)
   }
 
   if (createRideError) {

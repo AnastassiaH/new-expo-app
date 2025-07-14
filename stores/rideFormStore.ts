@@ -6,7 +6,6 @@ type RideFormStore = {
   toLocation: LocationPoint | null
   setFromLocation: (location: LocationPoint | null) => void
   setToLocation: (location: LocationPoint | null) => void
-  clearForm: () => void
 }
 
 const useRideFormStore = create<RideFormStore>((set) => ({
@@ -19,11 +18,6 @@ const useRideFormStore = create<RideFormStore>((set) => ({
   setToLocation: (location: LocationPoint | null) =>
     set(() => ({
       toLocation: location
-    })),
-  clearForm: () =>
-    set(() => ({
-      fromLocation: null,
-      toLocation: null
     }))
 }))
 
