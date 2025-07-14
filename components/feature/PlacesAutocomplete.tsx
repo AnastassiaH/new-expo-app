@@ -1,6 +1,7 @@
 import { DEFAULT_ERROR_MESSAGE } from '@/constants';
 import { fetchAutocompletePredictions, getPlaceData } from '@/services/places.service';
 import { LocationPoint, PlaceCoords, PlacePrediction } from '@/types';
+import { useFocusEffect } from 'expo-router';
 import { debounce } from 'lodash';
 import React, { useCallback, useImperativeHandle, useRef, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -51,6 +52,15 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
     const [value, setValue] = useState('')
 
     const inputRef = useRef<TextInput>(null);
+
+    useFocusEffect(
+      useCallback(() => {
+        return () => {
+          setValue('')
+          setPredictions([])
+        }
+      }, [])
+    )
 
     useImperativeHandle(ref, () => ({
       focus: () => inputRef.current?.focus(),
