@@ -43,16 +43,12 @@ export default function RideForm() {
     walk: false,
   })
   const theme = useTheme()
-  const [fromInputValue, setFromInputValue] = useState('');
-  const [toInputValue, setToInputValue] = useState('');
   const { handleConfirmCancel, loading: cancellationLoading, error: cancellationError } = useRideCancellation()
 
   useFocusEffect(
     useCallback(() => {
       return () => {
         clearForm()
-        setFromInputValue('')
-        setToInputValue('')
         setWalkDistance(null)
         setIsActive(null)
         setValidationErrors({
@@ -145,14 +141,7 @@ export default function RideForm() {
           <View style={[styles.inputContainer, { width: '100%' }]}>
             <Ionicons name="location" size={20} color="black" style={styles.inputIcon} />
             <PlacesAutocomplete
-              value={fromInputValue}
-              onChangeText={text => {
-                setFromInputValue(text);
-              }}
-              onPlaceSelect={place => {
-                setFromLocation(place);
-                setFromInputValue(place?.description || '');
-              }}
+              onPlaceSelect={setFromLocation}
               placeholder="From"
               active={isActive === 'from'}
               searchCoords={useCustomCity ? customCity! as PlaceCoords : lastLocation?.coords!}
@@ -179,15 +168,8 @@ export default function RideForm() {
             <Ionicons name="flag" size={20} color="black" style={styles.inputIcon} />
             <PlacesAutocomplete
               placeholder="To"
-              value={toInputValue}
-              onChangeText={text => {
-                setToInputValue(text);
-              }}
               active={isActive === 'to'}
-              onPlaceSelect={(location) => {
-                setToLocation(location)
-                setToInputValue(location?.description || '')
-              }}
+              onPlaceSelect={setToLocation}
               searchCoords={useCustomCity ? customCity! as PlaceCoords : location?.coords!}
               city={useCustomCity ? customCity?.name! : locationData?.city!}
               onError={setMapsError}

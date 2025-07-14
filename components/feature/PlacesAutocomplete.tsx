@@ -7,8 +7,6 @@ import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'r
 import { useTheme } from 'react-native-paper';
 
 interface Props {
-  value: string;
-  onChangeText: (text: string) => void;
   onPlaceSelect: (place: LocationPoint | null) => void;
   searchCoords: PlaceCoords,
   predictedAddresses?: PlacePrediction[],
@@ -31,8 +29,6 @@ interface TextInputRef {
 const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
   (
     {
-      value,
-      onChangeText,
       onPlaceSelect,
       searchCoords,
       predictedAddresses,
@@ -52,6 +48,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false)
     const theme = useTheme()
+    const [value, setValue] = useState('')
 
     const inputRef = useRef<TextInput>(null);
 
@@ -107,7 +104,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
 
     const handleChange = (value: string) => {
       clearValidationErrors?.()
-      onChangeText(value);
+      setValue(value);
       debouncedSearch(value, city, searchCoords, predictedAddresses);
     }
 
@@ -120,7 +117,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
       try {
         const placeData = await getPlaceData(place.place_id)
         onPlaceSelect(placeData)
-        onChangeText(place?.description || place?.formatted_address)
+        setValue(place?.description || place?.formatted_address)
       } catch (error) {
         onError(error instanceof Error ? error.message : 'Error selecting place')
         setError(true)
@@ -130,7 +127,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
     }
 
     const handleClear = () => {
-      onChangeText('')
+      setValue('')
       setPredictions([])
       setError(false)
       clearValidationErrors?.()
