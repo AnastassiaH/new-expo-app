@@ -45,6 +45,7 @@ export default function RideForm() {
   })
   const theme = useTheme()
   const { handleConfirmCancel, loading: cancellationLoading, error: cancellationError } = useRideCancellation()
+  const [isRideCreating, setIsRideCreating] = useState(false)
 
   useFocusEffect(
     useCallback(() => {
@@ -91,6 +92,7 @@ export default function RideForm() {
     const rideData = generateRideData(fromLocation!, toLocation!, +walkDistance!)
 
     try {
+      setIsRideCreating(true)
       const response = await createRide(rideData)
       if (response?.id) {
         setActiveRide(response)
@@ -98,6 +100,7 @@ export default function RideForm() {
     } catch (error: any) {
       setCreateRideError(error?.message)
     } finally {
+      setIsRideCreating(false)
       setFromLocation(null)
       setToLocation(null)
       setWalkDistance(null)
@@ -128,6 +131,10 @@ export default function RideForm() {
   return (
     <View>
       <View style={styles.formWrapper}>
+        {isRideCreating &&
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000, opacity: 0.5 }}>
+            <Loader />
+          </View>}
         <View style={styles.formRow}>
           <View style={[styles.inputContainer, { width: '100%' }]}>
             <Ionicons name="location" size={20} color="black" style={styles.inputIcon} />
