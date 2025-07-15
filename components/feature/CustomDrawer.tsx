@@ -14,6 +14,7 @@ const iconsMap: Record<string, keyof typeof Ionicons.glyphMap> = {
   profile: 'person-outline',
   settings: 'settings-outline',
   ride: 'car-outline',
+  chats: 'chatbox-ellipses-outline',
 };
 
 const CustomDrawer = () => {
@@ -38,9 +39,10 @@ const CustomDrawer = () => {
           <AvatarBlock onPress={() => router.replace('/(app)/profile' as never)} />
           {props.state.routes
             .filter((route) => route.name !== 'profile')
+            .filter((route) => !route.name.includes('chats/[chatId]'))
             .map((route) => {
               const focused = props.state.routes[props.state.index].key === route.key
-              const label = route.name;
+              const label = route.name === 'chats/index' ? 'chats' : route.name;
 
               return (
                 <DrawerItem
@@ -50,7 +52,7 @@ const CustomDrawer = () => {
                   onPress={() => props.navigation.navigate(route.name)}
                   labelStyle={{ color: focused ? theme.colors.primary : theme.colors.onSurface }}
                   icon={({ size }) => (
-                    <Ionicons name={iconsMap[route.name.toLowerCase() as keyof typeof iconsMap]} color={theme.colors.onSurface} size={size} />
+                    <Ionicons name={iconsMap[label.toLowerCase() as keyof typeof iconsMap]} color={theme.colors.onSurface} size={size} />
                   )}
                   style={{
                     backgroundColor: focused ? theme.colors.surface : 'transparent',

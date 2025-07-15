@@ -1,5 +1,6 @@
 import { PartnerData } from '@/types';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { router } from 'expo-router';
 import React, { useRef } from 'react';
 import {
   Animated,
@@ -9,7 +10,7 @@ import {
   TouchableOpacity,
   UIManager
 } from 'react-native';
-import { Card, useTheme } from 'react-native-paper';
+import { Button, Card, useTheme } from 'react-native-paper';
 import SocialBlock from '../feature/SocialBlock';
 
 
@@ -91,6 +92,18 @@ const PartnerItem: React.FC<PartnerItemProps> = ({ item }) => {
           >
             <Card.Actions>
               <SocialBlock phone={item.user?.phoneNumber || ''} />
+              <Button
+                mode="contained"
+                onPress={() => { router.push(`/chats/${item.id}` as never) }}
+                style={{
+                  backgroundColor: theme.colors.surface,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 60,
+                  height: 30,
+                  padding: 0,
+                }}
+              >Chat</Button>
             </Card.Actions>
           </Animated.View>
         </Animated.View>
