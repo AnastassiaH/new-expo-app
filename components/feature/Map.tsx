@@ -11,7 +11,7 @@ export default function Map() {
   const { fromLocation, toLocation } = useRideFormStore();
   const mapRef = useRef<MapView>(null);
   const [mapReady, setMapReady] = useState(false);
-  const routeCoords = useRoute(fromLocation, toLocation);
+  const { routeCoords } = useRoute(fromLocation, toLocation);
   const mapRegion = useMapRegion(currentLocation, customCity, useCustomCity);
 
   useEffect(() => {
