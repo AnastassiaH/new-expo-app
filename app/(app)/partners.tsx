@@ -115,7 +115,7 @@ function PartnersScreen() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showCancelModal, setShowCancelModal] = useState(false)
-  const { handleConfirmCancel } = useRideCancellation()
+  const { handleConfirmCancel, loading: cancelRideLoading } = useRideCancellation()
   const activeRide = useActiveRideStore(s => s.activeRide)
   const theme = useTheme()
   const [availableHeight, setAvailableHeight] = useState(0)
@@ -149,6 +149,11 @@ function PartnersScreen() {
 
   const handleCancelRide = () => {
     setShowCancelModal(true)
+  }
+
+  const handleConfirmCancelRide = async () => {
+    await handleConfirmCancel()
+    setShowCancelModal(false)
   }
 
   if (error) return <ErrorModal visible={!!error} message={error} onClose={() => setError(null)} />
@@ -195,12 +200,10 @@ function PartnersScreen() {
         <ConfirmationModal
           visible={showCancelModal}
           onClose={() => setShowCancelModal(false)}
-          onConfirm={() => {
-            handleConfirmCancel()
-            setShowCancelModal(false)
-          }}
+          onConfirm={handleConfirmCancelRide}
           title="Відмінити поїздку"
           message="Ви впевнені, що хочете відмінити поїздку?"
+          loading={cancelRideLoading}
         />
       </View>
     </ScreenWrapper>

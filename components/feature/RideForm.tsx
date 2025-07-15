@@ -232,8 +232,9 @@ export default function RideForm() {
       </View>
       <ConfirmationModal
         visible={isActiveRideModalVisible}
-        message="Хочете скасувати цю та створиити нову?"
+        message="Хочете скасувати цю та створити нову?"
         title="Активна поїздка вже створена"
+        loading={cancellationLoading}
         onConfirm={() => {
           handleConfirmCancel()
           setIsActiveRideModalVisible(false)

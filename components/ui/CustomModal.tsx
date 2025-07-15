@@ -61,6 +61,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    paddingTop: 40,
+    paddingBottom: 35,
   },
   closeButton: {
     marginTop: 20,
