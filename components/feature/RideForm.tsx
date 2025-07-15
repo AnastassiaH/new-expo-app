@@ -7,11 +7,11 @@ import { useActiveRideStore } from "@/stores/activeRideStore"
 import { useGoogleMapsError } from "@/stores/errorStore"
 import { useLocationStore } from "@/stores/locationStore"
 import useRideFormStore from "@/stores/rideFormStore"
-import { LocationData, LocationPoint, PlaceCoords } from "@/types"
+import { LocationPoint, PlaceCoords } from "@/types"
 import { generateRideData } from "@/utils"
 import { Ionicons } from "@expo/vector-icons"
 import { router, useFocusEffect } from "expo-router"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { StyleSheet, View } from "react-native"
 import { Button, TextInput, useTheme } from "react-native-paper"
 import ConfirmationModal from "../ui/ConfirmationModal"
@@ -24,8 +24,6 @@ export default function RideForm() {
   const [walkDistance, setWalkDistance] = useState<string | null>(null)
   const [isActive, setIsActive] = useState<'from' | 'to' | null>(null)
   const [createRideError, setCreateRideError] = useState<string | null>(null)
-  const [lastLocation, setLastLocation] = useState<LocationData | null>(null)
-  const [locationUpdating, setLocationUpdating] = useState(false)
   const setMapsError = useGoogleMapsError(s => s.setError)
   const [isActiveRideModalVisible, setIsActiveRideModalVisible] = useState(false)
   const activeRide = useActiveRideStore(s => s.activeRide)
@@ -63,21 +61,6 @@ export default function RideForm() {
       }
     }, [])
   )
-
-  useEffect(() => {
-    if (!location) return;
-
-    const isSignificantChange = lastLocation
-      ? Math.abs(location.coords.latitude - lastLocation.coords.latitude) > 0.0001 ||
-      Math.abs(location.coords.longitude - lastLocation.coords.longitude) > 0.0001
-      : true;
-
-    if (isSignificantChange) {
-      setLocationUpdating(true);
-      setLastLocation(location);
-      setTimeout(() => setLocationUpdating(false), 500);
-    }
-  }, [location]);
 
   const validateForm = (fromLocation: LocationPoint | null, toLocation: LocationPoint | null, walkDistance: string | null) => {
     const newErrors = {
@@ -152,18 +135,14 @@ export default function RideForm() {
               onPlaceSelect={setFromLocation}
               placeholder="From"
               active={isActive === 'from'}
-              searchCoords={useCustomCity ? customCity! as PlaceCoords : lastLocation?.coords!}
+              searchCoords={useCustomCity ? customCity! as PlaceCoords : location?.coords!}
               predictedAddresses={useCustomCity ? [] : locationData?.addresses}
               city={useCustomCity ? customCity?.name! : locationData?.city!}
               onError={setMapsError}
               onFocus={() => {
-                !lastLocation?.coords && !customCity && setSelectorVisible(true)
+                !location?.coords && !customCity && setSelectorVisible(true)
                 setIsActive('from')
-                setValidationErrors({
-                  from: false,
-                  to: false,
-                  walk: false,
-                })
+                clearValidationErrors()
               }}
               testID="from-input"
               isValidationError={validationErrors?.from}
@@ -184,11 +163,7 @@ export default function RideForm() {
               onFocus={() => {
                 !location?.coords && !customCity && setSelectorVisible(true)
                 setIsActive('to')
-                setValidationErrors({
-                  from: false,
-                  to: false,
-                  walk: false,
-                })
+                clearValidationErrors()
               }}
               isValidationError={validationErrors?.to}
               clearValidationErrors={clearValidationErrors}
@@ -213,13 +188,7 @@ export default function RideForm() {
             returnKeyType="done"
             mode="outlined"
             outlineStyle={{ borderColor: 'transparent' }}
-            onFocus={() => {
-              setValidationErrors({
-                from: false,
-                to: false,
-                walk: false,
-              })
-            }}
+            onFocus={clearValidationErrors}
           />
         </View>
         <Button

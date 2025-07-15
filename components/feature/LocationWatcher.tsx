@@ -11,6 +11,17 @@ export default function LocationWatcher() {
   const setLoading = useLocationStore((s) => s.setLoading);
 
   const watcher = useRef<Location.LocationSubscription | null>(null);
+  const lastLocationRef = useRef<Location.LocationObject | null>(null);
+
+  const isSignificantChange = (newLoc: Location.LocationObject): boolean => {
+    const last = lastLocationRef.current;
+    if (!last) return true;
+
+    const latDiff = Math.abs(newLoc.coords.latitude - last.coords.latitude);
+    const lonDiff = Math.abs(newLoc.coords.longitude - last.coords.longitude);
+
+    return latDiff > 0.0001 || lonDiff > 0.0001;
+  };
 
   const fetchLocationData = async (loc: Location.LocationObject) => {
     setLoading(true);
@@ -25,6 +36,9 @@ export default function LocationWatcher() {
   };
 
   const onLocationUpdate = (loc: Location.LocationObject) => {
+    if (!isSignificantChange(loc)) return;
+
+    lastLocationRef.current = loc;
     setLocation(loc);
     fetchLocationData(loc);
   };
