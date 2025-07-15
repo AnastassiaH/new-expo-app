@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   Animated,
   Easing,
@@ -26,8 +26,7 @@ const PartnerSearchLoading: React.FC<PartnerSearchLoadingProps> = ({ iconOnly = 
   const progressAnim = useRef(new Animated.Value(0)).current
   const theme = useTheme()
 
-  const messageIndex = useRef(0)
-  const messageRef = useRef<Text>(null)
+  const [messageIndex, setMessageIndex] = useState(0)
 
   useEffect(() => {
     Animated.loop(
@@ -49,23 +48,18 @@ const PartnerSearchLoading: React.FC<PartnerSearchLoadingProps> = ({ iconOnly = 
 
     const animate = () => {
       progressAnim.setValue(0)
-
       Animated.timing(progressAnim, {
         toValue: 1,
         duration: 5000,
         useNativeDriver: false,
         easing: Easing.linear,
       }).start(() => {
-        messageIndex.current = (messageIndex.current + 1) % messages.length
-
-        if (messageRef.current) {
-          messageRef.current.setNativeProps({ text: messages[messageIndex.current] })
-        }
-
+        setTimeout(() => {
+          setMessageIndex((prev) => (prev + 1) % messages.length)
+        }, 0)
         animate()
       })
     }
-
     animate()
 
     return () => {
@@ -96,11 +90,8 @@ const PartnerSearchLoading: React.FC<PartnerSearchLoadingProps> = ({ iconOnly = 
 
       {!iconOnly && (
         <>
-          <Text
-            ref={messageRef}
-            style={[styles.message, { color: theme.colors.primary }]}
-          >
-            {messages[0]}
+          <Text style={[styles.message, { color: theme.colors.primary }]}>
+            {messages[messageIndex]}
           </Text>
 
           <View style={styles.progressContainer}>
@@ -151,3 +142,4 @@ const styles = StyleSheet.create({
 })
 
 export default PartnerSearchLoading
+
