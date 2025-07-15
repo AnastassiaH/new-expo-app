@@ -40,7 +40,12 @@ export default function CityToggle() {
       {locationData?.city && customCity && customCity.name !== locationData.city && (
         <Card.Actions style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Text style={{ color: '#fff' }}>Використати поточне місто</Text>
-          <Switch value={!useCustomCity} onValueChange={() => setUseCustomCity(!useCustomCity)} />
+          <Switch
+            value={!useCustomCity}
+            onValueChange={() => setUseCustomCity(!useCustomCity)}
+            color={theme.colors.primary}
+            trackColor={{ true: theme.colors.surface }}
+          />
         </Card.Actions>
       )}
     </Card>
@@ -48,15 +53,6 @@ export default function CityToggle() {
 }
 
 const styles = StyleSheet.create({
-  switchContainer: {
-    marginRight: 8,
-  },
-  toggleIcon: {
-    opacity: 0.5,
-  },
-  switch: {
-    marginRight: 8,
-  },
   card: {
     width: '100%',
     borderRadius: 12,
