@@ -117,6 +117,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
             onBlur={onBlur}
             onFocus={onPhoneNumberFocus}
             keyboardType="phone-pad"
+            returnKeyType="done"
             style={[styles.input, { backgroundColor: theme.colors.surface }]}
             selectionColor={theme.colors.primary}
             error={!!error}
