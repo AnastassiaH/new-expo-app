@@ -3,11 +3,12 @@ import usePhoneStore from '@/stores/phoneStore'
 import { router } from 'expo-router'
 import React, { useState } from 'react'
 
+import { AppTextInput } from '@/components/atoms'
 import { Header, Loader, Logo, Wrapper } from '@/components/ui'
 import { DEFAULT_ERROR_MESSAGE } from '@/constants'
 import { useAuthError } from '@/stores/errorStore'
 import { StyleSheet, View } from 'react-native'
-import { Button, TextInput, useTheme } from 'react-native-paper'
+import { Button, useTheme } from 'react-native-paper'
 
 export default function ForgotPasswordScreen() {
   const [isLoading, setIsLoading] = useState(false)
@@ -43,15 +44,14 @@ export default function ForgotPasswordScreen() {
       <Logo />
       <Header>Forgot Password</Header>
       <View style={styles.form}>
-        <TextInput
+        <AppTextInput
           mode="outlined"
           label="Phone Number"
           value={phoneNumber}
           onChangeText={setPhoneNumber}
           onFocus={onPhoneNumberFocus}
           keyboardType="phone-pad"
-          style={[styles.input, { backgroundColor: theme.colors.surface }]}
-          selectionColor={theme.colors.primary}
+          style={styles.input}
         />
         <Button
           mode="contained"

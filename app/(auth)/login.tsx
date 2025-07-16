@@ -1,3 +1,4 @@
+import { AppTextInput } from '@/components/atoms'
 import { Header, Loader, Logo, Wrapper } from '@/components/ui'
 import { DEFAULT_ERROR_MESSAGE } from '@/constants'
 import { logInUser } from '@/services/api.service'
@@ -10,7 +11,7 @@ import { router } from 'expo-router'
 import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
-import { Button, Text, TextInput, useTheme } from 'react-native-paper'
+import { Button, Text, useTheme } from 'react-native-paper'
 
 
 export default function LoginScreen() {
@@ -67,9 +68,9 @@ export default function LoginScreen() {
             }
           }}
           render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
-            <TextInput
+            <AppTextInput
               mode="outlined"
-              label="Phone Number"
+              placeholder="Phone Number"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
@@ -79,10 +80,9 @@ export default function LoginScreen() {
               }}
               keyboardType="phone-pad"
               returnKeyType="done"
-              style={[styles.input, { backgroundColor: theme.colors.surface }]}
-              selectionColor={theme.colors.primary}
               error={!!error}
               outlineStyle={{ borderWidth: 1 }}
+              style={{ marginBottom: 12 }}
             />
           )}
         />
@@ -97,16 +97,14 @@ export default function LoginScreen() {
             }
           }}
           render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
-            <TextInput
+            <AppTextInput
               mode="outlined"
-              label="Password"
+              placeholder="Password"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
               onFocus={() => clearErrors('password')}
               secureTextEntry
-              style={[styles.input, { backgroundColor: theme.colors.surface }]}
-              selectionColor={theme.colors.primary}
               error={!!error}
               outlineStyle={{ borderWidth: 1 }}
             />
@@ -142,9 +140,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     padding: 20,
     borderRadius: 10,
-  },
-  input: {
-    marginBottom: 12
   },
   button: {
     marginTop: 12

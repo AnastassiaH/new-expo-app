@@ -1,3 +1,4 @@
+import { AppTextInput } from '@/components/atoms'
 import { Header, Loader, Logo, Wrapper } from '@/components/ui'
 import { DEFAULT_ERROR_MESSAGE } from '@/constants'
 import { verifyPhone } from '@/services/api.service'
@@ -8,14 +9,13 @@ import { router } from 'expo-router'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { StyleSheet, View } from 'react-native'
-import { Button, Text, TextInput, useTheme } from 'react-native-paper'
+import { Button, Text } from 'react-native-paper'
 
 type VerificationFormData = {
   verificationCode: string
 }
 
 const VerificationScreen: React.FC = () => {
-  const theme = useTheme()
   const [isLoading, setIsLoading] = useState(false)
   const { phone } = usePhoneStore()
   const { setUser } = useUserStore()
@@ -77,7 +77,7 @@ const VerificationScreen: React.FC = () => {
               }
             }}
             render={({ field: { value, onChange, onBlur } }) => (
-              <TextInput
+              <AppTextInput
                 mode="outlined"
                 label="Verification Code"
                 value={value}
@@ -85,8 +85,7 @@ const VerificationScreen: React.FC = () => {
                 onBlur={onBlur}
                 keyboardType="numeric"
                 maxLength={6}
-                style={[styles.input, { backgroundColor: theme.colors.surface }]}
-                selectionColor={theme.colors.primary}
+                style={styles.input}
                 error={!!errors.verificationCode}
               />
             )}

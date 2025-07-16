@@ -1,3 +1,4 @@
+import { AppTextInput } from '@/components/atoms'
 import { Header, Loader, Logo, Wrapper } from '@/components/ui'
 import { DEFAULT_ERROR_MESSAGE } from '@/constants'
 import { resetPassword } from '@/services/api.service'
@@ -7,7 +8,7 @@ import { router } from 'expo-router'
 import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { StyleSheet, View } from 'react-native'
-import { Button, TextInput, useTheme } from 'react-native-paper'
+import { Button, useTheme } from 'react-native-paper'
 
 
 type FormData = {
@@ -69,14 +70,13 @@ const ResetPasswordScreen: React.FC = () => {
             }
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <TextInput
+            <AppTextInput
               mode="outlined"
               label="Verification Code"
               value={value}
               onChangeText={onChange}
               keyboardType="number-pad"
-              style={[styles.input, { backgroundColor: theme.colors.surface }]}
-              selectionColor={theme.colors.primary}
+              style={styles.input}
               error={!!error}
             />
           )}
@@ -93,14 +93,13 @@ const ResetPasswordScreen: React.FC = () => {
             }
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <TextInput
+            <AppTextInput
               mode="outlined"
               label="New Password"
               value={value}
               onChangeText={onChange}
               secureTextEntry
-              style={[styles.input, { backgroundColor: theme.colors.surface }]}
-              selectionColor={theme.colors.primary}
+              style={styles.input}
               error={!!error}
             />
           )}
@@ -114,14 +113,13 @@ const ResetPasswordScreen: React.FC = () => {
             validate: value => value === watch('password') || 'Passwords do not match'
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <TextInput
+            <AppTextInput
               mode="outlined"
               label="Confirm Password"
               value={value}
               onChangeText={onChange}
               secureTextEntry
-              style={[styles.input, { backgroundColor: theme.colors.surface }]}
-              selectionColor={theme.colors.primary}
+              style={styles.input}
               error={!!error}
             />
           )}

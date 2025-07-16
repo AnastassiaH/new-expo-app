@@ -1,7 +1,8 @@
+import { AppTextInput } from '@/components/atoms'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { StyleSheet, View } from 'react-native'
-import { Button, TextInput, useTheme } from 'react-native-paper'
+import { Button, useTheme } from 'react-native-paper'
 
 interface UserSignInData {
   email: string
@@ -46,15 +47,14 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
           }
         }}
         render={({ field: { value, onChange, onBlur } }) => (
-          <TextInput
+          <AppTextInput
             mode="outlined"
             label="Email"
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
             keyboardType="email-address"
-            style={[styles.input, { backgroundColor: theme.colors.surface }]}
-            selectionColor={theme.colors.primary}
+            style={styles.input}
           />
         )}
       />
@@ -65,15 +65,14 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
           required: 'First name is required'
         }}
         render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
-          <TextInput
+          <AppTextInput
             mode="outlined"
             label="First Name"
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
             onFocus={() => clearErrors('firstName')}
-            style={[styles.input, { backgroundColor: theme.colors.surface }]}
-            selectionColor={theme.colors.primary}
+            style={styles.input}
             error={!!error}
           />
         )}
@@ -85,15 +84,14 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
           required: 'Last name is required'
         }}
         render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
-          <TextInput
+          <AppTextInput
             mode="outlined"
             label="Last Name"
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
             onFocus={() => clearErrors('lastName')}
-            style={[styles.input, { backgroundColor: theme.colors.surface }]}
-            selectionColor={theme.colors.primary}
+            style={styles.input}
             error={!!error}
           />
         )}
@@ -109,7 +107,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
           }
         }}
         render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
-          <TextInput
+          <AppTextInput
             mode="outlined"
             label="Phone Number"
             value={value}
@@ -118,8 +116,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
             onFocus={onPhoneNumberFocus}
             keyboardType="phone-pad"
             returnKeyType="done"
-            style={[styles.input, { backgroundColor: theme.colors.surface }]}
-            selectionColor={theme.colors.primary}
+            style={styles.input}
             error={!!error}
           />
         )}
@@ -135,15 +132,14 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
           }
         }}
         render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
-          <TextInput
+          <AppTextInput
             mode="outlined"
             label="Password"
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
             secureTextEntry
-            style={[styles.input, { backgroundColor: theme.colors.surface }]}
-            selectionColor={theme.colors.primary}
+            style={styles.input}
             error={!!error}
           />
         )}
@@ -156,15 +152,14 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
           validate: value => value === watch('password') || 'Passwords do not match'
         }}
         render={({ field: { value, onChange, onBlur } }) => (
-          <TextInput
+          <AppTextInput
             mode="outlined"
             label="Confirm Password"
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
             secureTextEntry
-            style={[styles.input, { backgroundColor: theme.colors.surface }]}
-            selectionColor={theme.colors.primary}
+            style={styles.input}
           />
         )}
       />
