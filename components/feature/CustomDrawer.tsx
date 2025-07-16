@@ -14,6 +14,7 @@ const iconsMap: Record<string, keyof typeof Ionicons.glyphMap> = {
   profile: 'person-outline',
   settings: 'settings-outline',
   ride: 'car-outline',
+  history: 'list-outline',
 };
 
 const CustomDrawer = () => {

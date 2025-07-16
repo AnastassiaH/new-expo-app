@@ -47,8 +47,8 @@ export type RideData = {
 		name: string
 		point: Point
 	}
-	id?: string
-	date?: string
+	id: string
+	date: string
 	isActive?: boolean
 }
 

@@ -16,6 +16,18 @@ export const NoActiveRideBlock = () => {
       >
         Створити поїздку
       </Button>
+      <Button
+        mode="outlined"
+        onPress={() => router.push('/(app)/history')}
+        style={styles.goToHistoryButton}
+        labelStyle={{
+          fontWeight: 'bold',
+          paddingRight: 15,
+          fontSize: 14,
+        }}
+      >
+        Переглянути минулі поїздки
+      </Button>
     </View>
   )
 }
@@ -40,7 +52,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   goToRideButton: {
-    maxWidth: 200,
+    width: '100%',
     alignSelf: 'center',
+  },
+  goToHistoryButton: {
+    width: '100%',
+    alignSelf: 'center',
+    marginTop: 10,
   },
 })
