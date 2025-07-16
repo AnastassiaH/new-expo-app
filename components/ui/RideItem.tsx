@@ -15,17 +15,17 @@ const RideItem: React.FC<Props> = ({ ride }) => {
   const time = ride.date.split(' ')[1];
 
   return (
-    <Card mode="contained" style={[styles.card, { backgroundColor: colors.surface }]}>
+    <Card mode="outlined" style={[styles.card, { backgroundColor: colors.surfaceDisabled }]}>
       <Card.Content>
         <View style={[styles.row, { marginBottom: 8 }]}>
-          <Ionicons name="location-outline" size={20} color={colors.primary} />
+          <Ionicons name="location" size={20} color={colors.primary} />
           <Text style={styles.locationText} numberOfLines={1}>
             {ride.placeFrom?.name?.split(',').slice(0, 3).join(', ')}
           </Text>
         </View>
 
         <View style={styles.row}>
-          <Ionicons name="flag-outline" size={20} color={colors.primary} />
+          <Ionicons name="flag" size={20} color={colors.primary} />
           <Text style={styles.locationText} numberOfLines={1}>
             {ride.placeTo?.name?.split(',').slice(0, 3).join(', ')}
           </Text>
@@ -48,10 +48,10 @@ const RideItem: React.FC<Props> = ({ ride }) => {
           <Ionicons
             name={isActive ? 'ellipse' : 'ellipse-outline'}
             size={12}
-            color={isActive ? colors.tertiary : colors.onSurface}
+            color={isActive ? colors.tertiary : colors.onSecondary}
             style={{ marginRight: 6 }}
           />
-          <Text style={[styles.statusText, { color: isActive ? colors.tertiary : colors.onSurface }]}>
+          <Text style={[styles.statusText, { color: isActive ? colors.tertiary : colors.onSecondary }]}>
             {isActive ? 'Активна поїздка' : 'Завершена поїздка'}
           </Text>
         </View>
