@@ -14,7 +14,8 @@
       "save": "Зберегти",
       "back": "Назад",
       "next": "Далі",
-      "done": "Готово"
+      "done": "Готово",
+      "edit": "Змінити"
     },
     "fields": {
       "phoneNumber": {
@@ -98,11 +99,8 @@
   },
   "settings": {
     "title": "Налаштування",
-    "language": {
-      "label": "Мова",
-      "en": "English",
-      "uk": "Українська"
-    }
+    "language": "Мова",
+    "selectLanguage": "Виберіть потрібну мову"
   },
   "ride": {
     "title": "Створити поїздку",

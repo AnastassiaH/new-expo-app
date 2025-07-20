@@ -5,19 +5,35 @@ import i18n from '../lib/i18n';
 
 export type Language = 'en' | 'uk';
 
-interface LanguageState {
-  language: Language;
-  setLanguage: (lang: Language) => void;
+export interface LanguageOption {
+  code: Language;
+  name: string;
+  nativeName: string;
 }
 
+interface LanguageState {
+  language: Language;
+  selectorVisible: boolean;
+  setLanguage: (lang: Language) => void;
+  setSelectorVisible: (visible: boolean) => void;
+}
+
+export const LANGUAGES: LanguageOption[] = [
+  { code: 'en', name: 'English', nativeName: 'English' },
+  { code: 'uk', name: 'Ukrainian', nativeName: 'Українська' },
+];
+
 export const useLanguageStore = create<LanguageState>()(
-  persist((set) => ({
-    language: i18n.language as Language,
-    setLanguage: (lang) => {
-      i18n.changeLanguage(lang);
-      set({ language: lang });
-    },
-  }),
+  persist(
+    (set) => ({
+      language: i18n.language as Language,
+      selectorVisible: false,
+      setLanguage: (lang) => {
+        i18n.changeLanguage(lang);
+        set({ language: lang });
+      },
+      setSelectorVisible: (visible) => set({ selectorVisible: visible }),
+    }),
     {
       name: 'language-store',
       storage: createJSONStorage(() => AsyncStorage),
@@ -26,4 +42,4 @@ export const useLanguageStore = create<LanguageState>()(
       }),
     }
   )
-)
+);

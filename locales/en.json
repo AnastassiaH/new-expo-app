@@ -14,7 +14,8 @@
       "save": "Save",
       "back": "Back",
       "next": "Next",
-      "done": "Done"
+      "done": "Done",
+      "edit": "Edit"
     },
     "fields": {
       "phoneNumber": {
@@ -97,11 +98,8 @@
   },
   "settings": {
     "title": "Settings",
-    "language": {
-      "label": "Language",
-      "en": "English",
-      "uk": "Українська"
-    }
+    "language": "Language",
+    "selectLanguage": "Select your preferred language"
   },
   "ride": {
     "title": "Create Ride",

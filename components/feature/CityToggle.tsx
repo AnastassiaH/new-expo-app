@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#5C93B7',
     elevation: 2,
-    marginBottom: 16,
   },
   title: { color: '#fff', fontSize: 18, fontWeight: '600' },
   subtitle: { color: '#F0F6FA' },
