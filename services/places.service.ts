@@ -94,6 +94,7 @@ export const getPlaceData = async (placeId: string): Promise<LocationPoint | nul
           place_id: placeId,
           key: apiKey,
           fields: 'geometry,formatted_address',
+          language: 'uk',
         },
       }
     );
