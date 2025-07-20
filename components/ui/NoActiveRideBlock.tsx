@@ -1,18 +1,18 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 
 export const NoActiveRideBlock = () => {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.emptyStateContainer}>
-      <Text style={styles.emptyTitle}>Пошук ще не розпочато</Text>
+      <Text style={styles.emptyTitle}>{t("partners.noActiveRideBlockTitle")}</Text>
       <Text style={styles.emptyDescription}>
-        Створіть поїздку, щоб знайти попутника
+        {t("partners.noActiveRideBlockDescription")}
       </Text>
-      {/* <Text style={styles.helpText}>
-        Ми поєднаємо вас з людьми, які рухаються у тому ж напрямку
-      </Text> */}
 
       <Button
         mode="text"
@@ -26,7 +26,7 @@ export const NoActiveRideBlock = () => {
           fontSize: 14,
         }}
       >
-        Переглянути минулі поїздки
+        {t("partners.goToHistoryButton")}
       </Button>
 
       <Button
@@ -35,7 +35,7 @@ export const NoActiveRideBlock = () => {
         style={styles.goToRideButton}
         labelStyle={{ fontWeight: 'bold' }}
       >
-        Створити поїздку
+        {t("ride.createRideButton")}
       </Button>
     </View>
   );

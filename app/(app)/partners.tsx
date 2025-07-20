@@ -11,6 +11,7 @@ import { useActiveRideStore } from '@/stores/activeRideStore'
 import { usePartnersStore } from '@/stores/partnersStore'
 import { PartnerData } from '@/types'
 import React, { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   RefreshControl,
   ScrollView,
@@ -120,6 +121,7 @@ function PartnersScreen() {
   const theme = useTheme()
   const [availableHeight, setAvailableHeight] = useState(0)
   const [listHeight, setListHeight] = useState(0)
+  const { t } = useTranslation()
 
   const fetchPartners = useCallback(async () => {
     if (!activeRide?.id) {
@@ -133,7 +135,7 @@ function PartnersScreen() {
       const partnersData = await getPartners(activeRide.id)
       setPartners(partnersData)
     } catch (error: any) {
-      setError(error?.message || 'Failed to fetch partners')
+      setError(error?.message || t("common.error.fetchingError"))
       setPartners(null)
     } finally {
       setLoading(false)
@@ -195,14 +197,14 @@ function PartnersScreen() {
             onPress={handleCancelRide}
             style={styles.cancelButton}
           >
-            Відмінити поїздку та пошук партнерів
+            {t("partners.cancelRideButton")}
           </Button>}
         <ConfirmationModal
           visible={showCancelModal}
           onClose={() => setShowCancelModal(false)}
           onConfirm={handleConfirmCancelRide}
-          title="Відмінити поїздку"
-          message="Ви впевнені, що хочете відмінити поїздку?"
+          title={t("partners.confirmCancelRideModalTitle")}
+          message={t("partners.confirmCancelRideModalMessage")}
           loading={cancelRideLoading}
         />
       </View>

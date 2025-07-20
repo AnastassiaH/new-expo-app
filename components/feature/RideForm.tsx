@@ -12,6 +12,7 @@ import { generateRideData } from "@/utils"
 import { Ionicons } from "@expo/vector-icons"
 import { router, useFocusEffect } from "expo-router"
 import { useCallback, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { StyleSheet, View } from "react-native"
 import { Button, TextInput, useTheme } from "react-native-paper"
 import ConfirmationModal from "../ui/ConfirmationModal"
@@ -46,6 +47,7 @@ export default function RideForm() {
   const theme = useTheme()
   const { handleConfirmCancel, loading: cancellationLoading, error: cancellationError } = useRideCancellation()
   const [isRideCreating, setIsRideCreating] = useState(false)
+  const { t } = useTranslation()
 
   useFocusEffect(
     useCallback(() => {
@@ -140,7 +142,7 @@ export default function RideForm() {
             <Ionicons name="location" size={20} color="black" style={styles.inputIcon} />
             <PlacesAutocomplete
               onPlaceSelect={setFromLocation}
-              placeholder="From"
+              placeholder={t("ride.from")}
               active={isActive === 'from'}
               searchCoords={useCustomCity ? customCity! as PlaceCoords : location?.coords!}
               predictedAddresses={useCustomCity ? [] : locationData?.addresses}
@@ -161,7 +163,7 @@ export default function RideForm() {
           <View style={[styles.inputContainer, validationErrors?.to && { borderColor: theme.colors.error }]}>
             <Ionicons name="flag" size={20} color="black" style={styles.inputIcon} />
             <PlacesAutocomplete
-              placeholder="To"
+              placeholder={t("ride.to")}
               active={isActive === 'to'}
               onPlaceSelect={setToLocation}
               searchCoords={useCustomCity ? customCity! as PlaceCoords : location?.coords!}
@@ -186,7 +188,7 @@ export default function RideForm() {
             selectionColor="black"
             placeholderTextColor="black"
             underlineColor="transparent"
-            placeholder="Can walk (meters)"
+            placeholder={t("ride.walk")}
             value={walkDistance || ''}
             onChangeText={(num) => {
               setWalkDistance(num)
@@ -203,13 +205,13 @@ export default function RideForm() {
           onPress={onCreateRide}
           style={{ marginTop: 20 }}
         >
-          Create a ride
+          {t("ride.createRideButton")}
         </Button>
       </View>
       <ConfirmationModal
         visible={isActiveRideModalVisible}
-        message="Хочете скасувати цю та створити нову?"
-        title="Активна поїздка вже створена"
+        message={t("ride.cancelActiveRideModalMessage")}
+        title={t("ride.cancelActiveRideModalTitle")}
         loading={cancellationLoading}
         onConfirm={() => {
           handleConfirmCancel()

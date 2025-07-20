@@ -4,6 +4,7 @@ import { useLocationStore } from '@/stores/locationStore';
 import { City } from '@/types';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Linking, ScrollView } from 'react-native';
 import { Button, RadioButton, Text, useTheme } from 'react-native-paper';
 
@@ -11,6 +12,7 @@ const CitySelector = () => {
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
   const { setCustomCity, selectorVisible, setSelectorVisible, setUseCustomCity, locationData } = useLocationStore()
   const theme = useTheme()
+  const { t } = useTranslation()
 
   useEffect(() => {
     return () => {
@@ -30,7 +32,7 @@ const CitySelector = () => {
   return (
     <CustomModal visible={selectorVisible} onClose={() => setSelectorVisible(false)} testID="city-modal">
       <Text style={{ marginBottom: 16, textAlign: 'center', color: '#000' }}>
-        Виберіть місто або скористайтесь поточною локацією:
+        {t('city.citySelectorModalTitle')}
       </Text>
 
       <RadioButton.Group
@@ -58,7 +60,7 @@ const CitySelector = () => {
         ]}
         labelStyle={!selectedCity && { color: theme.colors.onPrimary, opacity: 0.5 }}
       >
-        Підтвердити вибір міста
+        {t('city.confirmCity')}
       </Button>
 
       {locationData ?
@@ -69,7 +71,7 @@ const CitySelector = () => {
             setSelectorVisible(false)
           }}
         >
-          Використати поточну локацію
+          {t('city.useCurrentLocation')}
         </Button>
         :
         <Button
@@ -80,7 +82,7 @@ const CitySelector = () => {
           }}
           style={{ marginTop: 8 }}
         >
-          Надати доступ до локації
+          {t('city.allowLocationButton')}
         </Button>}
     </CustomModal>
   );

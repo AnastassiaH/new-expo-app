@@ -5,7 +5,8 @@
     "error": {
       "default": "Сталася помилка. Будь ласка, спробуйте ще раз.",
       "unauthorized": "Ви не авторизовані для перегляду цієї сторінки.",
-      "required": "Це поле обов'язкове"
+      "required": "Це поле обов'язкове",
+      "fetchingError": "Сталася помилка при отриманні даних."
     },
     "buttons": {
       "submit": "Підтвердити",
@@ -106,21 +107,43 @@
     "title": "Створити поїздку",
     "from": "Звідки",
     "to": "Куди",
+    "walk": "Можу пройтись метрів",
     "currentLocation": "Моє місцезнаходження",
     "selectOnMap": "Вибрати на карті",
-    "requestButton": "Замовити",
-    "cancelButton": "Скасувати поїздку"
+    "createRideButton": "Створити поїздку",
+    "cancelRideButton": "Скасувати поїздку",
+    "cancelActiveRideModalTitle": "Активна поїздка вже створена",
+    "cancelActiveRideModalMessage": "Хочете скасувати цю та створити нову?",
+    "activeRide": "Активна поїздка",
+    "completedRide": "Завершена поїздка"
   },
   "history": {
     "title": "Історія поїздок",
     "noRides": "Ще немає поїздок",
-    "viewDetails": "Детальніше",
     "date": "Дата",
     "distance": "Відстань"
   },
   "partners": {
     "title": "Доступні партнери",
     "noPartners": "Немає доступних партнерів",
-    "select": "Виберіть партнера"
+    "select": "Виберіть партнера",
+    "confirmCancelRideModalTitle": "Відмінити поїздку",
+    "confirmCancelRideModalMessage": "Ви впевнені, що хочете відмінити поїздку?",
+    "cancelRideButton": "Відмінити поїздку та пошук партнерів",
+    "partnerCardSubtitlePart": "на відстані",
+    "noActiveRideBlockTitle": "Пошук ще не розпочато",
+    "noActiveRideBlockDescription": "Створіть поїздку, щоб знайти попутника",
+    "goToHistoryButton": "Переглянути минулі поїздки"
+  },
+  "city": {
+    "yourCity": "Ваше місто",
+    "customCity": "Вибране місто",
+    "noCity": "Не встановлено",
+    "editCity": "Змінити",
+    "useCurrentCity": "Використати поточне місто",
+    "citySelectorModalTitle": "Виберіть місто або скористайтесь поточною локацією:",
+    "confirmCity": "Підтвердити вибір міста",
+    "useCurrentLocation": "Використати поточну локацію",
+    "allowLocationButton": "Надати доступ до локації"
   }
 }

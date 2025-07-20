@@ -7,6 +7,7 @@ import { useUserStore } from '@/stores/userStore';
 import { RideData } from '@/types';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Text, useTheme } from 'react-native-paper';
 
@@ -17,6 +18,7 @@ const HistoryScreen = () => {
   const [getRidesError, setGetRidesError] = useState<string | null>(null)
   const activeRide = useActiveRideStore((state) => state.activeRide)
   const theme = useTheme();
+  const { t } = useTranslation()
 
   const fetchRides = async () => {
     setLoading(true);
@@ -27,7 +29,7 @@ const HistoryScreen = () => {
       }
       setGetRidesError(null);
     } catch (error: any) {
-      setGetRidesError(error?.message || 'Упс, щось пішло не так');
+      setGetRidesError(error?.message || t('common.error.default'));
     } finally {
       setLoading(false);
     }
@@ -77,14 +79,16 @@ const HistoryScreen = () => {
           </ScrollView>
           :
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ color: theme.colors.primary, fontSize: 16, fontWeight: 'bold', marginBottom: 20 }}>Поїздок ще поки немає</Text>
+            <Text style={{ color: theme.colors.primary, fontSize: 16, fontWeight: 'bold', marginBottom: 20 }}>
+              {t('history.noRides')}
+            </Text>
             <Button
               mode="contained"
               onPress={() => router.push('/(app)/ride' as never)}
               textColor={theme.colors.onPrimary}
               style={{ width: 250 }}
             >
-              Створити поїздку
+              {t('ride.createRideButton')}
             </Button>
           </View>}
       </View>

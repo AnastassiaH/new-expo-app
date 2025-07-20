@@ -1,6 +1,7 @@
 import { PartnerData } from '@/types';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Animated,
   Easing,
@@ -11,7 +12,6 @@ import {
 } from 'react-native';
 import { Card, useTheme } from 'react-native-paper';
 import SocialBlock from '../feature/SocialBlock';
-
 
 interface PartnerItemProps {
   item: PartnerData;
@@ -30,6 +30,7 @@ const PartnerItem: React.FC<PartnerItemProps> = ({ item }) => {
   const heightAnim = useRef(new Animated.Value(COLLAPSED_HEIGHT)).current
   const opacityAnim = useRef(new Animated.Value(0)).current
   const rotateAnim = useRef(new Animated.Value(0)).current;
+  const { t } = useTranslation();
 
   const toggleExpanded = () => {
     const isExpanding = !expanded
@@ -65,7 +66,7 @@ const PartnerItem: React.FC<PartnerItemProps> = ({ item }) => {
       >
         <Card.Title
           title={item.placeFrom.name}
-          subtitle={`${item.user?.firstName} within ${item.placeFrom.distance} m`} subtitleVariant='bodyMedium' />
+          subtitle={`${item.user?.firstName} ${t("partners.partnerCardSubtitlePart")} ${item.placeFrom.distance} m`} subtitleVariant='bodyMedium' />
 
 
         <Animated.View

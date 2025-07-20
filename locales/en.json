@@ -5,7 +5,8 @@
     "error": {
       "default": "An error occurred. Please try again.",
       "unauthorized": "You are not authorized to access this page.",
-      "required": "This field is required"
+      "required": "This field is required",
+      "fetchingError": "Failed to fetch data."
     },
     "buttons": {
       "submit": "Submit",
@@ -105,21 +106,43 @@
     "title": "Create Ride",
     "from": "From",
     "to": "To",
+    "walk": "Can walk (meters)",
     "currentLocation": "Current Location",
     "selectOnMap": "Select on Map",
-    "requestButton": "Create Ride",
-    "cancelButton": "Cancel Ride"
+    "createRideButton": "Create Ride",
+    "cancelRideButton": "Cancel Ride",
+    "cancelActiveRideModalTitle": "Active ride already created",
+    "cancelActiveRideModalMessage": "Do you want to cancel this and create a new one?",
+    "activeRide": "Active ride",
+    "completedRide": "Completed ride"
   },
   "history": {
     "title": "Ride History",
     "noRides": "No rides yet",
-    "viewDetails": "View Details",
     "date": "Date",
     "distance": "Distance"
   },
   "partners": {
     "title": "Available Partners",
     "noPartners": "No partners available",
-    "select": "Select a partner"
+    "select": "Select a partner",
+    "confirmCancelRideModalMessage": "Are you sure you want to cancel this ride?",
+    "confirmCancelRideModalTitle": "Cancel Ride",
+    "cancelRideButton": "Cancel Ride and search for partners",
+    "partnerCardSubtitlePart": "within",
+    "noActiveRideBlockTitle": "Search has not started yet",
+    "noActiveRideBlockDescription": "Create a ride to find a partner",
+    "goToHistoryButton": "Go to history"
+  },
+  "city": {
+    "yourCity": "Your city",
+    "customCity": "Custom city",
+    "noCity": "No city",
+    "editCity": "Change",
+    "useCurrentCity": "Use current city",
+    "citySelectorModalTitle": "Chose a city or use current location:",
+    "confirmCity": "Confirm city",
+    "useCurrentLocation": "Use current location",
+    "allowLocationButton": "Allow to use location"
   }
 }

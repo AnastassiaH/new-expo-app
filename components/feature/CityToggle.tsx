@@ -1,5 +1,6 @@
 import { useLocationStore } from "@/stores/locationStore";
 import React, { useEffect } from 'react';
+import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native";
 import { Button, Card, Switch, Text, useTheme } from "react-native-paper";
 
@@ -8,6 +9,7 @@ export default function CityToggle() {
     locationData, useCustomCity
   } = useLocationStore()
   const theme = useTheme()
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (customCity && !locationData?.city) {
@@ -18,10 +20,10 @@ export default function CityToggle() {
   return (
     <Card style={[styles.card, { backgroundColor: theme.colors.primary }]} >
       <Card.Title
-        title={useCustomCity ? 'Вибране місто' : 'Ваше місто'}
+        title={useCustomCity ? t('city.customCity') : t('city.yourCity')}
         subtitle={useCustomCity
-          ? customCity?.name || 'Не встановлено'
-          : locationData?.city || 'Не встановлено'}
+          ? customCity?.name || t('city.noCity')
+          : locationData?.city || t('city.noCity')}
         titleStyle={styles.title}
         subtitleStyle={styles.subtitle}
         right={() => (
@@ -32,14 +34,14 @@ export default function CityToggle() {
               compact
               style={styles.editBtn}
             >
-              Змінити
+              {t('city.editCity')}
             </Button>
           </>
         )}
       />
       {locationData?.city && customCity && customCity.name !== locationData.city && (
         <Card.Actions style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ color: '#fff' }}>Використати поточне місто</Text>
+          <Text style={{ color: '#fff' }}>{t('city.useCurrentCity')}</Text>
           <Switch
             value={!useCustomCity}
             onValueChange={() => setUseCustomCity(!useCustomCity)}

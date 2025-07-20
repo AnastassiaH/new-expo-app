@@ -1,6 +1,7 @@
 import { RideData } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Card, Divider, Text, useTheme } from 'react-native-paper';
 
@@ -13,6 +14,7 @@ const RideItem: React.FC<Props> = ({ ride }) => {
   const isActive = ride.isActive;
   const date = ride.date.split(' ')[0];
   const time = ride.date.split(' ')[1];
+  const { t } = useTranslation()
 
   return (
     <Card mode="outlined" style={[styles.card, { backgroundColor: colors.surfaceDisabled }]}>
@@ -52,7 +54,7 @@ const RideItem: React.FC<Props> = ({ ride }) => {
             style={{ marginRight: 6 }}
           />
           <Text style={[styles.statusText, { color: isActive ? colors.tertiary : colors.onSecondary }]}>
-            {isActive ? 'Активна поїздка' : 'Завершена поїздка'}
+            {isActive ? t('ride.activeRide') : t('ride.completedRide')}
           </Text>
         </View>
       </Card.Content>

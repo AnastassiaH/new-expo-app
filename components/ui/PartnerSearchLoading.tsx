@@ -1,3 +1,4 @@
+import { useLanguageStore } from '@/stores/languageStore'
 import { Ionicons } from '@expo/vector-icons'
 import React, { useEffect, useRef, useState } from 'react'
 import {
@@ -17,6 +18,14 @@ const messages = [
   'Перевіряємо їхні маршрути...',
 ]
 
+const messagesEn = [
+  'Searching for the best partners for you...',
+  'Analyzing your routes...',
+  'Comparing available options...',
+  'Found several potential partners!',
+  'Checking their routes...',
+]
+
 interface PartnerSearchLoadingProps {
   iconOnly?: boolean
 }
@@ -25,6 +34,7 @@ const PartnerSearchLoading: React.FC<PartnerSearchLoadingProps> = ({ iconOnly = 
   const floatAnim = useRef(new Animated.Value(0)).current
   const progressAnim = useRef(new Animated.Value(0)).current
   const theme = useTheme()
+  const language = useLanguageStore(s => s.language)
 
   const [messageIndex, setMessageIndex] = useState(0)
 
@@ -91,7 +101,7 @@ const PartnerSearchLoading: React.FC<PartnerSearchLoadingProps> = ({ iconOnly = 
       {!iconOnly && (
         <>
           <Text style={[styles.message, { color: theme.colors.primary }]}>
-            {messages[messageIndex]}
+            {language === 'uk' ? messages[messageIndex] : messagesEn[messageIndex]}
           </Text>
 
           <View style={styles.progressContainer}>
