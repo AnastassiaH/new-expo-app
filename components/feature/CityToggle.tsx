@@ -27,7 +27,7 @@ export default function CityToggle() {
         right={() => (
           <>
             <Button
-              mode="contained-tonal"
+              mode="contained"
               onPress={() => setSelectorVisible(true)}
               compact
               style={styles.editBtn}
