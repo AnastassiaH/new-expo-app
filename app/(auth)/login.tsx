@@ -43,8 +43,6 @@ export default function LoginScreen() {
       setError(error?.message || DEFAULT_ERROR_MESSAGE)
       router.replace('/(auth)')
       throw error
-    } finally {
-      setIsLoading(false)
     }
   }
 
