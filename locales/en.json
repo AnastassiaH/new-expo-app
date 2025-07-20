@@ -92,7 +92,8 @@
     "ride": "Ride",
     "history": "History",
     "partners": "Partners",
-    "settings": "Settings"
+    "settings": "Settings",
+    "logout": "Log out"
   },
   "settings": {
     "title": "Settings",

@@ -4,6 +4,7 @@ import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { router } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { AvatarBlock } from '../ui/AvatarBlock';
@@ -20,6 +21,7 @@ const iconsMap: Record<string, keyof typeof Ionicons.glyphMap> = {
 const CustomDrawer = () => {
   const theme = useTheme()
   const { signOut } = useAuthStore()
+  const { t } = useTranslation()
   return (
     <Drawer
       screenOptions={{
@@ -41,7 +43,7 @@ const CustomDrawer = () => {
             .filter((route) => route.name !== 'profile')
             .map((route) => {
               const focused = props.state.routes[props.state.index].key === route.key
-              const label = route.name;
+              const label = t(`drawer.${route.name}`)
 
               return (
                 <DrawerItem
@@ -63,7 +65,7 @@ const CustomDrawer = () => {
             })}
           <View style={{ borderTopWidth: 1, borderTopColor: '#ccc', paddingTop: 10, marginTop: 10 }}>
             <DrawerItem
-              label="Log Out"
+              label={t('drawer.logout')}
               onPress={signOut}
               icon={({ size }) => (
                 <Ionicons name="log-out-outline" color={theme.colors.onSurface} size={size} />
