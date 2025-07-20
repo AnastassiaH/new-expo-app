@@ -7,6 +7,7 @@ import usePhoneStore from '@/stores/phoneStore'
 import { router } from 'expo-router'
 import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import { Button, useTheme } from 'react-native-paper'
 
@@ -29,6 +30,7 @@ const ResetPasswordScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { phone } = usePhoneStore()
   const setError = useAuthError(s => s.setError)
+  const { t } = useTranslation()
 
   const sendResetPassword = async (data: FormData) => {
     try {
@@ -57,22 +59,23 @@ const ResetPasswordScreen: React.FC = () => {
   return (
     <Wrapper fullScreen>
       <Logo />
-      <Header>Reset Password</Header>
+      <Header>{t('resetPassword.title')}</Header>
       <View style={styles.form}>
         <Controller
           control={control}
           name="verificationCode"
           rules={{
-            required: 'Verification code is required',
+            required: t('verification.requiredCode'),
             pattern: {
               value: /^\d{6}$/,
-              message: 'Please enter a valid 6-digit code'
+              message: t('verification.patternCode')
             }
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <AppTextInput
               mode="outlined"
-              label="Verification Code"
+              label={t('verification.label')}
+              placeholder={t('verification.placeholder')}
               value={value}
               onChangeText={onChange}
               keyboardType="number-pad"
@@ -86,16 +89,16 @@ const ResetPasswordScreen: React.FC = () => {
           control={control}
           name="password"
           rules={{
-            required: 'Password is required',
+            required: t('common.fields.password.required'),
             minLength: {
               value: 6,
-              message: 'Password must be at least 6 characters'
+              message: t('common.fields.password.invalid')
             }
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <AppTextInput
               mode="outlined"
-              label="New Password"
+              label={t('common.fields.password.newPassword')}
               value={value}
               onChangeText={onChange}
               secureTextEntry
@@ -109,13 +112,13 @@ const ResetPasswordScreen: React.FC = () => {
           control={control}
           name="passwordRetry"
           rules={{
-            required: 'Please confirm your password',
-            validate: value => value === watch('password') || 'Passwords do not match'
+            required: t('common.fields.password.requiredConfirmPassword'),
+            validate: value => value === watch('password') || t('common.fields.password.mismatch')
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <AppTextInput
               mode="outlined"
-              label="Confirm Password"
+              label={t('common.fileds.password.confirmPassword')}
               value={value}
               onChangeText={onChange}
               secureTextEntry
@@ -130,7 +133,7 @@ const ResetPasswordScreen: React.FC = () => {
           onPress={handleSubmit(sendResetPassword)}
           style={[styles.button, { backgroundColor: theme.colors.primary }]}
         >
-          Reset Password
+          {t('resetPassword.submitButton')}
         </Button>
       </View>
     </Wrapper>

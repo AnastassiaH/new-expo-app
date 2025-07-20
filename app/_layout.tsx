@@ -7,7 +7,9 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
 import LocationWatcher from '@/components/feature/LocationWatcher';
+import i18n from '@/lib/i18n';
 import { Stack, type ErrorBoundaryProps } from 'expo-router';
+import { I18nextProvider } from 'react-i18next';
 import { Text, View } from 'react-native';
 import { MD3DarkTheme, PaperProvider } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -61,22 +63,24 @@ export default function RootLayout() {
 
   return (
     <PaperProvider theme={theme}>
-      <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
-        <StatusBar style="auto" />
-        <LocationWatcher />
-        <Stack>
-          <Stack.Screen name="(app)" options={{
-            headerShown: false,
-            animation: 'fade',
-            animationDuration: 500,
-          }} />
-          <Stack.Screen name="(auth)" options={{
-            headerShown: false,
-            animation: 'fade',
-            animationDuration: 500,
-          }} />
-        </Stack>
-      </View>
+      <I18nextProvider i18n={i18n}>
+        <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+          <StatusBar style="auto" />
+          <LocationWatcher />
+          <Stack>
+            <Stack.Screen name="(app)" options={{
+              headerShown: false,
+              animation: 'fade',
+              animationDuration: 300,
+            }} />
+            <Stack.Screen name="(auth)" options={{
+              headerShown: false,
+              animation: 'fade',
+              animationDuration: 300,
+            }} />
+          </Stack>
+        </View>
+      </I18nextProvider>
     </PaperProvider>
   )
 }

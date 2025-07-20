@@ -8,6 +8,7 @@ import { useUserStore } from '@/stores/userStore'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import { Button, Text } from 'react-native-paper'
 
@@ -20,6 +21,7 @@ const VerificationScreen: React.FC = () => {
   const { phone } = usePhoneStore()
   const { setUser } = useUserStore()
   const setError = useAuthError(s => s.setError)
+  const { t } = useTranslation()
 
   const handleVerification = async (verificationFormData: VerificationFormData) => {
     const data = {
@@ -59,27 +61,27 @@ const VerificationScreen: React.FC = () => {
   return (
     <Wrapper fullScreen>
       <Logo />
-      <Header title="Verification" />
+      <Header title={t('verification.title')} />
       <View style={styles.container}>
         <View style={styles.formWrapper}>
           <Controller
             control={control}
             name="verificationCode"
             rules={{
-              required: 'Verification code is required',
+              required: t('verification.required'),
               minLength: {
                 value: 6,
-                message: 'Code must be 6 digits'
+                message: t('verification.patternCode')
               },
               maxLength: {
                 value: 6,
-                message: 'Code must be 6 digits'
+                message: t('verification.patternCode')
               }
             }}
             render={({ field: { value, onChange, onBlur } }) => (
               <AppTextInput
                 mode="outlined"
-                label="Verification Code"
+                label={t('verification.label')}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -104,7 +106,7 @@ const VerificationScreen: React.FC = () => {
             disabled={isLoading}
             style={styles.button}
           >
-            Verify
+            {t('verification.submitButton')}
           </Button>
         </View>
       </View>

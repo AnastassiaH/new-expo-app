@@ -1,6 +1,7 @@
 import { AppTextInput } from '@/components/atoms'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import { Button, useTheme } from 'react-native-paper'
 
@@ -19,6 +20,7 @@ type SignUpFormProps = {
 
 const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
   const theme = useTheme()
+  const { t } = useTranslation()
   const {
     control,
     handleSubmit,
@@ -40,16 +42,17 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
         control={control}
         name="email"
         rules={{
-          required: 'You must enter your email',
+          required: t('common.fields.email.required'),
           pattern: {
             value: /^\S+@\S+$/i,
-            message: 'Enter a valid email address'
+            message: t('common.fields.email.invalid')
           }
         }}
         render={({ field: { value, onChange, onBlur } }) => (
           <AppTextInput
             mode="outlined"
-            label="Email"
+            label={t('common.fields.email.label')}
+            placeholder={t('common.fields.email.placeholder')}
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
@@ -62,12 +65,12 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
         control={control}
         name="firstName"
         rules={{
-          required: 'First name is required'
+          required: t('register.firstName.required')
         }}
         render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
           <AppTextInput
             mode="outlined"
-            label="First Name"
+            label={t('register.firstName.label')}
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
@@ -81,12 +84,12 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
         control={control}
         name="lastName"
         rules={{
-          required: 'Last name is required'
+          required: t('register.lastName.required')
         }}
         render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
           <AppTextInput
             mode="outlined"
-            label="Last Name"
+            label={t('register.lastName.label')}
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
@@ -100,16 +103,16 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
         control={control}
         name="phoneNumber"
         rules={{
-          required: 'Phone number is required',
+          required: t('common.fields.phoneNumber.required'),
           pattern: {
             value: /^\+380\d{9}$/,
-            message: 'Please enter a valid Ukrainian phone number'
+            message: t('common.fields.phoneNumber.invalid')
           }
         }}
         render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
           <AppTextInput
             mode="outlined"
-            label="Phone Number"
+            label={t('common.fields.phoneNumber.label')}
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
@@ -125,16 +128,16 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
         control={control}
         name="password"
         rules={{
-          required: 'Password is required',
+          required: t('common.fields.password.required'),
           minLength: {
             value: 6,
-            message: 'Password must be at least 6 characters'
+            message: t('common.fields.password.invalid')
           }
         }}
         render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
           <AppTextInput
             mode="outlined"
-            label="Password"
+            label={t('common.fields.password.label')}
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
@@ -148,13 +151,13 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
         control={control}
         name="confirmPassword"
         rules={{
-          required: 'You must confirm your password',
+          required: t('common.fields.password.requiredConfirmPassword'),
           validate: value => value === watch('password') || 'Passwords do not match'
         }}
         render={({ field: { value, onChange, onBlur } }) => (
           <AppTextInput
             mode="outlined"
-            label="Confirm Password"
+            label={t('common.fields.password.confirmPassword')}
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
@@ -168,7 +171,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit }) => {
         onPress={handleSubmit(onSubmit)}
         style={[styles.button, { backgroundColor: theme.colors.primary }]}
       >
-        Sign Up
+        {t('register.submitButton')}
       </Button>
     </View>
   )

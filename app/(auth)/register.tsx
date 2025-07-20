@@ -7,6 +7,7 @@ import usePhoneStore from '@/stores/phoneStore'
 import { UserData } from '@/types'
 import { router } from 'expo-router'
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
 
@@ -15,6 +16,7 @@ export default function RegisterScreen() {
   const setError = useAuthError(s => s.setError);
   const [isLoading, setIsLoading] = useState(false)
   const { setPhone } = usePhoneStore()
+  const { t } = useTranslation()
 
   async function signUpUser(data: UserData) {
     setError('')
@@ -41,12 +43,12 @@ export default function RegisterScreen() {
   return (
     <Wrapper fullScreen>
       <Logo />
-      <Header>Create Account</Header>
+      <Header>{t('register.title')}</Header>
       <SignUpForm onSubmit={signUpUser} />
       <View style={styles.row}>
-        <Text style={{ color: theme.colors.primary }}>Already have an account? </Text>
+        <Text style={{ color: theme.colors.primary }}>{t('register.alreadyHaveAccount')} </Text>
         <TouchableOpacity onPress={() => router.replace('/(auth)/login')}>
-          <Text style={[styles.link, { color: theme.colors.primary }]}>Login</Text>
+          <Text style={[styles.link, { color: theme.colors.primary }]}>{t('register.login')}</Text>
         </TouchableOpacity>
       </View>
     </Wrapper>

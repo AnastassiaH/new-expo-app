@@ -10,9 +10,9 @@ import { LoginData } from '@/types'
 import { router } from 'expo-router'
 import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Button, Text, useTheme } from 'react-native-paper'
-
 
 export default function LoginScreen() {
   const [isLoading, setIsLoading] = useState(false)
@@ -22,6 +22,7 @@ export default function LoginScreen() {
   const { signIn } = useAuthStore()
   const { setPhone } = usePhoneStore()
   const { setUser } = useUserStore()
+  const { t } = useTranslation()
 
   const onPhoneNumberFocus = () => {
     if (!getValues('phoneNumber')) {
@@ -53,22 +54,22 @@ export default function LoginScreen() {
   return (
     <Wrapper fullScreen={false}>
       <Logo />
-      <Header>Login</Header>
+      <Header>{t('login.title')}</Header>
       <View style={styles.form}>
         <Controller
           control={control}
           name="phoneNumber"
           rules={{
-            required: 'Phone number is required',
+            required: t('common.fields.phoneNumber.required'),
             pattern: {
               value: /^\+380\d{9}$/,
-              message: 'Please enter a valid Ukrainian phone number'
+              message: t('common.fields.phoneNumber.invalid')
             }
           }}
           render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
             <AppTextInput
               mode="outlined"
-              placeholder="Phone Number"
+              placeholder={t('common.fields.phoneNumber.placeholder')}
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
@@ -88,16 +89,16 @@ export default function LoginScreen() {
           control={control}
           name="password"
           rules={{
-            required: 'Password is required',
+            required: t('common.fields.password.required'),
             minLength: {
               value: 6,
-              message: 'Password must be at least 6 characters'
+              message: t('common.fields.password.invalid')
             }
           }}
           render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
             <AppTextInput
               mode="outlined"
-              placeholder="Password"
+              placeholder={t('common.fields.password.placeholder')}
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
@@ -113,17 +114,17 @@ export default function LoginScreen() {
           onPress={handleSubmit(logInAppUser)}
           style={[styles.button, { backgroundColor: theme.colors.primary }]}
         >
-          Login
+          {t('login.submitButton')}
         </Button>
         <View style={styles.row}>
-          <Text style={{ color: theme.colors.primary }}>Don't have an account? </Text>
+          <Text style={{ color: theme.colors.primary }}>{t('login.noAccount')} </Text>
           <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
-            <Text style={[styles.link, { color: theme.colors.primary }]}>Sign up</Text>
+            <Text style={[styles.link, { color: theme.colors.primary }]}>{t('login.signUp')}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.row}>
           <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password')}>
-            <Text style={[styles.link, { color: theme.colors.primary }]}>Forgot password?</Text>
+            <Text style={[styles.link, { color: theme.colors.primary }]}>{t('common.fields.password.forgotPassword')}</Text>
           </TouchableOpacity>
         </View>
       </View>

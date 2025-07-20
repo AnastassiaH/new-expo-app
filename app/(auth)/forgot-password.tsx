@@ -7,6 +7,7 @@ import { AppTextInput } from '@/components/atoms'
 import { Header, Loader, Logo, Wrapper } from '@/components/ui'
 import { DEFAULT_ERROR_MESSAGE } from '@/constants'
 import { useAuthError } from '@/stores/errorStore'
+import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import { Button, useTheme } from 'react-native-paper'
 
@@ -16,6 +17,7 @@ export default function ForgotPasswordScreen() {
   const theme = useTheme()
   const [phoneNumber, setPhoneNumber] = useState('')
   const { setPhone } = usePhoneStore()
+  const { t } = useTranslation()
 
 
   const onPhoneNumberFocus = () => {
@@ -42,11 +44,11 @@ export default function ForgotPasswordScreen() {
   return (
     <Wrapper fullScreen={false}>
       <Logo />
-      <Header>Forgot Password</Header>
+      <Header>{t('forgotPassword.title')}</Header>
       <View style={styles.form}>
         <AppTextInput
           mode="outlined"
-          label="Phone Number"
+          label={t('common.fields.phoneNumber.label')}
           value={phoneNumber}
           onChangeText={setPhoneNumber}
           onFocus={onPhoneNumberFocus}
@@ -58,7 +60,7 @@ export default function ForgotPasswordScreen() {
           onPress={() => sendResetPasswordPhone(phoneNumber)}
           style={[styles.button, { backgroundColor: theme.colors.primary }]}
         >
-          Reset Password
+          {t('forgotPassword.submitButton')}
         </Button>
       </View>
     </Wrapper>

@@ -2,26 +2,28 @@
 import { Header, Logo, Wrapper } from '@/components/ui'
 import { router } from 'expo-router'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from 'react-native-paper'
 
 export default function StartScreen() {
+	const { t } = useTranslation()
 	return (
 		<Wrapper fullScreen={false}>
 			<Logo />
-			<Header>Ride the city</Header>
+			<Header>{t('common.welcome')}</Header>
 			<Button
 				style={{ marginVertical: 20, width: '80%' }}
 				mode="contained"
 				onPress={() => router.push('/(auth)/login')}
 			>
-				Login
+				{t('login.title')}
 			</Button>
 			<Button
 				style={{ width: '80%' }}
 				mode="outlined"
 				onPress={() => router.push('/(auth)/register')}
 			>
-				Sign Up
+				{t('register.title')}
 			</Button>
 		</Wrapper>
 	)

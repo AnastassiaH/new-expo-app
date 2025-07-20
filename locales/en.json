@@ -1,0 +1,125 @@
+{
+  "common": {
+    "welcome": "Ride the city",
+    "loading": "Loading...",
+    "error": {
+      "default": "An error occurred. Please try again.",
+      "unauthorized": "You are not authorized to access this page.",
+      "required": "This field is required"
+    },
+    "buttons": {
+      "submit": "Submit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "back": "Back",
+      "next": "Next",
+      "done": "Done"
+    },
+    "fields": {
+      "phoneNumber": {
+        "label": "Phone Number",
+        "placeholder": "Enter your phone number",
+        "required": "Phone number is required",
+        "invalid": "Please enter a valid phone number"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Enter your password",
+        "required": "Password is required",
+        "requiredConfirmPassword": "Confirm password is required",
+        "createPlaceholder": "Create a password",
+        "invalid": "Password must be at least 6 characters",
+        "confirmPassword": "Confirm password",
+        "mismatch": "Passwords do not match",
+        "forgotPassword": "Forgot password?",
+        "newPassword": "New Password"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter your email",
+        "invalid": "Please enter a valid email address",
+        "required": "Email is required"
+      }
+    }
+  },
+  "login": {
+    "title": "Login",
+    "submitButton": "Login",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up"
+  },
+  "register": {
+    "title": "Create Account",
+    "firstName": {
+      "label": "First Name",
+      "placeholder": "Enter your first name",
+      "required": "First name is required"
+    },
+    "lastName": {
+      "label": "Last Name",
+      "placeholder": "Enter your last name",
+      "required": "Last name is required"
+    },
+    "submitButton": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "login": "Login"
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "submitButton": "Send verification code"
+  },
+  "verification": {
+    "title": "Verify Your Account",
+    "label": "Verification Code",
+    "placeholder": "Enter the code sent to your phone",
+    "required": "Verification code is required",
+    "submitButton": "Verify",
+    "resendCode": "Resend Code",
+    "codeSent": "Verification code sent to {phoneNumber}",
+    "invalidCode": "Invalid verification code",
+    "patternCode": "Please enter a valid 6-digit code"
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "confirmPassword": {
+      "label": "Confirm New Password",
+      "placeholder": "Confirm your new password"
+    },
+    "submitButton": "Reset Password"
+  },
+  "drawer": {
+    "ride": "Ride",
+    "history": "History",
+    "partners": "Partners",
+    "settings": "Settings"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": {
+      "label": "Language",
+      "en": "English",
+      "uk": "Українська"
+    }
+  },
+  "ride": {
+    "title": "Create Ride",
+    "from": "From",
+    "to": "To",
+    "currentLocation": "Current Location",
+    "selectOnMap": "Select on Map",
+    "requestButton": "Create Ride",
+    "cancelButton": "Cancel Ride"
+  },
+  "history": {
+    "title": "Ride History",
+    "noRides": "No rides yet",
+    "viewDetails": "View Details",
+    "date": "Date",
+    "distance": "Distance"
+  },
+  "partners": {
+    "title": "Available Partners",
+    "noPartners": "No partners available",
+    "select": "Select a partner"
+  }
+}
