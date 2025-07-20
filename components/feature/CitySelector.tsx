@@ -41,7 +41,7 @@ const CitySelector = () => {
       >
         <ScrollView style={{ maxHeight: 150 }}>
           {CITIES.map((city) => (
-            <RadioButton.Item key={city.name} label={city.name} value={city.name} labelStyle={{
+            <RadioButton.Item key={city.name} label={t(`city.cities.${city.engName.toLowerCase()}`)} value={city.name} labelStyle={{
               fontSize: 16,
               fontWeight: '500',
               color: selectedCity?.name === city.name ? '#1e88e5' : '#333',

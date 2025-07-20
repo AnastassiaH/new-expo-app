@@ -138,11 +138,17 @@
     "yourCity": "Ваше місто",
     "customCity": "Вибране місто",
     "noCity": "Не встановлено",
-    "editCity": "Змінити",
     "useCurrentCity": "Використати поточне місто",
     "citySelectorModalTitle": "Виберіть місто або скористайтесь поточною локацією:",
     "confirmCity": "Підтвердити вибір міста",
     "useCurrentLocation": "Використати поточну локацію",
-    "allowLocationButton": "Надати доступ до локації"
+    "allowLocationButton": "Надати доступ до локації",
+    "cities": {
+      "lviv": "Львів",
+      "kyiv": "Київ",
+      "dnipro": "Дніпро",
+      "odesa": "Одеса",
+      "kharkiv": "Харків"
+    }
   }
 }

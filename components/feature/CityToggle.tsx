@@ -22,7 +22,7 @@ export default function CityToggle() {
       <Card.Title
         title={useCustomCity ? t('city.customCity') : t('city.yourCity')}
         subtitle={useCustomCity
-          ? customCity?.name || t('city.noCity')
+          ? (customCity?.engName && t(`city.cities.${customCity.engName.toLowerCase()}`)) || t('city.noCity')
           : locationData?.city || t('city.noCity')}
         titleStyle={styles.title}
         subtitleStyle={styles.subtitle}
@@ -34,7 +34,7 @@ export default function CityToggle() {
               compact
               style={styles.editBtn}
             >
-              {t('city.editCity')}
+              {t('common.buttons.edit')}
             </Button>
           </>
         )}

@@ -19,26 +19,31 @@ export const REFRESH_PARTNERS_INTERVAL = 60 * 1000 * 5;
 export const CITIES: City[] = [
 	{
 		name: 'Львів',
+		engName: 'Lviv',
 		latitude: 49.8397,
 		longitude: 24.0297,
 	},
 	{
 		name: 'Київ',
+		engName: 'Kyiv',
 		latitude: 50.4501,
 		longitude: 30.5234,
 	},
 	{
 		name: 'Дніпро',
+		engName: 'Dnipro',
 		latitude: 48.4647,
 		longitude: 35.0462,
 	},
 	{
 		name: 'Одеса',
+		engName: 'Odesa',
 		latitude: 46.4825,
 		longitude: 30.7233,
 	},
 	{
 		name: 'Харків',
+		engName: 'Kharkiv',
 		latitude: 49.9935,
 		longitude: 36.2304,
 	},

@@ -137,11 +137,17 @@
     "yourCity": "Your city",
     "customCity": "Custom city",
     "noCity": "No city",
-    "editCity": "Change",
     "useCurrentCity": "Use current city",
     "citySelectorModalTitle": "Chose a city or use current location:",
     "confirmCity": "Confirm city",
     "useCurrentLocation": "Use current location",
-    "allowLocationButton": "Allow to use location"
+    "allowLocationButton": "Allow to use location",
+    "cities": {
+      "lviv": "Lviv",
+      "kyiv": "Kyiv",
+      "dnipro": "Dnipro",
+      "odesa": "Odesa",
+      "kharkiv": "Kharkiv"
+    }
   }
 }

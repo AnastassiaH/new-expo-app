@@ -33,6 +33,7 @@ export type LocationPoint = PlaceCoords & {
 
 export interface City extends PlaceCoords {
 	name: string;
+	engName: string;
 }
 
 export type RideData = {
