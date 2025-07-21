@@ -1,10 +1,12 @@
 import PlacesAutocomplete from "@/components/feature/PlacesAutocomplete"
 import { ErrorModal, Loader } from "@/components/ui"
+import ConfirmationModal from "@/components/ui/ConfirmationModal"
 import { WALK_DISTANCE_MAX } from "@/constants"
 import { useRideCancellation } from "@/hooks/useRideCancellation"
 import { createRide } from "@/services/api.service"
 import { useActiveRideStore } from "@/stores/activeRideStore"
 import { useGoogleMapsError } from "@/stores/errorStore"
+import { useLanguageStore } from "@/stores/languageStore"
 import { useLocationStore } from "@/stores/locationStore"
 import useRideFormStore from "@/stores/rideFormStore"
 import { LocationPoint, PlaceCoords } from "@/types"
@@ -15,7 +17,6 @@ import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { StyleSheet, View } from "react-native"
 import { Button, TextInput, useTheme } from "react-native-paper"
-import ConfirmationModal from "../ui/ConfirmationModal"
 
 export default function RideForm() {
   const fromLocation = useRideFormStore(s => s.fromLocation)
@@ -48,6 +49,7 @@ export default function RideForm() {
   const { handleConfirmCancel, loading: cancellationLoading, error: cancellationError } = useRideCancellation()
   const [isRideCreating, setIsRideCreating] = useState(false)
   const { t } = useTranslation()
+  const language = useLanguageStore(s => s.language)
 
   useFocusEffect(
     useCallback(() => {
@@ -146,7 +148,9 @@ export default function RideForm() {
               active={isActive === 'from'}
               searchCoords={useCustomCity ? customCity! as PlaceCoords : location?.coords!}
               predictedAddresses={useCustomCity ? [] : locationData?.addresses}
-              city={useCustomCity ? customCity?.name! : locationData?.city!}
+              city={useCustomCity
+                ? language === 'en' ? customCity?.engName! : customCity?.name!
+                : locationData?.city!}
               onError={setMapsError}
               onFocus={() => {
                 !location?.coords && !customCity && setSelectorVisible(true)
@@ -156,6 +160,7 @@ export default function RideForm() {
               testID="from-input"
               isValidationError={validationErrors?.from}
               clearValidationErrors={clearValidationErrors}
+              language={language}
             />
           </View>
         </View>
@@ -176,6 +181,7 @@ export default function RideForm() {
               }}
               isValidationError={validationErrors?.to}
               clearValidationErrors={clearValidationErrors}
+              language={language}
             />
           </View>
         </View>

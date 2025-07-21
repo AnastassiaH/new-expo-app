@@ -1,10 +1,11 @@
+import { Language } from "@/stores/languageStore";
 import { LocationPoint, PlaceCoords, PlacePrediction } from "@/types";
 import polyline from '@mapbox/polyline';
 import axios from "axios";
 
 const apiKey = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY
 
-export const fetchAutocompletePredictions = async (query: string, location?: PlaceCoords, radius?: number): Promise<PlacePrediction[]> => {
+export const fetchAutocompletePredictions = async (query: string, language: Language, location?: PlaceCoords, radius?: number): Promise<PlacePrediction[]> => {
   try {
     const res = await axios.get(
       'https://maps.googleapis.com/maps/api/place/autocomplete/json',
@@ -12,7 +13,7 @@ export const fetchAutocompletePredictions = async (query: string, location?: Pla
         params: {
           input: query,
           key: apiKey,
-          language: 'uk',
+          language,
           components: 'country:ua',
           ...(location && {
             location: `${location.latitude},${location.longitude}`,
@@ -30,13 +31,14 @@ export const fetchAutocompletePredictions = async (query: string, location?: Pla
 export const getDataFromCoordinates = async (
   lat: number,
   lng: number,
+  language: Language = 'uk'
 ): Promise<{ city: string, region: string, country: string, addresses: PlacePrediction[] } | null> => {
   try {
     const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
       params: {
         latlng: `${lat},${lng}`,
         key: apiKey,
-        language: 'uk',
+        language,
       },
     });
 
@@ -85,7 +87,7 @@ export const getDataFromCoordinates = async (
   }
 }
 
-export const getPlaceData = async (placeId: string): Promise<LocationPoint | null> => {
+export const getPlaceData = async (placeId: string, language: Language = 'uk'): Promise<LocationPoint | null> => {
   try {
     const response = await axios.get(
       'https://maps.googleapis.com/maps/api/place/details/json',
@@ -94,7 +96,7 @@ export const getPlaceData = async (placeId: string): Promise<LocationPoint | nul
           place_id: placeId,
           key: apiKey,
           fields: 'geometry,formatted_address',
-          language: 'uk',
+          language,
         },
       }
     );

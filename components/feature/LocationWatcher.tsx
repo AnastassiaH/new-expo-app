@@ -1,14 +1,16 @@
 import { LOCATION_FETCHING_DISTANCE_FILTER } from '@/constants';
 import { getDataFromCoordinates } from '@/services/places.service';
+import { useLanguageStore } from '@/stores/languageStore';
 import { useLocationStore } from '@/stores/locationStore';
 import * as Location from 'expo-location';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 
 export default function LocationWatcher() {
   const setLocation = useLocationStore((s) => s.setCurrentLocation);
   const setLocationData = useLocationStore((s) => s.setLocationData);
   const setLoading = useLocationStore((s) => s.setLoading);
+  const language = useLanguageStore(s => s.language)
 
   const watcher = useRef<Location.LocationSubscription | null>(null);
   const lastLocationRef = useRef<Location.LocationObject | null>(null);
@@ -23,17 +25,22 @@ export default function LocationWatcher() {
     return latDiff > 0.0001 || lonDiff > 0.0001;
   };
 
-  const fetchLocationData = async (loc: Location.LocationObject) => {
+  useEffect(() => {
+    fetchLocationData(lastLocationRef.current!);
+  }, [language])
+
+  const fetchLocationData = useCallback(async (loc: Location.LocationObject) => {
     setLoading(true);
     const regionData = await getDataFromCoordinates(
       loc.coords.latitude,
-      loc.coords.longitude
+      loc.coords.longitude,
+      language
     );
     if (regionData) {
       setLocationData(regionData);
     }
     setLoading(false);
-  };
+  }, [language]);
 
   const onLocationUpdate = (loc: Location.LocationObject) => {
     if (!isSignificantChange(loc)) return;

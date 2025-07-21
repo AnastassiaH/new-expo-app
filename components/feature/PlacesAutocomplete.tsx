@@ -1,5 +1,6 @@
 import { DEFAULT_ERROR_MESSAGE } from '@/constants';
 import { fetchAutocompletePredictions, getPlaceData } from '@/services/places.service';
+import { Language } from '@/stores/languageStore';
 import { LocationPoint, PlaceCoords, PlacePrediction } from '@/types';
 import { useFocusEffect } from 'expo-router';
 import { debounce } from 'lodash';
@@ -20,6 +21,7 @@ interface Props {
   active?: boolean
   isValidationError?: boolean
   clearValidationErrors?: () => void
+  language: Language
 }
 
 interface TextInputRef {
@@ -41,7 +43,8 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
       testID,
       active,
       isValidationError,
-      clearValidationErrors
+      clearValidationErrors,
+      language
     },
     ref
   ) => {
@@ -67,14 +70,14 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
       clear: () => inputRef.current?.clear(),
     }));
 
-    const handleSearch = async (query: string, city: string, searchCoords: PlaceCoords, predictedAddresses?: PlacePrediction[]) => {
+    const handleSearch = useCallback(async (query: string, city: string, searchCoords: PlaceCoords, predictedAddresses?: PlacePrediction[]) => {
       if (query?.length < minCharsToFetch || !city) return
       if (error) return
 
       setLoading(true)
 
       try {
-        const predictions = await fetchAutocompletePredictions(query, searchCoords);
+        const predictions = await fetchAutocompletePredictions(query, language!, searchCoords);
         const filteredPredictions = predictions.filter(prediction => prediction.description?.includes(city))
 
         if (predictions.length === 1) {
@@ -94,9 +97,9 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
       } finally {
         setLoading(false)
       }
-    };
+    }, [language]);
 
-    const debouncedSearch = useCallback(debounce(handleSearch, 300), []);
+    const debouncedSearch = useCallback(debounce(handleSearch, 300), [language]);
 
     const handleOnBlur = () => {
       if (!value) {
@@ -125,7 +128,7 @@ const PlacesAutocomplete = React.forwardRef<TextInputRef, Props>(
       setPredictions([])
 
       try {
-        const placeData = await getPlaceData(place.place_id)
+        const placeData = await getPlaceData(place.place_id, language)
         onPlaceSelect(placeData)
         setValue(place?.description || place?.formatted_address)
       } catch (error) {
