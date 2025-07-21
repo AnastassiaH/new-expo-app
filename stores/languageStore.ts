@@ -1,7 +1,8 @@
+import i18n from '@/lib/i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Localization from 'expo-localization';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import i18n from '../lib/i18n';
 
 export type Language = 'en' | 'uk';
 
@@ -23,10 +24,12 @@ export const LANGUAGES: LanguageOption[] = [
   { code: 'uk', name: 'Ukrainian', nativeName: 'Українська' },
 ];
 
+const deviceLanguage = Localization.getLocales()[0]?.languageCode || 'en';
+
 export const useLanguageStore = create<LanguageState>()(
   persist(
     (set) => ({
-      language: i18n.language as Language,
+      language: deviceLanguage as Language,
       selectorVisible: false,
       setLanguage: (lang) => {
         i18n.changeLanguage(lang);

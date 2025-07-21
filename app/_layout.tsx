@@ -7,7 +7,8 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
 import LocationWatcher from '@/components/feature/LocationWatcher';
-import i18n from '@/lib/i18n';
+import i18n, { initI18n } from '@/lib/i18n';
+import { useLanguageStore } from '@/stores/languageStore';
 import { Stack, type ErrorBoundaryProps } from 'expo-router';
 import { I18nextProvider } from 'react-i18next';
 import { Text, View } from 'react-native';
@@ -25,6 +26,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 
 export default function RootLayout() {
   const { session, hydrateSession } = useAuthStore();
+  const language = useLanguageStore((s) => s.language);
 
   const theme = {
     ...MD3DarkTheme,
@@ -56,6 +58,13 @@ export default function RootLayout() {
       await hydrateSession();
     })();
   }, []);
+
+  useEffect(() => {
+    initI18n(language)
+      .catch((e) => {
+        throw e;
+      });
+  }, [language]);
 
   if (!loaded) {
     return null;
