@@ -73,7 +73,11 @@ const HistoryScreen = () => {
           >
             <View style={{ minWidth: '100%' }}>
               {fullRides.map((item) => (
-                <RideItem key={item.id} ride={item as RideData} />
+                <RideItem
+                  key={item.id}
+                  ride={item as RideData}
+                  onPress={() => item.isActive && router.push('/(app)/partners' as never)}
+                />
               ))}
             </View>
           </ScrollView>

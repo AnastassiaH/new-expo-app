@@ -7,9 +7,10 @@ import { Card, Divider, Text, useTheme } from 'react-native-paper';
 
 type Props = {
   ride: RideData;
+  onPress?: () => void;
 };
 
-const RideItem: React.FC<Props> = ({ ride }) => {
+const RideItem: React.FC<Props> = ({ ride, onPress }) => {
   const { colors } = useTheme();
   const isActive = ride.isActive;
   const date = ride.date.split(' ')[0];
@@ -17,7 +18,10 @@ const RideItem: React.FC<Props> = ({ ride }) => {
   const { t } = useTranslation()
 
   return (
-    <Card mode="outlined" style={[styles.card, { backgroundColor: colors.surfaceDisabled }]}>
+    <Card mode="outlined"
+      style={[styles.card, { backgroundColor: colors.surfaceDisabled }]}
+      onPress={onPress}
+    >
       <Card.Content>
         <View style={[styles.row, { marginBottom: 8 }]}>
           <Ionicons name="location" size={20} color={colors.primary} />
