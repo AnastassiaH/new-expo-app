@@ -119,6 +119,14 @@ export default function RideForm() {
     setWalkDistance(null)
   }
 
+  const handleConfirmCancelActiveRide = async () => {
+    setIsActiveRideModalVisible(false)
+    setFromLocation(null)
+    setToLocation(null)
+    setWalkDistance(null)
+    await handleConfirmCancel()
+  }
+
   if (createRideError) {
     return (
       <ErrorModal
@@ -219,10 +227,7 @@ export default function RideForm() {
         message={t("ride.cancelActiveRideModalMessage")}
         title={t("ride.cancelActiveRideModalTitle")}
         loading={cancellationLoading}
-        onConfirm={() => {
-          handleConfirmCancel()
-          setIsActiveRideModalVisible(false)
-        }}
+        onConfirm={handleConfirmCancelActiveRide}
         onClose={() => {
           setIsActiveRideModalVisible(false)
         }}
